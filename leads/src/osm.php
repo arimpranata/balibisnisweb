@@ -7,6 +7,8 @@
 declare(strict_types=1);
 
 const OSM_DEFAULT_ENDPOINT = 'https://overpass-api.de/api/interpreter';
+// Tried automatically when the main server is busy or slow.
+const OSM_FALLBACK_ENDPOINT = 'https://overpass.kumi.systems/api/interpreter';
 
 /** Approximate bounding boxes (south, west, north, east) for Bali areas. */
 const OSM_AREA_BBOX = [
@@ -102,13 +104,13 @@ function osm_build_query(string $category, string $area, string $keyword): strin
         $filters[] = '["name"~"' . osm_regex($category) . '",i]';
     }
     [$s, $w, $n, $e] = osm_bbox($area);
-    $bbox = "($s,$w,$n,$e)";
     $parts = '';
     foreach ($filters as $f) {
         // Only named places can be prospects.
-        $parts .= "  nwr{$f}[\"name\"]{$bbox};\n";
+        $parts .= "  nwr{$f}[\"name\"];\n";
     }
-    return "[out:json][timeout:60];\n(\n{$parts});\nout center tags 300;";
+    // Global bbox + short server timeout keep the query cheap; "qt" skips sorting.
+    return "[out:json][timeout:25][bbox:$s,$w,$n,$e];\n(\n{$parts});\nout center tags qt 200;";
 }
 
 function osm_search(string $category, string $area, string $keyword, string $endpoint = OSM_DEFAULT_ENDPOINT): array
@@ -116,30 +118,20 @@ function osm_search(string $category, string $area, string $keyword, string $end
     if ($category === '' && $keyword === '') {
         return ['error' => 'Choose a category or type a keyword.'];
     }
-    $ch = curl_init($endpoint);
-    curl_setopt_array($ch, [
-        CURLOPT_POST           => true,
-        CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_TIMEOUT        => 75,
-        CURLOPT_CONNECTTIMEOUT => 15,
-        CURLOPT_POSTFIELDS     => http_build_query(['data' => osm_build_query($category, $area, $keyword)]),
-        // Overpass asks clients to identify themselves.
-        CURLOPT_USERAGENT      => 'LightandpulseLeads/' . APP_VERSION . ' (+https://lightandpulse.com)',
-    ]);
-    $raw = curl_exec($ch);
-    $status = (int) curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
-    $err = curl_error($ch);
-    curl_close($ch);
-
-    if ($raw === false) {
-        return ['error' => 'Could not reach OpenStreetMap: ' . $err];
+    $query = osm_build_query($category, $area, $keyword);
+    $endpoints = array_unique([$endpoint, OSM_FALLBACK_ENDPOINT]);
+    $data = null;
+    $error = 'OpenStreetMap did not answer.';
+    foreach ($endpoints as $url) {
+        $res = osm_request($url, $query);
+        if (isset($res['data'])) {
+            $data = $res['data'];
+            break;
+        }
+        $error = $res['error'];
     }
-    if ($status === 429 || $status === 504) {
-        return ['error' => 'OpenStreetMap is busy right now. Wait a minute and search again.'];
-    }
-    $data = json_decode($raw, true);
-    if ($status !== 200 || !is_array($data)) {
-        return ['error' => "OpenStreetMap returned HTTP $status"];
+    if ($data === null) {
+        return ['error' => $error];
     }
 
     $results = [];
@@ -181,6 +173,42 @@ function osm_search(string $category, string $area, string $keyword, string $end
         return $rank($b) <=> $rank($a) ?: strcasecmp($a['name'], $b['name']);
     });
     return ['results' => $results, 'next' => null];
+}
+
+/** One Overpass request with tight timeouts. Returns ['data' => array] or ['error' => string]. */
+function osm_request(string $endpoint, string $query): array
+{
+    $ch = curl_init($endpoint);
+    curl_setopt_array($ch, [
+        CURLOPT_POST           => true,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_TIMEOUT        => 30,
+        CURLOPT_CONNECTTIMEOUT => 8,
+        CURLOPT_ENCODING       => '',
+        CURLOPT_POSTFIELDS     => http_build_query(['data' => $query]),
+        // Overpass asks clients to identify themselves.
+        CURLOPT_USERAGENT      => 'LightandpulseLeads/' . APP_VERSION . ' (+https://lightandpulse.com)',
+    ]);
+    $raw = curl_exec($ch);
+    $status = (int) curl_getinfo($ch, CURLINFO_RESPONSE_CODE);
+    $timedOut = curl_errno($ch) === CURLE_OPERATION_TIMEDOUT;
+    $err = curl_error($ch);
+    curl_close($ch);
+
+    if ($raw === false) {
+        return ['error' => $timedOut ? 'OpenStreetMap took too long to answer. Try a smaller area or search again in a minute.' : 'Could not reach OpenStreetMap: ' . $err];
+    }
+    if ($status === 429 || $status === 504) {
+        return ['error' => 'OpenStreetMap is busy right now. Wait a minute and search again.'];
+    }
+    $data = json_decode($raw, true);
+    if ($status !== 200 || !is_array($data)) {
+        return ['error' => "OpenStreetMap returned HTTP $status"];
+    }
+    if (!empty($data['remark']) && str_contains((string) $data['remark'], 'timed out') && empty($data['elements'])) {
+        return ['error' => 'OpenStreetMap took too long to answer. Try a smaller area or search again in a minute.'];
+    }
+    return ['data' => $data];
 }
 
 function osm_instagram(string $v): string

@@ -15,6 +15,10 @@
     });
   });
 
+  document.querySelectorAll('[data-loading-link]').forEach(function (a) {
+    a.addEventListener('click', function () { a.textContent = a.dataset.loadingLink; });
+  });
+
   // Select-all checkboxes
   document.querySelectorAll('[data-checkall]').forEach(function (master) {
     master.addEventListener('change', function () {

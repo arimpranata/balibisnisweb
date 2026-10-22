@@ -39,13 +39,14 @@
 <?php if ($results !== null): ?>
   <form method="post" action="<?= e(url('finder_add')) ?>">
     <?= csrf_field() ?>
-    <input type="hidden" name="back" value="<?= e('index.php?' . http_build_query($_GET)) ?>">
+    <input type="hidden" name="back" value="<?= e('index.php?' . http_build_query(array_diff_key($_GET, ['refresh' => 1]))) ?>">
     <div class="card flush">
       <div class="card-head pad">
         <h2>Results for “<?= e($query) ?>” <span class="muted">(<?= count($results) ?> · <?= $source === 'osm' ? 'OpenStreetMap' : 'Google Maps' ?>)</span></h2>
+        <?php if ($fromCache): ?><a class="small" href="<?= e('index.php?' . http_build_query(['refresh' => 1] + $_GET)) ?>" data-loading-link="Searching…">Saved results · refresh</a><?php endif; ?>
         <div class="btn-row">
           <label class="check"><input type="checkbox" data-checkall="place_ids[]"> Select all new</label>
-          <button class="btn btn-primary">+ Add selected to leads</button>
+          <button class="btn btn-primary" data-loading="Adding…">+ Add selected to leads</button>
         </div>
       </div>
       <div class="table-wrap">

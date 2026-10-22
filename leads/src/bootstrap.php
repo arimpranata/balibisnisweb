@@ -357,6 +357,41 @@ function score_badge(?int $score): string
     return '<span class="score score-' . $cls . '" title="Opportunity score: higher = more room to help">' . (int) $score . '</span>';
 }
 
+// ---------------------------------------------------------------------------
+// Search cache (files in data/cache) so repeat searches and "Add to leads" are instant
+// ---------------------------------------------------------------------------
+function cache_path(string $key): string
+{
+    $dir = DATA_DIR . '/cache';
+    if (!is_dir($dir)) {
+        mkdir($dir, 0775, true);
+    }
+    return $dir . '/' . sha1($key) . '.json';
+}
+
+function cache_get(string $key, int $ttl): ?array
+{
+    $file = cache_path($key);
+    if (!is_file($file) || filemtime($file) < time() - $ttl) {
+        return null;
+    }
+    $data = json_decode((string) file_get_contents($file), true);
+    return is_array($data) ? $data : null;
+}
+
+function cache_set(string $key, array $value): void
+{
+    file_put_contents(cache_path($key), json_encode($value), LOCK_EX);
+    // Keep the cache folder small: drop entries older than a week.
+    if (random_int(1, 20) === 1) {
+        foreach (glob(DATA_DIR . '/cache/*.json') ?: [] as $f) {
+            if (filemtime($f) < time() - 7 * 86400) {
+                @unlink($f);
+            }
+        }
+    }
+}
+
 function find_lead(int $id): ?array
 {
     $stmt = db()->prepare('SELECT * FROM leads WHERE id = ?');

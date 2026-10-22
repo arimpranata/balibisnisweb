@@ -357,14 +357,26 @@ switch ($page) {
         $source = get('source') === 'google' && $apiKey !== '' ? 'google' : 'osm';
         $query = trim(($keyword !== '' ? $keyword : $category) . ($area !== '' ? " in $area" : '') . ' Bali');
         $results = null;
+        $fromCache = false;
         $searchError = null;
         $next = null;
         $existing = [];
         if (get('go') === '1' && ($keyword !== '' || $category !== '')) {
-            @set_time_limit(90);
-            $res = $source === 'google'
-                ? places_search($apiKey, $query, get('page') ?: null)
-                : osm_search($category, $area, $keyword, (string) setting('osm_endpoint', OSM_DEFAULT_ENDPOINT));
+            $cacheKey = implode('|', [$source, mb_strtolower($category), mb_strtolower($area), mb_strtolower($keyword), get('page')]);
+            $res = get('refresh') === '1' ? null : cache_get($cacheKey, 12 * 3600);
+            $fromCache = $res !== null;
+            if (!$fromCache) {
+                @set_time_limit(90);
+                // Release the session lock so other tabs stay usable while the search runs.
+                session_write_close();
+                $res = $source === 'google'
+                    ? places_search($apiKey, $query, get('page') ?: null)
+                    : osm_search($category, $area, $keyword, (string) setting('osm_endpoint', OSM_DEFAULT_ENDPOINT));
+                session_start();
+                if (!isset($res['error'])) {
+                    cache_set($cacheKey, $res);
+                }
+            }
             if (isset($res['error'])) {
                 $searchError = $res['error'];
             } else {
