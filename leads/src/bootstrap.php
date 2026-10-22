@@ -159,19 +159,19 @@ function seed_templates(PDO $pdo): void
 {
     $rows = [
         ['Intro — no website (ID)', 'whatsapp', 'id', '',
-"Halo {contact}, salam kenal 🙏\n\nSaya {my_name} dari {my_agency}, web developer di Bali. Saya lihat {name} punya review bagus di Google Maps, tapi belum ada website resmi.\n\nWebsite sendiri bisa bantu tamu booking langsung tanpa komisi OTA, dan tampil lebih profesional untuk tamu mancanegara.\n\nKalau berkenan, saya bisa kirimkan contoh desain gratis untuk {name}. Boleh?\n\nTerima kasih,\n{my_name}\n{my_website}"],
+"Halo {contact}, salam kenal 🙏\n\nKami dari {my_agency}, studio website di Bali. Kami lihat {name} punya review bagus di Google Maps, tapi belum punya website resmi.\n\nWebsite sendiri membantu tamu booking langsung tanpa komisi OTA, dan tampil lebih profesional untuk tamu mancanegara.\n\nKalau berkenan, kami bisa kirimkan contoh desain gratis untuk {name}. Boleh?\n\nTerima kasih,\nTim {my_name}\n{my_website}"],
         ['Intro — no website (EN)', 'whatsapp', 'en', '',
-"Hi {contact}, hope you're well!\n\nI'm {my_name} from {my_agency}, a Bali-based WordPress developer. I noticed {name} has great reviews on Google Maps but no website of its own yet.\n\nA direct-booking website helps you save on OTA commission and look more professional to international guests.\n\nWould you like me to put together a free homepage mock-up for {name}?\n\nCheers,\n{my_name}\n{my_website}"],
+"Hi {contact}, hope you're well!\n\nWe're {my_agency}, a Bali-based web studio. We noticed {name} has great reviews on Google Maps but no website of its own yet.\n\nA direct-booking website helps you save on OTA commission and look more professional to international guests.\n\nWould you like us to put together a free homepage mock-up for {name}?\n\nCheers,\nThe {my_name} team\n{my_website}"],
         ['Website audit findings (EN)', 'whatsapp', 'en', '',
-"Hi {contact},\n\nI'm {my_name}, a web developer in Bali ({my_website}). I took a quick look at {website} and noticed a few things that could be costing you bookings:\n\n{audit_findings}\n\nThese are usually quick fixes. Happy to send a short free report with suggestions — interested?\n\nBest,\n{my_name}"],
+"Hi {contact},\n\nWe're {my_agency}, a web studio in Bali ({my_website}). We took a quick look at {website} and noticed a few things that could be costing you bookings:\n\n{audit_findings}\n\nThese are usually quick fixes. Happy to send a short free report with suggestions — interested?\n\nBest,\nThe {my_name} team"],
         ['Temuan audit website (ID)', 'whatsapp', 'id', '',
-"Halo {contact},\n\nSaya {my_name}, web developer di Bali ({my_website}). Saya sempat cek website {website} dan menemukan beberapa hal yang bisa mengurangi jumlah booking/penjualan:\n\n{audit_findings}\n\nBiasanya ini bisa diperbaiki dengan cepat. Mau saya kirimkan laporan singkat gratis beserta saran perbaikannya?\n\nSalam,\n{my_name}"],
+"Halo {contact},\n\nKami dari {my_agency}, studio website di Bali ({my_website}). Kami sempat cek website {website} dan menemukan beberapa hal yang bisa mengurangi jumlah booking/penjualan:\n\n{audit_findings}\n\nBiasanya ini bisa diperbaiki dengan cepat. Mau kami kirimkan laporan singkat gratis beserta saran perbaikannya?\n\nSalam,\nTim {my_name}"],
         ['Follow-up (ID)', 'whatsapp', 'id', '',
-"Halo {contact}, saya {my_name} dari {my_agency} 🙏\n\nMau follow-up pesan saya sebelumnya soal website untuk {name}. Apakah ada waktu minggu ini untuk ngobrol 15 menit, atau saya kirim penawaran via WhatsApp saja?\n\nTerima kasih!"],
+"Halo {contact}, kami dari {my_agency} 🙏\n\nMau follow-up pesan kami sebelumnya soal website untuk {name}. Apakah ada waktu minggu ini untuk ngobrol 15 menit, atau kami kirim penawaran via WhatsApp saja?\n\nTerima kasih!"],
         ['Online shop pitch — WooCommerce (EN)', 'email', 'en', 'An online shop for {name}?',
-"Hi {contact},\n\nI'm {my_name}, founder of {my_agency} — a Bali-based studio building WordPress and WooCommerce websites.\n\nI came across {name} in {area} and love what you're doing. Many {category} businesses here now sell directly to customers abroad through their own online shop, with local payment (QRIS, bank transfer) and international cards, and shipping rates calculated automatically.\n\nI'd be glad to show you a few examples and a rough quote — no obligation. Would a short call this week work?\n\nBest regards,\n{my_name}\n{my_agency}\n{my_website} · WhatsApp {my_phone}"],
+"Hi {contact},\n\nWe're {my_agency}, a Bali-based studio building WordPress and WooCommerce websites.\n\nWe came across {name} in {area} and love what you're doing. Many {category} businesses here now sell directly to customers abroad through their own online shop, with local payment (QRIS, bank transfer) and international cards, and shipping rates calculated automatically.\n\nWe'd be glad to show you a few examples and a rough quote — no obligation. Would a short call this week work?\n\nBest regards,\nThe {my_name} team\n{my_website} · WhatsApp {my_phone}"],
         ['Proposal follow-up (EN)', 'email', 'en', 'Following up: website proposal for {name}',
-"Hi {contact},\n\nJust following up on the proposal I sent for {name}. Happy to answer any questions or adjust the scope to fit your budget and timeline.\n\nWould you like to schedule a quick call?\n\nBest,\n{my_name}\n{my_agency} · {my_website}"],
+"Hi {contact},\n\nJust following up on the proposal we sent for {name}. Happy to answer any questions or adjust the scope to fit your budget and timeline.\n\nWould you like to schedule a quick call?\n\nBest,\nThe {my_name} team\n{my_agency} · {my_website}"],
     ];
     $stmt = $pdo->prepare('INSERT INTO templates (name, channel, language, subject, body) VALUES (?,?,?,?,?)');
     foreach ($rows as $r) {
@@ -203,7 +203,7 @@ function set_setting(string $key, ?string $value): void
 function profile(): array
 {
     return [
-        'my_name'    => setting('my_name', 'Ida Bagus Arim Pranata'),
+        'my_name'    => setting('my_name', 'Lightandpulse'),
         'my_agency'  => setting('my_agency', 'Lightandpulse Digital Agency'),
         'my_website' => setting('my_website', 'https://lightandpulse.com'),
         'my_phone'   => setting('my_phone', ''),

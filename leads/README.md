@@ -1,6 +1,6 @@
 # Lightandpulse Leads
 
-A private lead-finder and mini CRM for **Lightandpulse Digital Agency**, a Bali agency run by Ida Bagus Arim Pranata that builds websites with WordPress, Elementor and WooCommerce.
+A private lead-finder and mini CRM for **Lightandpulse Digital Agency**, a Bali agency that builds websites with WordPress, Elementor and WooCommerce.
 
 It does three jobs:
 

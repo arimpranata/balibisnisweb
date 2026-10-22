@@ -6,7 +6,7 @@
     <h2>Your profile</h2>
     <p class="muted small">Used in message templates.</p>
     <div class="grid2">
-      <label>Name<input name="my_name" value="<?= e($pf['my_name']) ?>"></label>
+      <label>Name used in messages<input name="my_name" value="<?= e($pf['my_name']) ?>"></label>
       <label>Agency<input name="my_agency" value="<?= e($pf['my_agency']) ?>"></label>
       <label>Website<input name="my_website" value="<?= e($pf['my_website']) ?>"></label>
       <label>WhatsApp / phone<input name="my_phone" value="<?= e($pf['my_phone']) ?>"></label>

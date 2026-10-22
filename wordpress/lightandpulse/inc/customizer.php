@@ -10,7 +10,7 @@ add_action('customize_register', function (WP_Customize_Manager $wp_customize) {
         'priority' => 30,
     ]);
 
-    $wp_customize->add_setting('lightandpulse_accent', ['default' => '#0f766e', 'sanitize_callback' => 'sanitize_hex_color']);
+    $wp_customize->add_setting('lightandpulse_accent', ['default' => '#ff6b2c', 'sanitize_callback' => 'sanitize_hex_color']);
     $wp_customize->add_control(new WP_Customize_Color_Control($wp_customize, 'lightandpulse_accent', [
         'label'   => __('Accent colour (links, buttons)', 'lightandpulse'),
         'section' => 'lightandpulse_options',
@@ -24,7 +24,7 @@ add_action('customize_register', function (WP_Customize_Manager $wp_customize) {
         'type'        => 'text',
     ]);
 
-    $wp_customize->add_setting('lightandpulse_whatsapp_text', ['default' => 'Halo, saya tertarik dengan jasa website.', 'sanitize_callback' => 'sanitize_text_field']);
+    $wp_customize->add_setting('lightandpulse_whatsapp_text', ['default' => 'Halo Lightandpulse, saya tertarik dengan jasa website.', 'sanitize_callback' => 'sanitize_text_field']);
     $wp_customize->add_control('lightandpulse_whatsapp_text', [
         'label'   => __('WhatsApp pre-filled message', 'lightandpulse'),
         'section' => 'lightandpulse_options',
@@ -33,8 +33,10 @@ add_action('customize_register', function (WP_Customize_Manager $wp_customize) {
 });
 
 add_action('wp_head', function () {
-    $accent = sanitize_hex_color(get_theme_mod('lightandpulse_accent', '#0f766e')) ?: '#0f766e';
-    printf('<style id="lightandpulse-accent">:root{--lp-accent:%s}</style>' . "\n", esc_html($accent));
+    $accent = sanitize_hex_color(get_theme_mod('lightandpulse_accent', '#ff6b2c')) ?: '#ff6b2c';
+    if (strtolower($accent) !== '#ff6b2c') {
+        printf('<style id="lightandpulse-accent">:root{--lp-accent:%s}</style>' . "\n", esc_html($accent));
+    }
 });
 
 add_action('wp_footer', function () {

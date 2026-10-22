@@ -17,13 +17,10 @@ foreach ($wpdb->get_results("SELECT stage, COUNT(*) c FROM $t GROUP BY stage", A
 $due = $wpdb->get_results($wpdb->prepare("SELECT * FROM $t WHERE next_followup IS NOT NULL AND next_followup <= %s AND stage NOT IN ('won','lost') ORDER BY next_followup LIMIT 15", $today), ARRAY_A);
 $hot = $wpdb->get_results("SELECT * FROM $t WHERE stage IN ('new','researched') ORDER BY (priority='hot') DESC, COALESCE(audit_score, 50) DESC, COALESCE(reviews, 0) DESC LIMIT 8", ARRAY_A);
 $recent = $wpdb->get_results('SELECT a.*, l.name FROM ' . lpl_table('activities') . " a JOIN $t l ON l.id = a.lead_id ORDER BY a.id DESC LIMIT 10", ARRAY_A);
-$name = (string) lpl_setting('my_name');
-$parts = explode(' ', $name);
-$greet = stripos($name, 'Ida Bagus ') === 0 && isset($parts[2]) ? 'Gus ' . $parts[2] : $parts[0];
 ?>
 <div class="lpl-head">
   <div>
-    <h1>Om Swastiastu, <?php echo esc_html($greet); ?> 👋</h1>
+    <h1>Om Swastiastu 👋</h1>
     <p class="muted"><?php echo esc_html(wp_date('l, j F Y')); ?> · <?php echo count($due); ?> follow-up(s) due</p>
   </div>
   <div class="lpl-actions">

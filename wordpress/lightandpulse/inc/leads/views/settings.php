@@ -9,7 +9,7 @@ $hasKey = (string) $s['places_api_key'] !== '';
     <h2>Your profile</h2>
     <p class="muted small">Used in message templates.</p>
     <div class="grid2">
-      <label>Name<input name="my_name" value="<?php echo esc_attr($s['my_name']); ?>"></label>
+      <label>Name used in messages<input name="my_name" value="<?php echo esc_attr($s['my_name']); ?>"></label>
       <label>Agency<input name="my_agency" value="<?php echo esc_attr($s['my_agency']); ?>"></label>
       <label>Website<input name="my_website" value="<?php echo esc_attr($s['my_website']); ?>"></label>
       <label>WhatsApp / phone<input name="my_phone" value="<?php echo esc_attr($s['my_phone']); ?>"></label>

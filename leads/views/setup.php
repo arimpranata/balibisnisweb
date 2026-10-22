@@ -5,7 +5,7 @@
   <form method="post" action="<?= e(url('setup')) ?>">
     <?= csrf_field() ?>
     <div class="grid2">
-      <label>Your name<input name="my_name" value="Ida Bagus Arim Pranata" required></label>
+      <label>Name used in messages<input name="my_name" value="Lightandpulse" required></label>
       <label>Agency<input name="my_agency" value="Lightandpulse Digital Agency" required></label>
       <label>Website<input name="my_website" value="https://lightandpulse.com"></label>
       <label>WhatsApp / phone<input name="my_phone" placeholder="0812…"></label>

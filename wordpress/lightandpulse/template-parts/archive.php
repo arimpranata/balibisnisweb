@@ -11,7 +11,7 @@
   <?php if (have_posts()) : ?>
     <div class="lp-grid">
       <?php while (have_posts()) : the_post(); ?>
-        <article id="post-<?php the_ID(); ?>" <?php post_class('lp-card'); ?>>
+        <article id="post-<?php the_ID(); ?>" <?php post_class('lp-card-post'); ?>>
           <?php if (has_post_thumbnail()) : ?><a href="<?php the_permalink(); ?>" class="lp-card__thumb"><?php the_post_thumbnail('medium_large'); ?></a><?php endif; ?>
           <h2 class="lp-card__title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h2>
           <p class="entry-meta"><?php echo esc_html(get_the_date()); ?></p>
@@ -21,7 +21,9 @@
     </div>
     <?php the_posts_pagination(); ?>
   <?php else : ?>
-    <p><?php esc_html_e('Nothing found.', 'lightandpulse'); ?></p>
-    <?php get_search_form(); ?>
+    <div class="lp-empty">
+      <p><?php echo is_search() ? esc_html__('Nothing found. Try another search.', 'lightandpulse') : esc_html__('No articles yet. New posts will appear here.', 'lightandpulse'); ?></p>
+      <?php if (is_search()) : get_search_form(); endif; ?>
+    </div>
   <?php endif; ?>
 </main>

@@ -127,6 +127,11 @@ function lpl_handle_public_lead(): void
         'summary'        => $message,
     ], 'Enquiry from the website form' . ($message !== '' ? ":\n\n" . $message : '.'));
 
+    // A website was given: audit it in the background so the findings are ready in the CRM.
+    if ($id && lpl_normalize_url(lpl_post('lp_website')) !== '') {
+        wp_schedule_single_event(time() + 5, 'lpl_auto_audit', [$id]);
+    }
+
     if ($id && (int) lpl_setting('form_notify') === 1) {
         $to = lpl_setting('my_email') ?: get_option('admin_email');
         $lines = [
@@ -145,6 +150,13 @@ function lpl_handle_public_lead(): void
     }
     $go('sent');
 }
+
+add_action('lpl_auto_audit', function ($id) {
+    $lead = lpl_find_lead((int) $id);
+    if ($lead && $lead['website'] !== '' && $lead['audit_json'] === null) {
+        lpl_run_audit($lead);
+    }
+});
 
 // Elementor widget
 add_action('elementor/widgets/register', function ($widgets_manager) {

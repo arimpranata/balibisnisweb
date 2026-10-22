@@ -1,13 +1,22 @@
 === Lightandpulse ===
-Contributors: idabagusarimpranata
+Contributors: lightandpulse
 Requires at least: 6.2
 Tested up to: 6.8
 Requires PHP: 8.0
 License: GPLv2 or later
 
-Lightweight agency theme for Lightandpulse Digital Agency, built for Elementor and WooCommerce, with a built-in client finder and CRM.
+The lightandpulse.com website theme: built for Elementor and WooCommerce, with a built-in client finder and CRM.
 
 == Description ==
+
+= One-click website setup =
+Appearance → Lightandpulse setup creates the whole lightandpulse.com site:
+* Pages: Home, Services, Packages, About, Insights (blog) and Contact, built as real Elementor pages you can edit.
+* Main menu (with a "Start a project" button) and footer menu.
+* Site title and tagline, homepage and blog page, clean permalinks.
+* Elementor Site Settings: brand colours, Bricolage Grotesque + Plus Jakarta Sans fonts, 1200px content width.
+* Pages keep their design even when Elementor is switched off.
+* The starter copy has no client names, testimonials, prices or statistics. Add yours in Elementor.
 
 = Theme =
 * Clean, minimal base styles, so Elementor's Site Settings (global colours, fonts, buttons) stay in charge.
@@ -42,6 +51,12 @@ Lightweight agency theme for Lightandpulse Digital Agency, built for Elementor a
 Leads are stored in their own database tables (wp_lp_leads, wp_lp_activities, wp_lp_templates). Switching to another theme hides the Leads menu but never deletes your data; switching back brings everything back.
 
 == Changelog ==
+
+= 1.1.0 =
+* New visual design: night-navy and sunset-orange palette, animated hero, glass header, dark footer.
+* One-click website setup with Elementor-editable pages, menus and Site Settings.
+* Name changed to Lightandpulse; message templates now speak as the agency.
+* Website form enquiries with a website address are audited automatically.
 
 = 1.0.0 =
 * First release.

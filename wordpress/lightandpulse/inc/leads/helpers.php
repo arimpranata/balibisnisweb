@@ -4,7 +4,7 @@
  */
 defined('ABSPATH') || exit;
 
-const LPL_DB_VERSION = '1';
+const LPL_DB_VERSION = '2';
 const LPL_CAP = 'manage_lp_leads';
 
 const LPL_STAGES = [
@@ -138,6 +138,8 @@ function lpl_install(): void
 
     if ((int) $wpdb->get_var("SELECT COUNT(*) FROM $tpls") === 0) {
         lpl_seed_templates();
+    } elseif (version_compare((string) get_option('lpl_db_version', '0'), '2', '<')) {
+        lpl_upgrade_templates_v2();
     }
     update_option('lpl_db_version', LPL_DB_VERSION, false);
 }
@@ -145,26 +147,59 @@ function lpl_install(): void
 function lpl_seed_templates(): void
 {
     global $wpdb;
-    $rows = [
-        ['Intro — no website (ID)', 'whatsapp', 'id', '',
-"Halo {contact}, salam kenal 🙏\n\nSaya {my_name} dari {my_agency}, web developer di Bali. Saya lihat {name} punya review bagus di Google Maps, tapi belum ada website resmi.\n\nWebsite sendiri bisa bantu tamu booking langsung tanpa komisi OTA, dan tampil lebih profesional untuk tamu mancanegara.\n\nKalau berkenan, saya bisa kirimkan contoh desain gratis untuk {name}. Boleh?\n\nTerima kasih,\n{my_name}\n{my_website}"],
-        ['Intro — no website (EN)', 'whatsapp', 'en', '',
-"Hi {contact}, hope you're well!\n\nI'm {my_name} from {my_agency}, a Bali-based WordPress developer. I noticed {name} has great reviews on Google Maps but no website of its own yet.\n\nA direct-booking website helps you save on OTA commission and look more professional to international guests.\n\nWould you like me to put together a free homepage mock-up for {name}?\n\nCheers,\n{my_name}\n{my_website}"],
-        ['Website audit findings (EN)', 'whatsapp', 'en', '',
-"Hi {contact},\n\nI'm {my_name}, a web developer in Bali ({my_website}). I took a quick look at {website} and noticed a few things that could be costing you bookings:\n\n{audit_findings}\n\nThese are usually quick fixes. Happy to send a short free report with suggestions — interested?\n\nBest,\n{my_name}"],
-        ['Temuan audit website (ID)', 'whatsapp', 'id', '',
-"Halo {contact},\n\nSaya {my_name}, web developer di Bali ({my_website}). Saya sempat cek website {website} dan menemukan beberapa hal yang bisa mengurangi jumlah booking/penjualan:\n\n{audit_findings}\n\nBiasanya ini bisa diperbaiki dengan cepat. Mau saya kirimkan laporan singkat gratis beserta saran perbaikannya?\n\nSalam,\n{my_name}"],
-        ['Follow-up (ID)', 'whatsapp', 'id', '',
-"Halo {contact}, saya {my_name} dari {my_agency} 🙏\n\nMau follow-up pesan saya sebelumnya soal website untuk {name}. Apakah ada waktu minggu ini untuk ngobrol 15 menit, atau saya kirim penawaran via WhatsApp saja?\n\nTerima kasih!"],
-        ['Reply to website enquiry (ID)', 'whatsapp', 'id', '',
-"Halo {contact}, terima kasih sudah menghubungi {my_agency} lewat website 🙏\n\nSaya {my_name}. Boleh saya tahu sedikit tentang {name} dan website seperti apa yang dibutuhkan? Kalau lebih nyaman, kita bisa ngobrol lewat telepon atau ketemu langsung.\n\nSalam,\n{my_name}"],
-        ['Online shop pitch — WooCommerce (EN)', 'email', 'en', 'An online shop for {name}?',
-"Hi {contact},\n\nI'm {my_name}, founder of {my_agency} — a Bali-based studio building WordPress and WooCommerce websites.\n\nI came across {name} in {area} and love what you're doing. Many {category} businesses here now sell directly to customers abroad through their own online shop, with local payment (QRIS, bank transfer) and international cards, and shipping rates calculated automatically.\n\nI'd be glad to show you a few examples and a rough quote — no obligation. Would a short call this week work?\n\nBest regards,\n{my_name}\n{my_agency}\n{my_website} · WhatsApp {my_phone}"],
-        ['Proposal follow-up (EN)', 'email', 'en', 'Following up: website proposal for {name}',
-"Hi {contact},\n\nJust following up on the proposal I sent for {name}. Happy to answer any questions or adjust the scope to fit your budget and timeline.\n\nWould you like to schedule a quick call?\n\nBest,\n{my_name}\n{my_agency} · {my_website}"],
-    ];
-    foreach ($rows as $r) {
+    foreach (lpl_seed_rows() as $r) {
         $wpdb->insert(lpl_table('templates'), ['name' => $r[0], 'channel' => $r[1], 'language' => $r[2], 'subject' => $r[3], 'body' => $r[4]]);
+    }
+}
+
+/** Starter message templates: [name, channel, language, subject, body]. */
+function lpl_seed_rows(): array
+{
+    return [
+        ['Intro — no website (ID)', 'whatsapp', 'id', '',
+"Halo {contact}, salam kenal 🙏\n\nKami dari {my_agency}, studio website di Bali. Kami lihat {name} punya review bagus di Google Maps, tapi belum punya website resmi.\n\nWebsite sendiri membantu tamu booking langsung tanpa komisi OTA, dan tampil lebih profesional untuk tamu mancanegara.\n\nKalau berkenan, kami bisa kirimkan contoh desain gratis untuk {name}. Boleh?\n\nTerima kasih,\nTim {my_name}\n{my_website}"],
+        ['Intro — no website (EN)', 'whatsapp', 'en', '',
+"Hi {contact}, hope you're well!\n\nWe're {my_agency}, a Bali-based web studio. We noticed {name} has great reviews on Google Maps but no website of its own yet.\n\nA direct-booking website helps you save on OTA commission and look more professional to international guests.\n\nWould you like us to put together a free homepage mock-up for {name}?\n\nCheers,\nThe {my_name} team\n{my_website}"],
+        ['Website audit findings (EN)', 'whatsapp', 'en', '',
+"Hi {contact},\n\nWe're {my_agency}, a web studio in Bali ({my_website}). We took a quick look at {website} and noticed a few things that could be costing you bookings:\n\n{audit_findings}\n\nThese are usually quick fixes. Happy to send a short free report with suggestions — interested?\n\nBest,\nThe {my_name} team"],
+        ['Temuan audit website (ID)', 'whatsapp', 'id', '',
+"Halo {contact},\n\nKami dari {my_agency}, studio website di Bali ({my_website}). Kami sempat cek website {website} dan menemukan beberapa hal yang bisa mengurangi jumlah booking/penjualan:\n\n{audit_findings}\n\nBiasanya ini bisa diperbaiki dengan cepat. Mau kami kirimkan laporan singkat gratis beserta saran perbaikannya?\n\nSalam,\nTim {my_name}"],
+        ['Follow-up (ID)', 'whatsapp', 'id', '',
+"Halo {contact}, kami dari {my_agency} 🙏\n\nMau follow-up pesan kami sebelumnya soal website untuk {name}. Apakah ada waktu minggu ini untuk ngobrol 15 menit, atau kami kirim penawaran via WhatsApp saja?\n\nTerima kasih!"],
+        ['Reply to website enquiry (ID)', 'whatsapp', 'id', '',
+"Halo {contact}, terima kasih sudah menghubungi {my_agency} lewat website 🙏\n\nBoleh kami tahu sedikit tentang {name} dan website seperti apa yang dibutuhkan? Kalau lebih nyaman, kita bisa ngobrol lewat telepon atau ketemu langsung.\n\nSalam,\nTim {my_name}"],
+        ['Online shop pitch — WooCommerce (EN)', 'email', 'en', 'An online shop for {name}?',
+"Hi {contact},\n\nWe're {my_agency}, a Bali-based studio building WordPress and WooCommerce websites.\n\nWe came across {name} in {area} and love what you're doing. Many {category} businesses here now sell directly to customers abroad through their own online shop, with local payment (QRIS, bank transfer) and international cards, and shipping rates calculated automatically.\n\nWe'd be glad to show you a few examples and a rough quote — no obligation. Would a short call this week work?\n\nBest regards,\nThe {my_name} team\n{my_website} · WhatsApp {my_phone}"],
+        ['Proposal follow-up (EN)', 'email', 'en', 'Following up: website proposal for {name}',
+"Hi {contact},\n\nJust following up on the proposal we sent for {name}. Happy to answer any questions or adjust the scope to fit your budget and timeline.\n\nWould you like to schedule a quick call?\n\nBest,\nThe {my_name} team\n{my_agency} · {my_website}"],
+    ];
+}
+
+/**
+ * v2: the starter templates switched from a personal voice ("I'm {my_name}")
+ * to the agency voice ("We're {my_agency}"). Only templates still using the
+ * personal phrasing are rewritten; anything you edited yourself is kept.
+ */
+function lpl_upgrade_templates_v2(): void
+{
+    global $wpdb;
+    $tpls = lpl_table('templates');
+    $fresh = [];
+    foreach (lpl_seed_rows() as $r) {
+        $fresh[$r[0]] = $r;
+    }
+    foreach ($wpdb->get_results("SELECT id, name, body FROM $tpls", ARRAY_A) as $row) {
+        $personal = false;
+        foreach (['Saya {my_name}', 'saya {my_name}', "I'm {my_name}", 'the proposal I sent'] as $phrase) {
+            $personal = $personal || str_contains($row['body'], $phrase);
+        }
+        if ($personal && isset($fresh[$row['name']])) {
+            $wpdb->update($tpls, ['subject' => $fresh[$row['name']][3], 'body' => $fresh[$row['name']][4]], ['id' => $row['id']]);
+        }
+    }
+    if (!$wpdb->get_var($wpdb->prepare("SELECT id FROM $tpls WHERE name = %s", 'Reply to website enquiry (ID)'))) {
+        $r = $fresh['Reply to website enquiry (ID)'];
+        $wpdb->insert($tpls, ['name' => $r[0], 'channel' => $r[1], 'language' => $r[2], 'subject' => $r[3], 'body' => $r[4]]);
     }
 }
 
@@ -173,10 +208,9 @@ function lpl_seed_templates(): void
 // ---------------------------------------------------------------------------
 function lpl_settings(): array
 {
-    $user = wp_get_current_user();
     $defaults = [
-        'my_name'        => $user && $user->exists() ? $user->display_name : 'Ida Bagus Arim Pranata',
-        'my_agency'      => get_bloginfo('name') ?: 'Lightandpulse Digital Agency',
+        'my_name'        => 'Lightandpulse',
+        'my_agency'      => 'Lightandpulse Digital Agency',
         'my_website'     => home_url('/'),
         'my_phone'       => '',
         'my_email'       => get_option('admin_email'),

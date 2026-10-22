@@ -8,12 +8,12 @@
  */
 defined('ABSPATH') || exit;
 
-define('LIGHTANDPULSE_VERSION', '1.0.0');
+define('LIGHTANDPULSE_VERSION', '1.1.0');
 define('LIGHTANDPULSE_DIR', get_template_directory());
 define('LIGHTANDPULSE_URI', get_template_directory_uri());
 
 if (!isset($content_width)) {
-    $content_width = 1140;
+    $content_width = 1200;
 }
 
 add_action('after_setup_theme', function () {
@@ -39,7 +39,7 @@ add_action('after_setup_theme', function () {
 });
 
 add_action('wp_enqueue_scripts', function () {
-    wp_enqueue_style('lightandpulse-fonts', 'https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap', [], null);
+    wp_enqueue_style('lightandpulse-fonts', 'https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap', [], null);
     wp_enqueue_style('lightandpulse', LIGHTANDPULSE_URI . '/assets/css/theme.css', [], LIGHTANDPULSE_VERSION);
     wp_enqueue_script('lightandpulse', LIGHTANDPULSE_URI . '/assets/js/theme.js', [], LIGHTANDPULSE_VERSION, ['strategy' => 'defer', 'in_footer' => true]);
     if (is_singular() && comments_open() && get_option('thread_comments')) {
@@ -61,11 +61,23 @@ function lightandpulse_elementor_location(string $location): bool
 // Elementor: use the theme's content width and fonts as sensible defaults.
 add_action('after_switch_theme', function () {
     if (get_option('elementor_container_width') === false) {
-        update_option('elementor_container_width', 1140);
+        update_option('elementor_container_width', 1200);
     }
     // Let Elementor's global colours and fonts win over the theme's.
     update_option('elementor_disable_color_schemes', 'yes');
     update_option('elementor_disable_typography_schemes', 'yes');
+});
+
+add_action('wp_head', function () {
+    echo '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' . "\n";
+}, 1);
+
+// Front page flag for header styling.
+add_filter('body_class', function (array $classes) {
+    if (is_front_page()) {
+        $classes[] = 'lp-front';
+    }
+    return $classes;
 });
 
 add_action('widgets_init', function () {
@@ -79,5 +91,7 @@ add_action('widgets_init', function () {
     ]);
 });
 
+require LIGHTANDPULSE_DIR . '/inc/icons.php';
 require LIGHTANDPULSE_DIR . '/inc/customizer.php';
 require LIGHTANDPULSE_DIR . '/inc/leads/module.php';
+require LIGHTANDPULSE_DIR . '/inc/setup/setup.php';

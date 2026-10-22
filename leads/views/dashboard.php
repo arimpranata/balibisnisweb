@@ -1,7 +1,7 @@
 <?php require __DIR__ . '/header.php'; ?>
 <div class="page-head">
   <div>
-    <h1>Om Swastiastu, <?php $nm = explode(' ', (string) profile()['my_name']); echo e(stripos((string) profile()['my_name'], 'Ida Bagus ') === 0 && isset($nm[2]) ? 'Gus ' . $nm[2] : $nm[0]); ?> 👋</h1>
+    <h1>Om Swastiastu 👋</h1>
     <p class="muted"><?= e(date('l, j F Y')) ?> · <?= count($due) ?> follow-up(s) due today</p>
   </div>
   <div class="actions">
