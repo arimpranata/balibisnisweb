@@ -45,6 +45,7 @@ foreach ($rendered as $r) {
   <?php if ($lead['facebook']): ?><a class="btn" target="_blank" rel="noopener" href="<?= e(safe_href($lead['facebook'])) ?>">Facebook</a><?php endif; ?>
   <?php if ($lead['website']): ?><a class="btn" target="_blank" rel="noopener" href="<?= e(safe_href($lead['website'])) ?>">🌐 Website</a><?php endif; ?>
   <a class="btn" target="_blank" rel="noopener" href="<?= e($lead['maps_url'] ? safe_href($lead['maps_url']) : 'https://www.google.com/maps/search/' . rawurlencode($lead['name'] . ' ' . $lead['area'] . ' Bali')) ?>">📍 Maps</a>
+  <?php if ($lead['source'] === 'openstreetmap'): ?><a class="btn" target="_blank" rel="noopener" href="https://www.google.com/maps/search/?api=1&amp;query=<?= e(rawurlencode($lead['name'] . ' ' . ($lead['area'] ?: 'Bali'))) ?>">⭐ Google reviews</a><?php endif; ?>
   <?php if (!$lead['instagram']): ?><a class="btn btn-ghost" target="_blank" rel="noopener" href="https://www.google.com/search?q=<?= e(rawurlencode('site:instagram.com "' . $lead['name'] . '" ' . ($lead['area'] ?: 'Bali'))) ?>">Find Instagram</a><?php endif; ?>
   <?php if (!$lead['email'] && $lead['website']): ?><a class="btn btn-ghost" target="_blank" rel="noopener" href="https://www.google.com/search?q=<?= e(rawurlencode('"@' . preg_replace('/^www\./', '', (string) parse_url($lead['website'], PHP_URL_HOST)) . '"')) ?>">Find email</a><?php endif; ?>
 </div>

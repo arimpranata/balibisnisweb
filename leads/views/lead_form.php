@@ -39,7 +39,7 @@ $svc = array_filter(explode(',', (string) ($l['services'] ?? '')));
     <label>Priority<select name="priority"><?php foreach (PRIORITIES as $k => $s): ?><option value="<?= e($k) ?>" <?= $l['priority'] === $k ? 'selected' : '' ?>><?= e($s) ?></option><?php endforeach; ?></select></label>
     <label>Estimated value (IDR)<input name="est_value" inputmode="numeric" value="<?= !empty($l['est_value']) ? e(number_format((int) $l['est_value'], 0, ',', '.')) : '' ?>" placeholder="e.g. 7.500.000"></label>
     <label>Next follow-up<input type="date" name="next_followup" value="<?= $v('next_followup') ?>"></label>
-    <label>Source<select name="source"><?php foreach (['manual' => 'Manual', 'google_maps' => 'Google Maps', 'instagram' => 'Instagram', 'referral' => 'Referral', 'walk_in' => 'Walk-in / networking', 'import' => 'Import', 'inbound' => 'Inbound (they contacted me)'] as $k => $s): ?><option value="<?= e($k) ?>" <?= $l['source'] === $k ? 'selected' : '' ?>><?= e($s) ?></option><?php endforeach; ?></select></label>
+    <label>Source<select name="source"><?php foreach (['manual' => 'Manual', 'google_maps' => 'Google Maps', 'openstreetmap' => 'OpenStreetMap', 'instagram' => 'Instagram', 'referral' => 'Referral', 'walk_in' => 'Walk-in / networking', 'import' => 'Import', 'inbound' => 'Inbound (they contacted me)'] as $k => $s): ?><option value="<?= e($k) ?>" <?= $l['source'] === $k ? 'selected' : '' ?>><?= e($s) ?></option><?php endforeach; ?></select></label>
     <label>Tags<input name="tags" value="<?= $v('tags') ?>" placeholder="comma, separated"></label>
   </div>
   <fieldset class="checks">

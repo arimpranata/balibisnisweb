@@ -95,6 +95,11 @@ function result_hint(array $r): array
 {
     $reviews = (int) ($r['reviews'] ?? 0);
     if ($r['website'] === '') {
+        if ($r['reviews'] === null) {
+            // OpenStreetMap has no review counts; reachable businesses are the best bet.
+            $reachable = ($r['phone'] ?? '') !== '' || ($r['email'] ?? '') !== '' || ($r['instagram'] ?? '') !== '';
+            return $reachable ? ['hot', 'No website · has contact details'] : ['warm', 'No website · find contact on Maps'];
+        }
         return $reviews >= 30 ? ['hot', 'No website · busy business'] : ['warm', 'No website'];
     }
     $host = strtolower((string) parse_url($r['website'], PHP_URL_HOST));

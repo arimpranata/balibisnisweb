@@ -8,6 +8,7 @@ declare(strict_types=1);
 require __DIR__ . '/src/bootstrap.php';
 require __DIR__ . '/src/audit.php';
 require __DIR__ . '/src/places.php';
+require __DIR__ . '/src/osm.php';
 
 $page = get('p', 'dashboard');
 $isPost = $_SERVER['REQUEST_METHOD'] === 'POST';
@@ -352,13 +353,18 @@ switch ($page) {
         $category = get('category');
         $area = get('area');
         $keyword = get('keyword');
+        // OpenStreetMap is free and the default; Google is used only when chosen and a key is saved.
+        $source = get('source') === 'google' && $apiKey !== '' ? 'google' : 'osm';
         $query = trim(($keyword !== '' ? $keyword : $category) . ($area !== '' ? " in $area" : '') . ' Bali');
         $results = null;
         $searchError = null;
         $next = null;
         $existing = [];
-        if (get('go') === '1' && $apiKey !== '' && ($keyword !== '' || $category !== '')) {
-            $res = places_search($apiKey, $query, get('page') ?: null);
+        if (get('go') === '1' && ($keyword !== '' || $category !== '')) {
+            @set_time_limit(90);
+            $res = $source === 'google'
+                ? places_search($apiKey, $query, get('page') ?: null)
+                : osm_search($category, $area, $keyword, (string) setting('osm_endpoint', OSM_DEFAULT_ENDPOINT));
             if (isset($res['error'])) {
                 $searchError = $res['error'];
             } else {
@@ -376,6 +382,8 @@ switch ($page) {
                 }
                 $_SESSION['finder_results'] = array_column($results, null, 'place_id');
                 $_SESSION['finder_category'] = $category ?: $keyword;
+                $_SESSION['finder_area'] = $area;
+                $_SESSION['finder_source'] = $source === 'google' ? 'google_maps' : 'openstreetmap';
             }
         }
         $title = 'Find clients';
@@ -392,16 +400,17 @@ switch ($page) {
                 }
                 $r = $cache[$pid];
                 [$prio] = result_hint($r);
-                $stmt = db()->prepare("INSERT OR IGNORE INTO leads (name, category, area, address, phone, whatsapp, website, maps_url, place_id, rating, reviews, priority, source)
-                    VALUES (?,?,?,?,?,?,?,?,?,?,?,?, 'google_maps')");
+                $source = $_SESSION['finder_source'] ?? 'google_maps';
+                $stmt = db()->prepare('INSERT OR IGNORE INTO leads (name, category, area, address, phone, whatsapp, email, website, instagram, facebook, maps_url, place_id, rating, reviews, priority, source)
+                    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
                 $stmt->execute([
-                    $r['name'], $_SESSION['finder_category'] ?? $r['type'], guess_area($r['address']), $r['address'],
-                    $r['phone'], wa_number($r['phone']), $r['website'], $r['maps_url'], $r['place_id'],
-                    $r['rating'], $r['reviews'], $prio,
+                    $r['name'], $_SESSION['finder_category'] ?? $r['type'], guess_area($r['address']) ?: ($_SESSION['finder_area'] ?? ''), $r['address'],
+                    $r['phone'], wa_number(($r['whatsapp'] ?? '') ?: $r['phone']), $r['email'] ?? '', $r['website'], $r['instagram'] ?? '', $r['facebook'] ?? '',
+                    $r['maps_url'], $r['place_id'], $r['rating'], $r['reviews'], $prio, $source,
                 ]);
                 if ($stmt->rowCount()) {
                     $id = (int) db()->lastInsertId();
-                    log_activity($id, 'note', 'Found via Google Maps search.');
+                    log_activity($id, 'note', $source === 'openstreetmap' ? 'Found via OpenStreetMap search.' : 'Found via Google Maps search.');
                     $added++;
                 }
             }
@@ -412,7 +421,7 @@ switch ($page) {
                 exit;
             }
         }
-        redirect('leads', ['source' => 'google_maps']);
+        redirect('leads', ['source' => $_SESSION['finder_source'] ?? 'google_maps']);
 
     // ----------------------------------------------------------------- Templates
     case 'templates':
@@ -519,6 +528,8 @@ switch ($page) {
             if (post('places_api_key') !== '') {
                 set_setting('places_api_key', post('places_api_key'));
             }
+            $osm = post('osm_endpoint');
+            set_setting('osm_endpoint', preg_match('~^https://[^\s]+$~', $osm) ? $osm : OSM_DEFAULT_ENDPOINT);
             if (post('remove_api_key') === '1') {
                 set_setting('places_api_key', '');
             }

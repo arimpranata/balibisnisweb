@@ -4,7 +4,7 @@ A private lead-finder and mini CRM for **Lightandpulse Digital Agency**, a Bali 
 
 It does three jobs:
 
-1. **Search:** find Bali businesses through Google Maps (Places API), filtered by category and area. It flags the best prospects: busy businesses with no website, or ones that only use Instagram, Wix or Booking.com.
+1. **Search:** find real Bali businesses by category and area. **OpenStreetMap is the default: free, with no API key or billing.** Google Maps (Places API) is optional for review counts. Results are ranked so reachable businesses without a website come first, and businesses that only use Instagram, Wix or Booking.com are flagged.
 2. **Manage:** a pipeline from New to Won/Lost, with table and drag-and-drop board views, priority, deal value in IDR, services to pitch, tags, follow-up dates, an activity timeline, and CSV import/export.
 3. **Connect:** one-click WhatsApp (`wa.me`) and email outreach using Bahasa Indonesia and English templates. Templates fill in the lead's details and **website audit findings** automatically. Sending logs the message, moves the lead to *Contacted* and schedules a follow-up.
 
@@ -19,7 +19,8 @@ The audit fetches a prospect's homepage and detects: no HTTPS, not mobile-friend
 1. Upload the `leads/` folder to your hosting, ideally on a subdomain such as `crm.lightandpulse.com`, served over HTTPS.
 2. Make sure `leads/data/` is writable by PHP. The SQLite database is created there automatically.
 3. Open the URL. The first-run screen asks for your profile and a password.
-4. Optional: add a **Google Places API (New)** key in *Settings* to enable automatic search. Without one, the *Find clients* page still gives you curated manual search links.
+4. *Find clients* works straight away with OpenStreetMap (free, no key). Your hosting must allow outgoing HTTPS to `overpass-api.de`, which almost all hosts do.
+5. Optional: add a **Google Places API (New)** key in *Settings* to also search Google Maps with ratings and review counts. Google requires a billing account, even within its monthly free credit.
 
 Local test: `php -S 127.0.0.1:8000 -t leads` and open http://127.0.0.1:8000.
 

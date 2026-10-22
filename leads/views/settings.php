@@ -15,7 +15,12 @@
     </div>
   </div>
   <div class="card">
-    <h2>Google Maps search</h2>
+    <h2>OpenStreetMap search (free)</h2>
+    <p class="small">Works with no account or key. If the main server is busy, switch to a mirror such as <code>https://overpass.kumi.systems/api/interpreter</code>.</p>
+    <label>Overpass server<input name="osm_endpoint" value="<?= e(setting('osm_endpoint', OSM_DEFAULT_ENDPOINT)) ?>"></label>
+  </div>
+  <div class="card">
+    <h2>Google Maps search (optional, paid after free credit)</h2>
     <p class="small">Status: <?= $hasKey ? '<span class="badge stage-won">Connected</span>' : '<span class="badge prio-cold">Not connected</span>' ?></p>
     <ol class="small">
       <li>Open <a target="_blank" rel="noopener" href="https://console.cloud.google.com/apis/library/places.googleapis.com">Google Cloud Console → Places API (New)</a> and enable it.</li>
