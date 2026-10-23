@@ -6,7 +6,7 @@
     <div class="site-footer__grid">
       <div class="site-footer__brand">
         <a class="site-title" href="<?php echo esc_url(home_url('/')); ?>"><?php echo lightandpulse_mark(30); // phpcs:ignore WordPress.Security.EscapeOutput -- static SVG. ?><span><?php bloginfo('name'); ?></span></a>
-        <p><?php bloginfo('description'); ?></p>
+        <p><?php esc_html_e('A Bali web studio building WordPress, Elementor and WooCommerce websites, and keeping them running.', 'lightandpulse'); ?></p>
       </div>
       <?php if (has_nav_menu('footer')) : ?>
         <div>
@@ -21,8 +21,9 @@
       <?php if (is_active_sidebar('footer-1')) : ?><div class="footer-widgets"><?php dynamic_sidebar('footer-1'); ?></div><?php endif; ?>
     </div>
     <div class="site-footer__bottom">
-      <p>&copy; <?php echo esc_html(wp_date('Y')); ?> <?php bloginfo('name'); ?> · <?php esc_html_e('Bali, Indonesia', 'lightandpulse'); ?></p>
-      <?php if (get_privacy_policy_url()) : ?><p><?php the_privacy_policy_link(); ?></p><?php endif; ?>
+      <p><?php bloginfo('description'); ?></p>
+      <p>&copy; <?php echo esc_html(wp_date('Y')); ?></p>
+      <p><?php esc_html_e('Bali, Indonesia', 'lightandpulse'); ?><?php if (get_privacy_policy_url()) : ?> · <?php the_privacy_policy_link(); ?><?php endif; ?></p>
     </div>
   </div>
 </footer>

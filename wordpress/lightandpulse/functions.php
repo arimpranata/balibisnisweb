@@ -8,7 +8,7 @@
  */
 defined('ABSPATH') || exit;
 
-define('LIGHTANDPULSE_VERSION', '1.1.0');
+define('LIGHTANDPULSE_VERSION', '1.2.0');
 define('LIGHTANDPULSE_DIR', get_template_directory());
 define('LIGHTANDPULSE_URI', get_template_directory_uri());
 
@@ -39,7 +39,9 @@ add_action('after_setup_theme', function () {
 });
 
 add_action('wp_enqueue_scripts', function () {
-    wp_enqueue_style('lightandpulse-fonts', 'https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500..800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap', [], null);
+    // Switzer is served by Fontshare (its licence allows the API, not bundling the files).
+    wp_enqueue_style('lightandpulse-switzer', 'https://api.fontshare.com/v2/css?f[]=switzer@400,500,600,700&display=swap', [], null);
+    wp_enqueue_style('lightandpulse-fonts', 'https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@1&family=JetBrains+Mono:wght@400;500&display=swap', [], null);
     wp_enqueue_style('lightandpulse', LIGHTANDPULSE_URI . '/assets/css/theme.css', [], LIGHTANDPULSE_VERSION);
     wp_enqueue_script('lightandpulse', LIGHTANDPULSE_URI . '/assets/js/theme.js', [], LIGHTANDPULSE_VERSION, ['strategy' => 'defer', 'in_footer' => true]);
     if (is_singular() && comments_open() && get_option('thread_comments')) {
@@ -69,7 +71,8 @@ add_action('after_switch_theme', function () {
 });
 
 add_action('wp_head', function () {
-    echo '<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' . "\n";
+    echo '<link rel="preconnect" href="https://api.fontshare.com" crossorigin><link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>' . "\n";
+    echo '<meta name="theme-color" content="#101012">' . "\n";
 }, 1);
 
 // Front page flag for header styling.

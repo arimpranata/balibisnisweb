@@ -38,8 +38,8 @@ function lightandpulse_icon(string $name, string $class = 'lp-icon'): string
     return '<svg class="' . esc_attr($class) . '" viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' . $paths . '</svg>';
 }
 
-/** The Lightandpulse mark: a pulse line inside a rounded square. */
+/** The Lightandpulse mark: a pulse line on a coral square. */
 function lightandpulse_mark(int $size = 34): string
 {
-    return '<svg class="lp-mark" viewBox="0 0 40 40" width="' . $size . '" height="' . $size . '" aria-hidden="true"><defs><linearGradient id="lpmark" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="var(--lp-accent)"/><stop offset="1" stop-color="var(--lp-accent-2)"/></linearGradient></defs><rect width="40" height="40" rx="11" fill="url(#lpmark)"/><path d="M7 21h7l3-8 5 15 3-9 2 2h6" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    return '<svg class="lp-mark" viewBox="0 0 40 40" width="' . $size . '" height="' . $size . '" aria-hidden="true"><rect width="40" height="40" rx="8" fill="var(--lp-accent)"/><path d="M7 21h7l3-8 5 15 3-9 2 2h6" fill="none" stroke="#101012" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 }

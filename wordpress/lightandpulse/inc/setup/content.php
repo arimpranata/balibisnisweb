@@ -22,7 +22,7 @@ function lightandpulse_checklist(array $items): string
 function lightandpulse_page_hero(string $eyebrow, string $title, string $intro): array
 {
     return [
-        'class' => 'lp-band lp-dark lp-page-hero',
+        'class' => 'lp-band lp-page-hero',
         'cols'  => [[
             lightandpulse_eyebrow($eyebrow),
             ['heading', $title, 'h1', 'lp-display'],
@@ -34,7 +34,7 @@ function lightandpulse_page_hero(string $eyebrow, string $title, string $intro):
 function lightandpulse_cta_band(string $title, string $text, string $button, string $url = '/contact/#contact-form'): array
 {
     return [
-        'class' => 'lp-band lp-dark lp-cta',
+        'class' => 'lp-band lp-cta',
         'sizes' => [62, 38],
         'cols'  => [
             [['heading', $title, 'h2', 'lp-h2'], ['text', '<p>' . $text . '</p>', 'lp-lead']],
@@ -43,17 +43,39 @@ function lightandpulse_cta_band(string $title, string $text, string $button, str
     ];
 }
 
-/** Decorative hero illustration: a site mock-up with live enquiry notifications. */
-function lightandpulse_hero_visual(): string
+/**
+ * Decorative ASCII "pulse line" for the hero, in the spirit of OpenClaw's ASCII art.
+ * Drawn from a heartbeat curve, so the output is the same every time.
+ */
+function lightandpulse_ascii_pulse(int $cols = 150, int $rows = 13): string
 {
-    return '<div class="lp-hero-visual" aria-hidden="true">'
-        . '<div class="lp-window"><div class="lp-window-bar"><span></span><span></span><span></span><em>yourbusiness.com</em></div>'
-        . '<div class="lp-window-body"><div class="lp-mock-img"></div><div class="lp-mock-lines"><i></i><i></i><i class="short"></i></div>'
-        . '<div class="lp-mock-row"><span class="lp-mock-cta">Book direct</span><span class="lp-mock-ghost">WhatsApp</span></div></div></div>'
-        . '<div class="lp-toast lp-toast-1"><span class="lp-toast-dot"></span><div><b>New booking request</b><small>via your website</small></div></div>'
-        . '<div class="lp-toast lp-toast-2"><span class="lp-toast-dot is-wa"></span><div><b>WhatsApp message</b><small>“Is the pool villa free in May?”</small></div></div>'
-        . '<svg class="lp-pulse-line" viewBox="0 0 600 120" preserveAspectRatio="none"><path d="M0 70 H170 l18 -42 l26 84 l22 -62 l14 20 H600"/></svg>'
-        . '</div>';
+    $ramp = ' .:-=+*x#%@';
+    $mid = ($rows - 1) / 2;
+    $curve = function (float $t) use ($mid): float {
+        $g = fn(float $c, float $w) => exp(-(($t - $c) / $w) ** 2);
+        return $mid - 5.6 * $g(0.5, 0.011) + 4.2 * $g(0.523, 0.011) - 1.4 * $g(0.44, 0.02) - 1.0 * $g(0.6, 0.026) + 0.35 * sin($t * 46);
+    };
+    $lines = [];
+    for ($r = 0; $r < $rows; $r++) {
+        $line = '';
+        for ($x = 0; $x < $cols; $x++) {
+            $t = $x / ($cols - 1);
+            // Distance from this cell to the curve segment around x (keeps steep spikes continuous).
+            $y1 = $curve(max(0, ($x - 0.5) / ($cols - 1)));
+            $y2 = $curve(min(1, ($x + 0.5) / ($cols - 1)));
+            [$lo, $hi] = [min($y1, $y2), max($y1, $y2)];
+            $dist = $r < $lo ? $lo - $r : ($r > $hi ? $r - $hi : 0);
+            $edge = sin(M_PI * $t) ** 0.7;
+            $glow = max(0, 1 - $dist / 2.4) ** 1.8;
+            // Sparse static "noise" so the band reads as a field, not a single line.
+            $h = ($x * 2654435761 + $r * 40503) % 1000;
+            $noise = $h < 45 ? 0.1 + ($h % 3) * 0.05 : 0;
+            $v = min(1, ($glow + $noise) * $edge);
+            $line .= $ramp[(int) round($v * (strlen($ramp) - 1))];
+        }
+        $lines[] = rtrim($line);
+    }
+    return '<pre class="lp-ascii" aria-hidden="true">' . esc_html(implode("\n", $lines)) . '</pre>';
 }
 
 /** All starter pages, keyed by slug. */
@@ -68,19 +90,16 @@ function lightandpulse_starter_pages(): array
             'title'    => 'Home',
             'sections' => [
                 [
-                    'class' => 'lp-band lp-dark lp-hero',
-                    'sizes' => [56, 44],
-                    'cols'  => [
-                        [
-                            lightandpulse_eyebrow('Bali web studio · WordPress · WooCommerce'),
-                            ['heading', 'Websites that turn Bali visitors into direct bookings.', 'h1', 'lp-display'],
-                            ['text', '<p>We design and build fast WordPress websites, Elementor pages and WooCommerce stores for villas, restaurants, wellness and tour businesses across Bali — then keep them secure, updated and bringing in enquiries.</p>', 'lp-lead'],
-                            ['button', 'Start a project', $contact, 'lp-btn-primary lp-btn-lg'],
-                            ['button', 'Free website check', $check, 'lp-btn-ghost lp-btn-lg'],
-                            ['text', '<p>Chat with us on WhatsApp in Bahasa Indonesia or English.</p>', 'lp-note'],
-                        ],
-                        [['html', lightandpulse_hero_visual()]],
-                    ],
+                    'class' => 'lp-band lp-hero',
+                    'cols'  => [[
+                        ['html', lightandpulse_ascii_pulse()],
+                        lightandpulse_eyebrow('Bali web studio · WordPress · WooCommerce'),
+                        ['heading', 'Websites that bring <em>direct bookings.</em>', 'h1', 'lp-display'],
+                        ['text', '<p>We design and build fast WordPress websites, Elementor pages and WooCommerce stores for villas, restaurants, wellness and tour businesses across Bali — then keep them secure, updated and bringing in enquiries.</p>', 'lp-lead'],
+                        ['button', 'Start a project', $contact, 'lp-btn-primary lp-btn-lg'],
+                        ['button', 'Free website check', $check, 'lp-btn-ghost lp-btn-lg'],
+                        ['text', '<p>Chat with us on WhatsApp in Bahasa Indonesia or English.</p>', 'lp-note'],
+                    ]],
                 ],
                 [
                     'class' => 'lp-band lp-stack-strip',
@@ -92,7 +111,7 @@ function lightandpulse_starter_pages(): array
                     'class' => 'lp-band lp-sec-head',
                     'cols'  => [[
                         lightandpulse_eyebrow('What we do'),
-                        ['heading', 'Everything your business needs online, from one studio.', 'h2', 'lp-h2'],
+                        ['heading', 'Everything your business needs online, <em>from one studio.</em>', 'h2', 'lp-h2'],
                         ['text', '<p>From a first website to a full online store, we handle design, build, launch and the care that keeps it working.</p>', 'lp-lead'],
                     ]],
                 ],
@@ -111,14 +130,14 @@ function lightandpulse_starter_pages(): array
                     'class' => 'lp-band lp-soft lp-industries',
                     'sizes' => [42, 58],
                     'cols'  => [
-                        [lightandpulse_eyebrow('Who we build for'), ['heading', 'Made for the way Bali does business.', 'h2', 'lp-h2'],
+                        [lightandpulse_eyebrow('Who we build for'), ['heading', 'Made for the way <em>Bali</em> does business.', 'h2', 'lp-h2'],
                          ['text', '<p>Most of our work is for hospitality, wellness and creative businesses that win customers from Google Maps, Instagram and WhatsApp. We build sites that connect all three.</p>']],
                         [['text', '<ul class="lp-chips"><li>Villas &amp; boutique hotels</li><li>Restaurants, cafés &amp; beach clubs</li><li>Spas, yoga &amp; retreats</li><li>Surf, dive &amp; tour operators</li><li>Fashion, jewelry &amp; handicraft</li><li>Real estate &amp; property</li><li>Clinics &amp; wellness</li><li>Coworking &amp; education</li></ul>']],
                     ],
                 ],
                 [
                     'class' => 'lp-band lp-sec-head',
-                    'cols'  => [[lightandpulse_eyebrow('How it works'), ['heading', 'A clear process, from first chat to launch.', 'h2', 'lp-h2']]],
+                    'cols'  => [[lightandpulse_eyebrow('How it works'), ['heading', 'A clear process, <em>first chat to launch.</em>', 'h2', 'lp-h2']]],
                 ],
                 [
                     'class' => 'lp-band lp-grid-band lp-steps',
@@ -133,7 +152,7 @@ function lightandpulse_starter_pages(): array
                     'class' => 'lp-band lp-soft lp-why',
                     'sizes' => [45, 55],
                     'cols'  => [
-                        [lightandpulse_eyebrow('Why Lightandpulse'), ['heading', 'A local studio that answers on WhatsApp.', 'h2', 'lp-h2']],
+                        [lightandpulse_eyebrow('Why Lightandpulse'), ['heading', 'A local studio that <em>answers on WhatsApp.</em>', 'h2', 'lp-h2']],
                         [['text', lightandpulse_checklist([
                             '<b>WhatsApp-first.</b> Quick answers from the people building your site, no ticket queues.',
                             '<b>Bahasa Indonesia and English.</b> For you, your team and your international customers.',
@@ -143,7 +162,7 @@ function lightandpulse_starter_pages(): array
                         ])]],
                     ],
                 ],
-                lightandpulse_cta_band('Is your website costing you bookings?', 'Send us your website, or your Google Maps listing if you don’t have a site yet. We’ll reply with a free, practical check of speed, mobile, search and booking flow.', 'Get my free website check'),
+                lightandpulse_cta_band('Is your website <em>costing you bookings?</em>', 'Send us your website, or your Google Maps listing if you don’t have a site yet. We’ll reply with a free, practical check of speed, mobile, search and booking flow.', 'Get my free website check'),
             ],
         ],
 
@@ -151,7 +170,7 @@ function lightandpulse_starter_pages(): array
         'services' => [
             'title'    => 'Services',
             'sections' => [
-                lightandpulse_page_hero('Services', 'Websites, stores and care for Bali businesses.', 'Everything is built on WordPress, Elementor and WooCommerce, so your site is fast, easy to update and fully yours.'),
+                lightandpulse_page_hero('Services', 'Websites, stores and <em>care</em> for Bali businesses.', 'Everything is built on WordPress, Elementor and WooCommerce, so your site is fast, easy to update and fully yours.'),
                 ['class' => 'lp-band lp-service', 'id' => 'websites', 'sizes' => [45, 55], 'cols' => [
                     [['card', 'globe', 'WordPress websites', 'A new website designed around how your customers find and choose you.', 'lp-card-plain']],
                     [['text', lightandpulse_checklist(['Custom design in your brand, built with Elementor', 'Mobile-first and fast on Indonesian mobile networks', 'WhatsApp button, enquiry forms and Google Maps', 'English and Bahasa Indonesia (more languages on request)', 'Training so your team can edit pages and post updates'])]],
@@ -176,7 +195,7 @@ function lightandpulse_starter_pages(): array
                     [['card', 'shield', 'Care plans', 'Keep your website secure, backed up and up to date every month.', 'lp-card-plain']],
                     [['text', lightandpulse_checklist(['WordPress, theme and plugin updates', 'Daily backups and uptime monitoring', 'Security scanning and fixes', 'Small content edits each month', 'A short monthly report'])]],
                 ]],
-                lightandpulse_cta_band('Not sure what you need?', 'Tell us about your business and we’ll suggest the simplest setup that gets you more enquiries.', 'Talk to us', $contact),
+                lightandpulse_cta_band('Not sure <em>what you need?</em>', 'Tell us about your business and we’ll suggest the simplest setup that gets you more enquiries.', 'Talk to us', $contact),
             ],
         ],
 
@@ -184,7 +203,7 @@ function lightandpulse_starter_pages(): array
         'packages' => [
             'title'    => 'Packages',
             'sections' => [
-                lightandpulse_page_hero('Packages', 'Pick a starting point. We’ll tailor it to you.', 'Every business is different, so we quote after a short chat. Tell us what you need and you’ll get a clear, fixed quote.'),
+                lightandpulse_page_hero('Packages', 'Pick a starting point. <em>We’ll tailor it.</em>', 'Every business is different, so we quote after a short chat. Tell us what you need and you’ll get a clear, fixed quote.'),
                 ['class' => 'lp-band lp-grid-band lp-packages', 'cols' => [
                     [['text', '<h3>Starter website</h3><p>For new businesses that need a professional presence fast.</p>' . lightandpulse_checklist(['Up to 5 pages', 'Mobile-first design', 'WhatsApp button and enquiry form', 'Google Business Profile setup', 'Basic SEO']), 'lp-package']],
                     [['text', '<h3>Business website</h3><p>For established businesses that want more enquiries and bookings.</p>' . lightandpulse_checklist(['Up to 12 pages', 'Custom Elementor design', 'Blog or news section', 'English and Bahasa Indonesia', 'Booking or enquiry system', 'Analytics setup']), 'lp-package lp-package-featured']],
@@ -192,7 +211,7 @@ function lightandpulse_starter_pages(): array
                     [['text', '<h3>Care plan</h3><p>For any WordPress site, including ones we didn’t build.</p>' . lightandpulse_checklist(['Monthly updates', 'Daily backups', 'Security and uptime monitoring', 'Small edits each month', 'Monthly report']), 'lp-package']],
                 ]],
                 ['class' => 'lp-band lp-center-band', 'cols' => [[['button', 'Ask for a quote', $contact, 'lp-btn-primary lp-btn-lg']]]],
-                lightandpulse_cta_band('Already have a website?', 'We can check it for free and tell you what would make the biggest difference.', 'Get my free website check'),
+                lightandpulse_cta_band('Already have <em>a website?</em>', 'We can check it for free and tell you what would make the biggest difference.', 'Get my free website check'),
             ],
         ],
 
@@ -200,9 +219,9 @@ function lightandpulse_starter_pages(): array
         'about' => [
             'title'    => 'About',
             'sections' => [
-                lightandpulse_page_hero('About', 'A Bali studio for websites that keep working.', 'Lightandpulse builds websites, online stores and booking systems for businesses across Bali.'),
+                lightandpulse_page_hero('About', 'A Bali studio for websites that <em>keep working.</em>', 'Lightandpulse builds websites, online stores and booking systems for businesses across Bali.'),
                 ['class' => 'lp-band', 'sizes' => [50, 50], 'cols' => [
-                    [['heading', 'Light and pulse', 'h2', 'lp-h2']],
+                    [['heading', 'Light <em>and</em> pulse', 'h2', 'lp-h2']],
                     [['text', '<p><b>Light</b> is clarity: a website that explains what you offer in seconds, on any phone, in your customers’ language.</p><p><b>Pulse</b> is what keeps it alive after launch: updates, security, fresh content and enquiries arriving every day.</p><p>We work with WordPress, Elementor and WooCommerce because they’re flexible, widely supported and leave you in full control of your own website.</p>']],
                 ]],
                 ['class' => 'lp-band lp-soft lp-grid-band', 'cols' => [
@@ -210,7 +229,7 @@ function lightandpulse_starter_pages(): array
                     [['card', 'key', 'Ownership', 'Your domain, hosting account and content stay in your name. You’re never locked in.']],
                     [['card', 'heart', 'Care', 'We stay with you after launch, with updates, backups and help when you need it.']],
                 ]],
-                lightandpulse_cta_band('Let’s build something that works for your business.', 'Tell us where you are today and where you want to be.', 'Start a project', $contact),
+                lightandpulse_cta_band('Let’s build something that <em>works for you.</em>', 'Tell us where you are today and where you want to be.', 'Start a project', $contact),
             ],
         ],
 
@@ -218,7 +237,7 @@ function lightandpulse_starter_pages(): array
         'contact' => [
             'title'    => 'Contact',
             'sections' => [
-                lightandpulse_page_hero('Contact', 'Let’s talk about your website.', 'Send a message and we’ll reply on WhatsApp or email, usually within one working day.'),
+                lightandpulse_page_hero('Contact', 'Let’s talk about <em>your website.</em>', 'Send a message and we’ll reply on WhatsApp or email, usually within one working day.'),
                 ['class' => 'lp-band lp-contact', 'id' => 'contact-form', 'sizes' => [38, 62], 'cols' => [
                     [['heading', 'Reach us directly', 'h2', 'lp-h3'], ['shortcode', '[lightandpulse_contact_info]'], ['text', '<p>Want a free website check? Add your website address (or Google Maps link) in the form and we’ll take a look.</p>', 'lp-note']],
                     [['form', 'Send message']],

@@ -12,10 +12,11 @@ require __DIR__ . '/content.php';
 
 const LIGHTANDPULSE_BRAND = [
     'name'     => 'Lightandpulse',
-    'tagline'  => 'Websites that turn Bali visitors into direct bookings',
-    'colors'   => ['ink' => '#0b1020', 'accent' => '#ff6b2c', 'accent2' => '#ff2e74', 'text' => '#3a4356', 'teal' => '#10b3a3', 'soft' => '#f4f5f8'],
-    'display'  => 'Bricolage Grotesque',
-    'body'     => 'Plus Jakarta Sans',
+    'tagline'  => 'Websites that bring Bali businesses direct bookings',
+    'colors'   => ['bg' => '#101012', 'surface' => '#19191c', 'text' => '#ededed', 'body' => '#bcbcc4', 'accent' => '#ff6a3d', 'teal' => '#4fc8ae'],
+    'display'  => 'Switzer',
+    'body'     => 'Switzer',
+    'mono'     => 'JetBrains Mono',
 ];
 
 add_action('admin_menu', function () {
@@ -243,23 +244,25 @@ function lightandpulse_setup_elementor_kit(): string
     $settings = (array) get_post_meta($kitId, '_elementor_page_settings', true);
     $settings['system_colors'] = [
         ['_id' => 'primary', 'title' => 'Primary', 'color' => $c['accent']],
-        ['_id' => 'secondary', 'title' => 'Secondary', 'color' => $c['ink']],
-        ['_id' => 'text', 'title' => 'Text', 'color' => $c['text']],
+        ['_id' => 'secondary', 'title' => 'Secondary', 'color' => $c['text']],
+        ['_id' => 'text', 'title' => 'Text', 'color' => $c['body']],
         ['_id' => 'accent', 'title' => 'Accent', 'color' => $c['teal']],
     ];
     $settings['custom_colors'] = [
-        ['_id' => 'lp_pink', 'title' => 'Pulse pink', 'color' => $c['accent2']],
-        ['_id' => 'lp_soft', 'title' => 'Soft background', 'color' => $c['soft']],
+        ['_id' => 'lp_bg', 'title' => 'Page background', 'color' => $c['bg']],
+        ['_id' => 'lp_surface', 'title' => 'Surface', 'color' => $c['surface']],
     ];
+    $settings['body_background_background'] = 'classic';
+    $settings['body_background_color'] = $c['bg'];
     $font = fn(string $id, string $title, string $family, string $weight) => [
         '_id' => $id, 'title' => $title, 'typography_typography' => 'custom',
         'typography_font_family' => $family, 'typography_font_weight' => $weight,
     ];
     $settings['system_typography'] = [
-        $font('primary', 'Primary', LIGHTANDPULSE_BRAND['display'], '700'),
-        $font('secondary', 'Secondary', LIGHTANDPULSE_BRAND['display'], '600'),
+        $font('primary', 'Primary', LIGHTANDPULSE_BRAND['display'], '600'),
+        $font('secondary', 'Secondary', LIGHTANDPULSE_BRAND['display'], '500'),
         $font('text', 'Text', LIGHTANDPULSE_BRAND['body'], '400'),
-        $font('accent', 'Accent', LIGHTANDPULSE_BRAND['body'], '600'),
+        $font('accent', 'Accent', LIGHTANDPULSE_BRAND['mono'], '500'),
     ];
     $settings['container_width'] = ['unit' => 'px', 'size' => 1200, 'sizes' => []];
     $settings['site_name'] = LIGHTANDPULSE_BRAND['name'];

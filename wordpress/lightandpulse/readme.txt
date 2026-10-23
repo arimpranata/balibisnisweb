@@ -14,7 +14,7 @@ Appearance → Lightandpulse setup creates the whole lightandpulse.com site:
 * Pages: Home, Services, Packages, About, Insights (blog) and Contact, built as real Elementor pages you can edit.
 * Main menu (with a "Start a project" button) and footer menu.
 * Site title and tagline, homepage and blog page, clean permalinks.
-* Elementor Site Settings: brand colours, Bricolage Grotesque + Plus Jakarta Sans fonts, 1200px content width.
+* Elementor Site Settings: brand colours, Switzer + JetBrains Mono fonts, 1200px content width.
 * Pages keep their design even when Elementor is switched off.
 * The starter copy has no client names, testimonials, prices or statistics. Add yours in Elementor.
 
@@ -51,6 +51,11 @@ Appearance → Lightandpulse setup creates the whole lightandpulse.com site:
 Leads are stored in their own database tables (wp_lp_leads, wp_lp_activities, wp_lp_templates). Switching to another theme hides the Leads menu but never deletes your data; switching back brings everything back.
 
 == Changelog ==
+
+= 1.2.0 =
+* New quiet, editorial dark design: near-black page divided by hairline rules, square corners, monospace labels, Switzer type with an italic serif accent word, single coral accent, ASCII pulse art in the hero.
+* Fonts: Switzer via the Fontshare API (its licence does not allow bundling), JetBrains Mono and Instrument Serif via Google Fonts.
+* Elementor Site Settings updated to the new palette and fonts. Run Appearance → Lightandpulse setup again with "Overwrite" ticked to apply the new homepage layout.
 
 = 1.1.0 =
 * New visual design: night-navy and sunset-orange palette, animated hero, glass header, dark footer.
