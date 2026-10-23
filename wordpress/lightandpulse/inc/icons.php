@@ -21,6 +21,9 @@ const LIGHTANDPULSE_ICONS = [
     'arrow'    => '<path d="M5 12h14M13 6l6 6-6 6"/>',
     'key'      => '<circle cx="8" cy="15" r="4"/><path d="m10.8 12.2 9.2-9.2M17 6l3 3M15 8l2 2"/>',
     'heart'    => '<path d="M20.8 8.6a5 5 0 0 0-8.8-3.2 5 5 0 0 0-8.8 3.2c0 5.4 8.8 11.4 8.8 11.4s8.8-6 8.8-11.4Z"/>',
+    'palette'  => '<path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.8-.9 1.8-1.9 0-.5-.2-.9-.5-1.3-.3-.3-.5-.8-.5-1.3 0-1 .8-1.8 1.8-1.8H17a4 4 0 0 0 4-4C21 6.6 17 3 12 3Z"/><circle cx="7.5" cy="11" r="1"/><circle cx="10" cy="7" r="1"/><circle cx="15" cy="7.5" r="1"/>',
+    'layers'   => '<path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 13 9 5 9-5"/>',
+    'megaphone'=> '<path d="M3 11v2a1 1 0 0 0 1 1h3l5 4V6L7 10H4a1 1 0 0 0-1 1Z"/><path d="M16 9a4 4 0 0 1 0 6M19 6a8 8 0 0 1 0 12"/>',
     'eye'      => '<path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/>',
 ];
 
@@ -29,7 +32,7 @@ const LIGHTANDPULSE_FA = [
     'globe' => 'fas fa-globe', 'calendar' => 'fas fa-calendar-check', 'cart' => 'fas fa-shopping-cart',
     'pen' => 'fas fa-pencil-ruler', 'search' => 'fas fa-search-location', 'shield' => 'fas fa-shield-alt',
     'check' => 'fas fa-check', 'chat' => 'fab fa-whatsapp', 'mail' => 'far fa-envelope', 'pin' => 'fas fa-map-marker-alt',
-    'clock' => 'far fa-clock', 'arrow' => 'fas fa-arrow-right', 'key' => 'fas fa-key', 'heart' => 'far fa-heart', 'eye' => 'far fa-eye',
+    'clock' => 'far fa-clock', 'palette' => 'fas fa-palette', 'layers' => 'fas fa-layer-group', 'megaphone' => 'fas fa-bullhorn', 'arrow' => 'fas fa-arrow-right', 'key' => 'fas fa-key', 'heart' => 'far fa-heart', 'eye' => 'far fa-eye',
 ];
 
 function lightandpulse_icon(string $name, string $class = 'lp-icon'): string

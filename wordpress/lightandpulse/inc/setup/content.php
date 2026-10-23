@@ -93,9 +93,9 @@ function lightandpulse_starter_pages(): array
                     'class' => 'lp-band lp-hero',
                     'cols'  => [[
                         ['html', lightandpulse_ascii_pulse()],
-                        lightandpulse_eyebrow('Bali web studio · WordPress · WooCommerce'),
-                        ['heading', 'Websites that bring <em>direct bookings.</em>', 'h1', 'lp-display'],
-                        ['text', '<p>We design and build fast WordPress websites, Elementor pages and WooCommerce stores for villas, restaurants, wellness and tour businesses across Bali — then keep them secure, updated and bringing in enquiries.</p>', 'lp-lead'],
+                        lightandpulse_eyebrow('Digital agency from Bali · since 2012'),
+                        ['heading', 'Brightens up <em>your brand.</em>', 'h1', 'lp-display'],
+                        ['text', '<p>Lightandpulse is a digital agency from Bali, Indonesia. Since 2012 we’ve combined web development, graphic design and digital marketing to help Bali businesses look their best and win more direct bookings and enquiries.</p>', 'lp-lead'],
                         ['button', 'Start a project', $contact, 'lp-btn-primary lp-btn-lg'],
                         ['button', 'Free website check', $check, 'lp-btn-ghost lp-btn-lg'],
                         ['text', '<p>Chat with us on WhatsApp in Bahasa Indonesia or English.</p>', 'lp-note'],
@@ -104,25 +104,28 @@ function lightandpulse_starter_pages(): array
                 [
                     'class' => 'lp-band lp-stack-strip',
                     'cols'  => [[
-                        ['text', '<p class="lp-stack-label">Built on tools you own and control</p><ul class="lp-stack"><li>WordPress</li><li>Elementor</li><li>WooCommerce</li><li>Google Business Profile</li><li>WhatsApp Business</li><li>Midtrans · Xendit</li></ul>'],
+                        ['text', '<p class="lp-stack-label">Web development · Graphic design · Digital marketing</p><ul class="lp-stack"><li>WordPress</li><li>Elementor</li><li>WooCommerce</li><li>Brand identity</li><li>Google Business Profile</li><li>Google &amp; Meta Ads</li><li>WhatsApp Business</li><li>Midtrans · Xendit</li></ul>'],
                     ]],
                 ],
                 [
                     'class' => 'lp-band lp-sec-head',
                     'cols'  => [[
                         lightandpulse_eyebrow('What we do'),
-                        ['heading', 'Everything your business needs online, <em>from one studio.</em>', 'h2', 'lp-h2'],
-                        ['text', '<p>From a first website to a full online store, we handle design, build, launch and the care that keeps it working.</p>', 'lp-lead'],
+                        ['heading', 'Web development, graphic design <em>and digital marketing.</em>', 'h2', 'lp-h2'],
+                        ['text', '<p>Websites that mix current technology with simple design, brand work from identity to promotional kits, and advertising through online channels. Everything your brand needs, from one agency.</p>', 'lp-lead'],
                     ]],
                 ],
                 [
                     'class' => 'lp-band lp-grid-band',
                     'cols'  => [
-                        [['card', 'globe', 'WordPress websites', 'Fast, mobile-first websites you can update yourself, designed and built with Elementor.'],
+                        [['card', 'globe', 'Web development', 'Fast, mobile-first WordPress websites built with Elementor: current technology, simple design, easy for you to update.'],
+                         ['card', 'calendar', 'Direct booking', 'Booking engines and enquiry forms that cut OTA commission and send guests straight to you.'],
+                         ['card', 'cart', 'WooCommerce stores', 'Sell at home and abroad with QRIS, bank transfer and cards, plus automatic shipping rates.']],
+                        [['card', 'palette', 'Graphic design', 'Brand identity, from logo, colours and type to the guidelines that keep your brand consistent.'],
+                         ['card', 'layers', 'Promotional kits', 'Menus, brochures, signage and social media templates designed to match your brand.'],
                          ['card', 'pen', 'Redesigns', 'Turn a dated or Wix-built site into a modern WordPress site that matches your brand.']],
-                        [['card', 'calendar', 'Direct booking', 'Booking engines and enquiry forms that cut OTA commission and send guests straight to you.'],
-                         ['card', 'search', 'Local SEO', 'Show up when travellers search Google and Google Maps for what you offer in your area.']],
-                        [['card', 'cart', 'WooCommerce stores', 'Sell at home and abroad with QRIS, bank transfer and cards, plus automatic shipping rates.'],
+                        [['card', 'megaphone', 'Digital marketing', 'Advertising through online channels: Google and Meta ads aimed at the travellers and locals you want.'],
+                         ['card', 'search', 'Local SEO', 'Show up when people search Google and Google Maps for what you offer in your area.'],
                          ['card', 'shield', 'Care plans', 'Updates, backups, security monitoring and small edits every month, handled for you.']],
                     ],
                 ],
@@ -157,13 +160,15 @@ function lightandpulse_starter_pages(): array
                     'class' => 'lp-band lp-soft lp-why',
                     'sizes' => [45, 55],
                     'cols'  => [
-                        [lightandpulse_eyebrow('Why Lightandpulse'), ['heading', 'A local studio that <em>answers on WhatsApp.</em>', 'h2', 'lp-h2']],
+                        [lightandpulse_eyebrow('Why Lightandpulse'), ['heading', 'A Bali agency since 2012, <em>still answering on WhatsApp.</em>', 'h2', 'lp-h2']],
                         [['text', lightandpulse_checklist([
-                            '<b>WhatsApp-first.</b> Quick answers from the people building your site, no ticket queues.',
+                            '<b>Since 2012.</b> We started with a small office and team in Denpasar, and have been building for Bali businesses ever since.',
+                            '<b>Developers with a design eye.</b> The people who build your website also care how it looks and reads.',
+                            '<b>Same care for every project.</b> From small to large, the same approach and the same focus on quality of service.',
+                            '<b>WhatsApp-first.</b> Quick answers from the people working on your project, no ticket queues.',
                             '<b>Bahasa Indonesia and English.</b> For you, your team and your international customers.',
                             '<b>You own everything.</b> Your domain, website and content stay in your name. No lock-in.',
                             '<b>Built on WordPress.</b> The world’s most widely used website platform, so your site is never a dead end.',
-                            '<b>Based in Bali.</b> Same time zone (WITA), and we understand the seasons your business runs on.',
                         ])]],
                     ],
                 ],
@@ -175,7 +180,7 @@ function lightandpulse_starter_pages(): array
         'services' => [
             'title'    => 'Services',
             'sections' => [
-                lightandpulse_page_hero('Services', 'Websites, stores and <em>care</em> for Bali businesses.', 'Everything is built on WordPress, Elementor and WooCommerce, so your site is fast, easy to update and fully yours.'),
+                lightandpulse_page_hero('Services', 'Web development, design <em>and marketing.</em>', 'Three services that work together: websites built on WordPress, Elementor and WooCommerce, graphic design from identity to promotional kits, and advertising through online channels.'),
                 ['class' => 'lp-band lp-service', 'id' => 'websites', 'sizes' => [45, 55], 'cols' => [
                     [['card', 'globe', 'WordPress websites', 'A new website designed around how your customers find and choose you.', 'lp-card-plain']],
                     [['text', lightandpulse_checklist(['Custom design in your brand, built with Elementor', 'Mobile-first and fast on Indonesian mobile networks', 'WhatsApp button, enquiry forms and Google Maps', 'English and Bahasa Indonesia (more languages on request)', 'Training so your team can edit pages and post updates'])]],
@@ -188,15 +193,23 @@ function lightandpulse_starter_pages(): array
                     [['card', 'cart', 'WooCommerce stores', 'Sell products online, in Indonesia and abroad.', 'lp-card-plain']],
                     [['text', lightandpulse_checklist(['Product catalogue, variations and stock', 'Indonesian payment gateways (Midtrans, Xendit) and international cards', 'Local and international shipping rates', 'Order emails, invoices and customer accounts', 'Wholesale or B2B price lists for exporters'])]],
                 ]],
-                ['class' => 'lp-band lp-soft lp-service', 'id' => 'redesign', 'sizes' => [45, 55], 'cols' => [
+                ['class' => 'lp-band lp-soft lp-service', 'id' => 'graphic-design', 'sizes' => [45, 55], 'cols' => [
+                    [['card', 'palette', 'Graphic design', 'From brand identity to promotional kits, so your business looks the same everywhere.', 'lp-card-plain']],
+                    [['text', lightandpulse_checklist(['Logo and brand identity', 'Colour, type and brand guidelines', 'Menus, brochures and price lists', 'Signage, banners and print-ready files', 'Social media templates'])]],
+                ]],
+                ['class' => 'lp-band lp-service', 'id' => 'digital-marketing', 'sizes' => [45, 55], 'cols' => [
+                    [['card', 'megaphone', 'Digital marketing', 'Advertising through online channels, aimed at the customers you want.', 'lp-card-plain']],
+                    [['text', lightandpulse_checklist(['Google Ads and Google Maps promotion', 'Meta ads on Facebook and Instagram', 'Campaigns for high and low season', 'Conversion tracking from click to enquiry', 'A clear monthly report'])]],
+                ]],
+                ['class' => 'lp-band lp-service', 'id' => 'redesign', 'sizes' => [45, 55], 'cols' => [
                     [['card', 'pen', 'Redesign & migration', 'Give an older site, or one on Wix or Blogger, a modern WordPress home.', 'lp-card-plain']],
                     [['text', lightandpulse_checklist(['New design with your existing content moved across', 'Redirects so you keep your Google rankings', 'Faster hosting setup and image optimisation', 'Clean, editable Elementor pages instead of hard-coded templates'])]],
                 ]],
-                ['class' => 'lp-band lp-service', 'id' => 'seo', 'sizes' => [45, 55], 'cols' => [
+                ['class' => 'lp-band lp-soft lp-service', 'id' => 'seo', 'sizes' => [45, 55], 'cols' => [
                     [['card', 'search', 'Local SEO', 'Be found by travellers and locals searching near you.', 'lp-card-plain']],
                     [['text', lightandpulse_checklist(['Google Business Profile setup and optimisation', 'Page titles, descriptions and structured data', 'Speed and Core Web Vitals improvements', 'Content plan for the searches your customers make'])]],
                 ]],
-                ['class' => 'lp-band lp-soft lp-service', 'id' => 'care', 'sizes' => [45, 55], 'cols' => [
+                ['class' => 'lp-band lp-service', 'id' => 'care', 'sizes' => [45, 55], 'cols' => [
                     [['card', 'shield', 'Care plans', 'Keep your website secure, backed up and up to date every month.', 'lp-card-plain']],
                     [['text', lightandpulse_checklist(['WordPress, theme and plugin updates', 'Daily backups and uptime monitoring', 'Security scanning and fixes', 'Small content edits each month', 'A short monthly report'])]],
                 ]],
@@ -234,17 +247,18 @@ function lightandpulse_starter_pages(): array
         'about' => [
             'title'    => 'About',
             'sections' => [
-                lightandpulse_page_hero('About', 'A Bali studio for websites that <em>keep working.</em>', 'Lightandpulse builds websites, online stores and booking systems for businesses across Bali.'),
-                ['class' => 'lp-band', 'sizes' => [50, 50], 'cols' => [
-                    [['heading', 'Light <em>and</em> pulse', 'h2', 'lp-h2']],
-                    [['text', '<p><b>Light</b> is clarity: a website that explains what you offer in seconds, on any phone, in your customers’ language.</p><p><b>Pulse</b> is what keeps it alive after launch: updates, security, fresh content and enquiries arriving every day.</p><p>We work with WordPress, Elementor and WooCommerce because they’re flexible, widely supported and leave you in full control of your own website.</p>']],
+                lightandpulse_page_hero('About', 'Your future <em>digital agency.</em>', 'Established in 2012, Lightandpulse offers the most appropriate and conceptually-based services in web development, graphic design and digital marketing.'),
+                ['class' => 'lp-band', 'sizes' => [42, 58], 'cols' => [
+                    [lightandpulse_eyebrow('Our story'), ['heading', 'From a small office <em>in Denpasar.</em>', 'h2', 'lp-h2']],
+                    [['text', '<p>Lightandpulse is a digital agency from Bali, Indonesia. We started in 2012 with a small office and a small team in Denpasar, building websites for local businesses.</p><p>Today we’re a team of developers with a design eye: the people who build your website also care how your brand looks and reads, online and in print.</p><p>Small projects or large ones, we work the same way, with the same focus on quality of service.</p>']],
                 ]],
-                ['class' => 'lp-band lp-soft lp-grid-band', 'cols' => [
-                    [['card', 'eye', 'Clarity', 'Simple navigation, clear words and fast pages, so visitors know what to do next.']],
-                    [['card', 'key', 'Ownership', 'Your domain, hosting account and content stay in your name. You’re never locked in.']],
-                    [['card', 'heart', 'Care', 'We stay with you after launch, with updates, backups and help when you need it.']],
+                ['class' => 'lp-band lp-sec-head', 'cols' => [[lightandpulse_eyebrow('What we do'), ['heading', 'Three services, <em>one brand.</em>', 'h2', 'lp-h2']]]],
+                ['class' => 'lp-band lp-grid-band', 'cols' => [
+                    [['card', 'globe', 'Web development', 'A mix of current technology and simple design: WordPress, Elementor and WooCommerce websites that are fast and easy to run.']],
+                    [['card', 'palette', 'Graphic design', 'From brand identity to promotional kits, so your business looks consistent everywhere it appears.']],
+                    [['card', 'megaphone', 'Digital marketing', 'Advertising through online channels, aimed at the customers you want and measured from click to enquiry.']],
                 ]],
-                lightandpulse_cta_band('Let’s build something that <em>works for you.</em>', 'Tell us where you are today and where you want to be.', 'Start a project', $contact),
+                lightandpulse_cta_band('Let’s brighten up <em>your brand.</em>', 'Tell us where you are today and where you want to be.', 'Start a project', $contact),
             ],
         ],
 

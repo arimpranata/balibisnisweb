@@ -8,7 +8,7 @@
  */
 defined('ABSPATH') || exit;
 
-define('LIGHTANDPULSE_VERSION', '1.3.0');
+define('LIGHTANDPULSE_VERSION', '1.4.0');
 define('LIGHTANDPULSE_DIR', get_template_directory());
 define('LIGHTANDPULSE_URI', get_template_directory_uri());
 

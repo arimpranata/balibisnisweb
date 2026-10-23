@@ -12,7 +12,7 @@ require __DIR__ . '/content.php';
 
 const LIGHTANDPULSE_BRAND = [
     'name'     => 'Lightandpulse',
-    'tagline'  => 'Websites that bring Bali businesses direct bookings',
+    'tagline'  => 'Brightens up your brand.',
     'colors'   => ['bg' => '#101012', 'surface' => '#19191c', 'text' => '#ededed', 'body' => '#bcbcc4', 'accent' => '#ff6a3d', 'teal' => '#4fc8ae'],
     'display'  => 'Switzer',
     'body'     => 'Switzer',
@@ -287,7 +287,7 @@ add_shortcode('lightandpulse_contact_info', function () {
     if (!empty($s['my_email'])) {
         $rows[] = ['mail', __('Email', 'lightandpulse'), '<a href="' . esc_url('mailto:' . $s['my_email']) . '">' . esc_html($s['my_email']) . '</a>'];
     }
-    $rows[] = ['pin', __('Studio', 'lightandpulse'), esc_html__('Bali, Indonesia', 'lightandpulse')];
+    $rows[] = ['pin', __('Studio', 'lightandpulse'), esc_html($s['my_address'] ?? '') ?: esc_html__('Bali, Indonesia', 'lightandpulse')];
     $out = '<ul class="lp-contact-list">';
     foreach ($rows as [$icon, $label, $value]) {
         $out .= '<li>' . lightandpulse_icon($icon) . '<span><small>' . esc_html($label) . '</small>' . $value . '</span></li>';

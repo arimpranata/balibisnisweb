@@ -132,7 +132,7 @@ body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-a
 .elementor-section.lp-hero .elementor-widget-button.lp-btn { margin-left: 5px; margin-right: 5px; }
 .elementor-section.lp-hero .lp-note { margin-top: 8px; }
 .elementor-section.lp-hero .lp-lead p { margin-left: auto; margin-right: auto; }
-.elementor-section.lp-hero .lp-display .elementor-heading-title { max-width: 16ch; margin-left: auto; margin-right: auto; }
+.elementor-section.lp-hero .lp-display .elementor-heading-title { max-width: 20ch; margin-left: auto; margin-right: auto; }
 .lp-ascii { margin: 0 auto; max-width: 100%; overflow: hidden; font-family: var(--lp-mono); font-size: clamp(5px, .72vw, 10px); line-height: 1.15; letter-spacing: 0; color: var(--lp-accent); opacity: .55; white-space: pre; text-align: left; display: inline-block;
   -webkit-mask-image: radial-gradient(ellipse 70% 90% at 50% 50%, #000 45%, transparent 100%);
           mask-image: radial-gradient(ellipse 70% 90% at 50% 50%, #000 45%, transparent 100%); }

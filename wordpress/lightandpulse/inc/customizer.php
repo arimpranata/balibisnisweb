@@ -16,7 +16,7 @@ add_action('customize_register', function (WP_Customize_Manager $wp_customize) {
         'section' => 'lightandpulse_options',
     ]));
 
-    $wp_customize->add_setting('lightandpulse_whatsapp', ['default' => '', 'sanitize_callback' => 'sanitize_text_field']);
+    $wp_customize->add_setting('lightandpulse_whatsapp', ['default' => '+62 856 3964 250', 'sanitize_callback' => 'sanitize_text_field']);
     $wp_customize->add_control('lightandpulse_whatsapp', [
         'label'       => __('Floating WhatsApp button number', 'lightandpulse'),
         'description' => __('e.g. 0812 3456 7890. Leave empty to hide the button.', 'lightandpulse'),
@@ -40,7 +40,7 @@ add_action('wp_head', function () {
 });
 
 add_action('wp_footer', function () {
-    $number = function_exists('lpl_wa_number') ? lpl_wa_number((string) get_theme_mod('lightandpulse_whatsapp', '')) : '';
+    $number = function_exists('lpl_wa_number') ? lpl_wa_number((string) get_theme_mod('lightandpulse_whatsapp', '+62 856 3964 250')) : '';
     if ($number === '') {
         return;
     }

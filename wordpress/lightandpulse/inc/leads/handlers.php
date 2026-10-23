@@ -372,7 +372,7 @@ function lpl_handle_import(): void
 function lpl_handle_settings_save(): void
 {
     $s = lpl_settings();
-    foreach (['my_name', 'my_agency', 'my_phone'] as $k) {
+    foreach (['my_name', 'my_agency', 'my_phone', 'my_address'] as $k) {
         $s[$k] = sanitize_text_field(lpl_post($k));
     }
     $s['my_website'] = esc_url_raw(lpl_post('my_website'));

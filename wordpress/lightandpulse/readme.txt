@@ -64,6 +64,11 @@ Leads are stored in their own database tables (wp_lp_leads, wp_lp_activities, wp
 
 == Changelog ==
 
+= 1.4.0 =
+* Content merged with lightandpulse.com: the "Brightens up your brand." tagline, founded in 2012 in Denpasar, the three services (web development, graphic design, digital marketing) and the About page story.
+* New Graphic design and Digital marketing sections on the Services page; homepage service grid grouped by the three services.
+* Real contact details by default: +62 856 3964 250, hello@lightandpulse.com, Sukawati, Gianyar. New studio address field in Leads → Settings.
+
 = 1.3.0 =
 * Works portfolio with importer and automatic screenshots; Works page and menu item added by setup.
 * Motion across every page; the homepage pattern reacts to the mouse.

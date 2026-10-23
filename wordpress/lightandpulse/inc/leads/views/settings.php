@@ -7,13 +7,14 @@ $hasKey = (string) $s['places_api_key'] !== '';
 <?php echo lpl_form_open('settings_save', ['class' => 'form']); ?>
   <div class="card">
     <h2>Your profile</h2>
-    <p class="muted small">Used in message templates.</p>
+    <p class="muted small">Used in message templates, and on the website's Contact page, footer and WhatsApp button.</p>
     <div class="grid2">
       <label>Name used in messages<input name="my_name" value="<?php echo esc_attr($s['my_name']); ?>"></label>
       <label>Agency<input name="my_agency" value="<?php echo esc_attr($s['my_agency']); ?>"></label>
       <label>Website<input name="my_website" value="<?php echo esc_attr($s['my_website']); ?>"></label>
       <label>WhatsApp / phone<input name="my_phone" value="<?php echo esc_attr($s['my_phone']); ?>"></label>
       <label>Email<input type="email" name="my_email" value="<?php echo esc_attr($s['my_email']); ?>"></label>
+      <label>Studio address (shown on the website)<input name="my_address" value="<?php echo esc_attr($s['my_address']); ?>"></label>
       <label>Default follow-up after outreach (days)<input type="number" min="1" max="30" name="followup_days" value="<?php echo (int) $s['followup_days']; ?>"></label>
     </div>
   </div>

@@ -6,7 +6,7 @@
     <div class="site-footer__grid">
       <div class="site-footer__brand">
         <a class="site-title" href="<?php echo esc_url(home_url('/')); ?>"><?php echo lightandpulse_mark(30); // phpcs:ignore WordPress.Security.EscapeOutput -- static SVG. ?><span><?php bloginfo('name'); ?></span></a>
-        <p><?php esc_html_e('A Bali web studio building WordPress, Elementor and WooCommerce websites, and keeping them running.', 'lightandpulse'); ?></p>
+        <p><?php esc_html_e('A digital agency from Bali, Indonesia, since 2012: web development, graphic design and digital marketing.', 'lightandpulse'); ?></p>
       </div>
       <?php if (has_nav_menu('footer')) : ?>
         <div>

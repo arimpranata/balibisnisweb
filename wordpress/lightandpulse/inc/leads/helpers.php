@@ -211,9 +211,10 @@ function lpl_settings(): array
     $defaults = [
         'my_name'        => 'Lightandpulse',
         'my_agency'      => 'Lightandpulse Digital Agency',
-        'my_website'     => home_url('/'),
-        'my_phone'       => '',
-        'my_email'       => get_option('admin_email'),
+        'my_website'     => 'https://lightandpulse.com',
+        'my_phone'       => '+62 856 3964 250',
+        'my_email'       => 'hello@lightandpulse.com',
+        'my_address'     => 'Sukawati, Gianyar, Bali',
         'followup_days'  => 3,
         'places_api_key' => '',
         'osm_endpoint'   => LPL_OSM_DEFAULT_ENDPOINT,
