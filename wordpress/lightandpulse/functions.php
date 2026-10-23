@@ -8,7 +8,7 @@
  */
 defined('ABSPATH') || exit;
 
-define('LIGHTANDPULSE_VERSION', '1.2.0');
+define('LIGHTANDPULSE_VERSION', '1.3.0');
 define('LIGHTANDPULSE_DIR', get_template_directory());
 define('LIGHTANDPULSE_URI', get_template_directory_uri());
 
@@ -97,4 +97,5 @@ add_action('widgets_init', function () {
 require LIGHTANDPULSE_DIR . '/inc/icons.php';
 require LIGHTANDPULSE_DIR . '/inc/customizer.php';
 require LIGHTANDPULSE_DIR . '/inc/leads/module.php';
+require LIGHTANDPULSE_DIR . '/inc/works/works.php';
 require LIGHTANDPULSE_DIR . '/inc/setup/setup.php';

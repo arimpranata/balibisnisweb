@@ -18,6 +18,18 @@ Appearance → Lightandpulse setup creates the whole lightandpulse.com site:
 * Pages keep their design even when Elementor is switched off.
 * The starter copy has no client names, testimonials, prices or statistics. Add yours in Elementor.
 
+= Works (portfolio) =
+* Works menu in wp-admin: each work has a title, short description (Excerpt), website URL, client, type and year.
+* Screenshot: the Featured image, or an automatic live screenshot of the website (WordPress.com mShots, free, no key).
+* Works → Import from website: scans https://lightandpulse.com/works/ (or any portfolio page), lists the projects it finds, and imports the ones you tick, copying their images into the Media Library.
+* Show works with the "Lightandpulse Works" Elementor widget or [lightandpulse_works]. The homepage shows the latest six automatically.
+
+= Motion =
+* Homepage: live ASCII pulse line; the spike follows the mouse with a glow and ripple around the cursor.
+* Inner pages: a drifting character field behind the page header that reacts to the mouse.
+* Scroll reveals (CSS scroll-driven animations, no JavaScript), pointer spotlight on cards, scrolling tech-logo strip, hero entrance and page-to-page transitions.
+* Everything respects "reduce motion", and content stays visible without JavaScript.
+
 = Theme =
 * Clean, minimal base styles, so Elementor's Site Settings (global colours, fonts, buttons) stay in charge.
 * Elementor Pro Theme Builder: header, footer, single and archive locations are all registered.
@@ -51,6 +63,10 @@ Appearance → Lightandpulse setup creates the whole lightandpulse.com site:
 Leads are stored in their own database tables (wp_lp_leads, wp_lp_activities, wp_lp_templates). Switching to another theme hides the Leads menu but never deletes your data; switching back brings everything back.
 
 == Changelog ==
+
+= 1.3.0 =
+* Works portfolio with importer and automatic screenshots; Works page and menu item added by setup.
+* Motion across every page; the homepage pattern reacts to the mouse.
 
 = 1.2.0 =
 * New quiet, editorial dark design: near-black page divided by hairline rules, square corners, monospace labels, Switzer type with an italic serif accent word, single coral accent, ASCII pulse art in the hero.

@@ -301,6 +301,92 @@ button:hover, input[type=submit]:hover { background: var(--lp-accent-hover); }
 .woocommerce table.shop_table { border-color: var(--lp-line); }
 .woocommerce table.shop_table td, .woocommerce table.shop_table th { border-color: var(--lp-line); }
 
+/* Works (portfolio) ------------------------------------------------------- */
+.lp-works-section__head { display: flex; align-items: flex-end; justify-content: space-between; gap: 1.5rem; flex-wrap: wrap; margin-bottom: 28px; }
+.lp-works-section__head h2 { font-size: clamp(1.9rem, 3.4vw, 2.75rem); letter-spacing: -.03em; margin: .4rem 0 0; max-width: 22ch; }
+.lp-label { font-family: var(--lp-mono); font-size: .74rem; font-weight: 500; letter-spacing: .16em; text-transform: uppercase; color: var(--lp-accent); margin: 0; }
+.lp-text-link { font-weight: 600; text-decoration: none; color: var(--lp-text); border-bottom: 1px solid var(--lp-line-strong); padding-bottom: 2px; }
+.lp-text-link:hover { color: var(--lp-accent); border-color: var(--lp-accent); }
+.lp-works-filter { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 22px; }
+.lp-works-filter button { padding: .42rem .8rem; font-family: var(--lp-mono); font-size: .74rem; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--lp-body); background: transparent; border: 1px solid var(--lp-line-strong); border-radius: var(--lp-radius-control); }
+.lp-works-filter button:hover { color: var(--lp-text); border-color: var(--lp-text); background: transparent; }
+.lp-works-filter button.is-active { color: var(--lp-on-accent); background: var(--lp-accent); border-color: var(--lp-accent); }
+.lp-works-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); border-top: 1px solid var(--lp-line); border-left: 1px solid var(--lp-line); }
+.lp-work { position: relative; display: flex; flex-direction: column; border-right: 1px solid var(--lp-line); border-bottom: 1px solid var(--lp-line); padding: 18px 18px 26px; transition: background-color .25s var(--lp-ease); }
+.lp-work[hidden] { display: none; }
+.lp-work__shot { display: block; position: relative; overflow: hidden; border: 1px solid var(--lp-line); background: var(--lp-surface); text-decoration: none; }
+.lp-work__bar { display: flex; align-items: center; gap: 5px; height: 26px; padding: 0 10px; border-bottom: 1px solid var(--lp-line); background: var(--lp-bg); }
+.lp-work__bar i { width: 7px; height: 7px; border-radius: 50%; background: var(--lp-line-strong); }
+.lp-work__bar em { margin-left: 8px; font-family: var(--lp-mono); font-style: normal; font-size: .66rem; color: var(--lp-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.lp-work__shot img, .lp-work__noimg { display: block; width: 100%; aspect-ratio: 16 / 10; height: auto; object-fit: cover; object-position: top center; transition: transform .8s var(--lp-ease), filter .4s; filter: saturate(.9); }
+.lp-work__noimg { background: repeating-linear-gradient(135deg, transparent 0 8px, var(--lp-line) 8px 9px); }
+.lp-work:hover .lp-work__shot img { transform: scale(1.035); filter: saturate(1.05); }
+.lp-work__body { padding-top: 18px; display: flex; flex-direction: column; gap: .35rem; flex: 1; }
+.lp-work__meta { margin: 0; font-family: var(--lp-mono); font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; color: var(--lp-muted); }
+.lp-work__title { font-size: 1.2rem; margin: 0; letter-spacing: -.015em; }
+.lp-work__title a { color: var(--lp-text); text-decoration: none; }
+.lp-work__title a::after { content: ""; position: absolute; inset: 0; } /* whole card is clickable */
+.lp-work__desc { margin: 0; font-size: .94rem; color: var(--lp-body); }
+.lp-work__link { position: relative; z-index: 1; margin-top: auto; padding-top: .7rem; font-family: var(--lp-mono); font-size: .78rem; color: var(--lp-accent); text-decoration: none; align-self: flex-start; }
+.lp-work__link:hover { color: var(--lp-accent-hover); }
+.lp-works-band:not(:has(.lp-works-section)) { display: none; }
+
+/* Motion ------------------------------------------------------------------- */
+/* Live ASCII fields (drawn by theme.js) */
+.lp-ascii.is-live { display: block; width: 100%; max-width: none; text-align: left; height: calc(13 * 1.15em); }
+.lp-ascii--field { position: absolute; inset: 0; z-index: 0; width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden; pointer-events: none; font-family: var(--lp-mono); font-size: 11px; line-height: 1.5; color: var(--lp-accent); opacity: .5; white-space: pre;
+  -webkit-mask-image: linear-gradient(90deg, transparent 20%, #000 75%); mask-image: linear-gradient(90deg, transparent 20%, #000 75%); }
+.elementor-section.lp-page-hero { position: relative; overflow: hidden; }
+.elementor-section.lp-page-hero > .elementor-container { position: relative; z-index: 1; }
+
+/* Pointer spotlight on grid cells */
+.lp-card .elementor-icon-box-wrapper, .lp-step, .lp-package, .lp-work, .lp-cta > .elementor-container, .lp-contact .lp-lead-form-wrap { --mx: -999px; --my: -999px; }
+.elementor .elementor-widget-icon-box.lp-card .elementor-icon-box-wrapper, .elementor-widget.lp-step, .elementor-widget.lp-package, .lp-work {
+  background-image: radial-gradient(260px circle at var(--mx) var(--my), rgba(255, 106, 61, .09), transparent 70%); }
+.elementor-section.lp-cta > .elementor-container { background-image: radial-gradient(420px circle at var(--mx) var(--my), rgba(255, 106, 61, .12), transparent 70%), radial-gradient(70% 140% at 100% 0%, rgba(255, 106, 61, .10), transparent 60%); }
+.lp-card:hover .elementor-icon, .lp-step:hover .lp-step-num { color: var(--lp-accent-hover); }
+.elementor-widget-icon-box.lp-card .elementor-icon { transition: transform .35s var(--lp-ease), border-color .2s; }
+.lp-card:hover .elementor-icon { transform: translateY(-2px) rotate(-6deg); border-color: var(--lp-accent); }
+
+/* Tech stack marquee (JS duplicates the list) */
+.lp-stack.is-marquee { flex-wrap: nowrap; justify-content: flex-start; width: max-content; gap: 0; animation: lp-marquee 38s linear infinite; }
+.lp-stack.is-marquee li { padding: 0 1.4rem; }
+.lp-stack-strip .elementor-widget-container, .lp-stack-strip .elementor-widget-text-editor { overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); }
+.lp-stack-strip:hover .lp-stack.is-marquee { animation-play-state: paused; }
+@keyframes lp-marquee { to { transform: translateX(-50%); } }
+
+/* Page transitions between pages (supported browsers) */
+@view-transition { navigation: auto; }
+::view-transition-old(root), ::view-transition-new(root) { animation-duration: .35s; animation-timing-function: var(--lp-ease); }
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Hero entrance: finishes within a second, so the page is complete at rest */
+  .lp-hero .elementor-widget, .lp-page-hero .elementor-widget { animation: lp-rise .9s var(--lp-ease) both; }
+  .lp-hero .elementor-widget:nth-child(2), .lp-page-hero .elementor-widget:nth-child(2) { animation-delay: .08s; }
+  .lp-hero .elementor-widget:nth-child(3), .lp-page-hero .elementor-widget:nth-child(3) { animation-delay: .16s; }
+  .lp-hero .elementor-widget:nth-child(4) { animation-delay: .26s; }
+  .lp-hero .elementor-widget:nth-child(5) { animation-delay: .3s; }
+  .lp-hero .elementor-widget:nth-child(6) { animation-delay: .4s; }
+  .lp-hero .lp-display em { display: inline-block; animation: lp-accent-in 1.2s .35s var(--lp-ease) both; }
+
+  /* Scroll reveals use scroll-driven animations: no JavaScript and nothing is
+     ever left hidden; browsers without support simply show the content. */
+  @supports (animation-timeline: view()) {
+    /* Only the content inside each cell moves, so the hairline grid stays aligned;
+       it starts from a visible state, so nothing reads as missing before it scrolls in. */
+    .lp-card .elementor-icon-box-icon, .lp-card .elementor-icon-box-content, .lp-step > .elementor-widget-container, .lp-package > .elementor-widget-container,
+    .lp-work__shot, .lp-work__body, .lp-chips li, .lp-checklist li, .lp-sec-head .elementor-widget-container, .lp-h2 .elementor-heading-title,
+    .lp-works-section__head, .lp-cta .elementor-widget-wrap, .lp-service .lp-card-plain .elementor-icon-box-wrapper {
+      animation: lp-reveal linear both; animation-timeline: view(); animation-range: entry 0% entry 60%; }
+  }
+  .lp-work.is-pop { animation: lp-rise .5s calc(var(--i, 0) * 40ms) var(--lp-ease) both; }
+  .site-header { transition: background-color .3s var(--lp-ease); }
+  .site-header.is-scrolled { background: rgba(16, 16, 18, .94); }
+}
+@keyframes lp-rise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+@keyframes lp-reveal { from { opacity: .35; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+@keyframes lp-accent-in { from { opacity: 0; transform: translateY(.18em) skewX(-6deg); filter: blur(6px); } to { opacity: 1; transform: none; filter: none; } }
+
 /* Responsive -------------------------------------------------------------- */
 @media (max-width: 900px) {
   .menu-toggle { display: grid; place-items: center; }

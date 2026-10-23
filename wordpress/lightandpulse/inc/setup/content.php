@@ -127,6 +127,11 @@ function lightandpulse_starter_pages(): array
                     ],
                 ],
                 [
+                    // Shows the latest works once some exist; the band hides itself while empty.
+                    'class' => 'lp-band lp-works-band',
+                    'cols'  => [[['shortcode', '[lightandpulse_works_section limit="6"]']]],
+                ],
+                [
                     'class' => 'lp-band lp-soft lp-industries',
                     'sizes' => [42, 58],
                     'cols'  => [
@@ -212,6 +217,16 @@ function lightandpulse_starter_pages(): array
                 ]],
                 ['class' => 'lp-band lp-center-band', 'cols' => [[['button', 'Ask for a quote', $contact, 'lp-btn-primary lp-btn-lg']]]],
                 lightandpulse_cta_band('Already have <em>a website?</em>', 'We can check it for free and tell you what would make the biggest difference.', 'Get my free website check'),
+            ],
+        ],
+
+        // ------------------------------------------------------------------ WORKS
+        'works' => [
+            'title'    => 'Works',
+            'sections' => [
+                lightandpulse_page_hero('Works', 'Websites we’ve <em>built and launched.</em>', 'A selection of WordPress, Elementor and WooCommerce projects for businesses in Bali and beyond. Each card opens the live website.'),
+                ['class' => 'lp-band lp-works-page', 'cols' => [[['shortcode', '[lightandpulse_works filter="yes"]']]]],
+                lightandpulse_cta_band('Want your business <em>on this page?</em>', 'Tell us what you’re planning and we’ll show you how we’d approach it.', 'Start a project', '/contact/'),
             ],
         ],
 

@@ -91,7 +91,7 @@ function lightandpulse_setup_page(): void
         <?php wp_nonce_field('lightandpulse_setup'); ?>
         <table class="form-table" role="presentation"><tbody>
           <tr><th><?php esc_html_e('Pages', 'lightandpulse'); ?></th><td>
-            <label><input type="checkbox" name="steps[]" value="pages" checked> <?php esc_html_e('Create Home, Services, Packages, About, Insights (blog) and Contact, and set the homepage', 'lightandpulse'); ?></label><br>
+            <label><input type="checkbox" name="steps[]" value="pages" checked> <?php esc_html_e('Create Home, Services, Works, Packages, About, Insights (blog) and Contact, and set the homepage', 'lightandpulse'); ?></label><br>
             <label><input type="checkbox" name="steps[]" value="overwrite"> <?php esc_html_e('Overwrite the content of these pages if they already exist', 'lightandpulse'); ?></label>
           </td></tr>
           <tr><th><?php esc_html_e('Menus', 'lightandpulse'); ?></th><td><label><input type="checkbox" name="steps[]" value="menus" checked> <?php esc_html_e('Create the main and footer menus (with a “Start a project” button)', 'lightandpulse'); ?></label></td></tr>
@@ -218,6 +218,7 @@ function lightandpulse_setup_menus(array $ids): string
 
     $make('Main menu', 'primary', array_values(array_filter([
         $page('services', 'Services'),
+        $page('works', 'Works'),
         $page('packages', 'Packages'),
         $page('about', 'About'),
         $page('insights', 'Insights'),
@@ -225,6 +226,7 @@ function lightandpulse_setup_menus(array $ids): string
     ])));
     $make('Footer menu', 'footer', array_values(array_filter([
         $page('services', 'Services'),
+        $page('works', 'Works'),
         $page('packages', 'Packages'),
         $page('about', 'About'),
         $page('insights', 'Insights'),
