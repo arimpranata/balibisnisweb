@@ -9,6 +9,7 @@ defined('ABSPATH') || exit;
 
 require __DIR__ . '/builder.php';
 require __DIR__ . '/content.php';
+require __DIR__ . '/posts.php';
 
 const LIGHTANDPULSE_BRAND = [
     'name'     => 'Lightandpulse',
@@ -62,6 +63,7 @@ add_action('admin_post_lightandpulse_setup', function () {
         'pages'     => in_array('pages', $opts, true),
         'overwrite' => in_array('overwrite', $opts, true),
         'menus'     => in_array('menus', $opts, true),
+        'posts'     => in_array('posts', $opts, true),
         'identity'  => in_array('identity', $opts, true),
         'elementor' => in_array('elementor', $opts, true),
         'permalinks'=> in_array('permalinks', $opts, true),
@@ -94,6 +96,7 @@ function lightandpulse_setup_page(): void
             <label><input type="checkbox" name="steps[]" value="pages" checked> <?php esc_html_e('Create Home, Services, Works, Packages, About, Insights (blog) and Contact, and set the homepage', 'lightandpulse'); ?></label><br>
             <label><input type="checkbox" name="steps[]" value="overwrite"> <?php esc_html_e('Overwrite the content of these pages if they already exist', 'lightandpulse'); ?></label>
           </td></tr>
+          <tr><th><?php esc_html_e('Blog', 'lightandpulse'); ?></th><td><label><input type="checkbox" name="steps[]" value="posts" checked> <?php esc_html_e('Publish the starter article “Implementation of AI in Bali” on the Insights page', 'lightandpulse'); ?></label></td></tr>
           <tr><th><?php esc_html_e('Menus', 'lightandpulse'); ?></th><td><label><input type="checkbox" name="steps[]" value="menus" checked> <?php esc_html_e('Create the main and footer menus (with a “Start a project” button)', 'lightandpulse'); ?></label></td></tr>
           <tr><th><?php esc_html_e('Site identity', 'lightandpulse'); ?></th><td><label><input type="checkbox" name="steps[]" value="identity" checked> <?php printf(esc_html__('Site title “%1$s” and tagline “%2$s”', 'lightandpulse'), esc_html(LIGHTANDPULSE_BRAND['name']), esc_html(LIGHTANDPULSE_BRAND['tagline'])); ?></label></td></tr>
           <tr><th>Elementor</th><td><label><input type="checkbox" name="steps[]" value="elementor" <?php checked($elementor); disabled(!$elementor); ?>> <?php esc_html_e('Set Elementor Site Settings: brand colours, fonts and content width', 'lightandpulse'); ?></label></td></tr>
@@ -167,6 +170,10 @@ function lightandpulse_run_setup(array $steps): array
         $log[] = __('Homepage and blog page set.', 'lightandpulse');
     }
 
+    if (!empty($steps['posts'])) {
+        $log = array_merge($log, lightandpulse_create_starter_posts(!empty($steps['overwrite'])));
+    }
+
     if ($steps['menus']) {
         $log[] = lightandpulse_setup_menus($ids);
     }
@@ -218,19 +225,18 @@ function lightandpulse_setup_menus(array $ids): string
 
     $make('Main menu', 'primary', array_values(array_filter([
         $page('services', 'Services'),
-        $page('works', 'Works'),
         $page('packages', 'Packages'),
         $page('about', 'About'),
         $page('insights', 'Insights'),
+        $page('works', 'Works'),
         ['title' => 'Start a project', 'url' => home_url('/contact/'), 'class' => 'lp-nav-cta'],
     ])));
     $make('Footer menu', 'footer', array_values(array_filter([
         $page('services', 'Services'),
-        $page('works', 'Works'),
         $page('packages', 'Packages'),
         $page('about', 'About'),
         $page('insights', 'Insights'),
-        $page('contact', 'Contact'),
+        $page('works', 'Works'),
     ])));
     return __('Main and footer menus created.', 'lightandpulse');
 }

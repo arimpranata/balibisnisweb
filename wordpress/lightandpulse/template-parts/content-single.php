@@ -5,7 +5,7 @@ $built_with_elementor = class_exists('\Elementor\Plugin') && \Elementor\Plugin::
   <?php if (!$built_with_elementor) : ?>
     <header class="entry-header">
       <h1 class="entry-title"><?php the_title(); ?></h1>
-      <?php if (get_post_type() === 'post') : ?><p class="entry-meta"><?php echo esc_html(get_the_date()); ?> · <?php the_author(); ?></p><?php endif; ?>
+      <?php if (get_post_type() === 'post') : $cats = get_the_category(); ?><p class="entry-meta"><?php echo esc_html(get_the_date()); ?><?php if ($cats) : ?> · <?php echo esc_html($cats[0]->name); ?><?php endif; ?></p><?php endif; ?>
     </header>
     <?php if (has_post_thumbnail()) : ?><figure class="entry-thumb"><?php the_post_thumbnail('large'); ?></figure><?php endif; ?>
   <?php endif; ?>

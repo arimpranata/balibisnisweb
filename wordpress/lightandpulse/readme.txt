@@ -64,6 +64,11 @@ Leads are stored in their own database tables (wp_lp_leads, wp_lp_activities, wp
 
 == Changelog ==
 
+= 1.5.0 =
+* Menu: Services, Packages, About, Insights, Works, then the "Start a project" button. Contact removed from the menus (the Contact page stays; the button links to it).
+* Starter article "Implementation of AI in Bali: practical uses for local businesses" (setup step "Blog"); the untouched "Hello world!" sample post is moved to the trash.
+* Posts show the date and category instead of the author's name.
+
 = 1.4.0 =
 * Content merged with lightandpulse.com: the "Brightens up your brand." tagline, founded in 2012 in Denpasar, the three services (web development, graphic design, digital marketing) and the About page story.
 * New Graphic design and Digital marketing sections on the Services page; homepage service grid grouped by the three services.
