@@ -64,6 +64,9 @@ Leads are stored in their own database tables (wp_lp_leads, wp_lp_activities, wp
 
 == Changelog ==
 
+= 1.5.1 =
+* Featured image for "Implementation of AI in Bali", shipped with the theme. Setup copies it into the Media Library once and sets it on the article, also when the article already exists.
+
 = 1.5.0 =
 * Menu: Services, Packages, About, Insights, Works, then the "Start a project" button. Contact removed from the menus (the Contact page stays; the button links to it).
 * Starter article "Implementation of AI in Bali: practical uses for local businesses" (setup step "Blog"); the untouched "Hello world!" sample post is moved to the trash.

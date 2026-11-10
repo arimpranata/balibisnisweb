@@ -93,6 +93,8 @@ function lightandpulse_starter_posts(): array
             'excerpt'  => 'Where AI actually helps villas, restaurants, spas and tour operators in Bali today, from WhatsApp replies and translations to being found in AI search, and where a human touch still matters more.',
             'category' => 'Artificial intelligence',
             'tags'     => ['AI', 'Bali', 'Tourism', 'Small business', 'SEO'],
+            'image'    => 'assets/images/insights-ai-in-bali.jpg',
+            'image_alt'=> 'Implementation of AI in Bali: Lightandpulse Insights cover with an ASCII pulse line',
             'content'  => $body,
         ],
     ];
@@ -112,6 +114,9 @@ function lightandpulse_create_starter_posts(bool $overwrite): array
         $existing = get_page_by_path($slug, OBJECT, 'post');
         if ($existing && !$overwrite) {
             $log[] = sprintf(__('Kept existing post: %s', 'lightandpulse'), $post['title']);
+            if (!has_post_thumbnail($existing->ID) && lightandpulse_set_starter_image($existing->ID, $post)) {
+                $log[] = sprintf(__('Added the featured image to: %s', 'lightandpulse'), $post['title']);
+            }
             continue;
         }
         $cat = term_exists($post['category'], 'category') ?: wp_insert_term($post['category'], 'category');
@@ -133,6 +138,45 @@ function lightandpulse_create_starter_posts(bool $overwrite): array
             continue;
         }
         $log[] = sprintf($existing ? __('Updated post: %s', 'lightandpulse') : __('Published post: %s', 'lightandpulse'), $post['title']);
+        if (!has_post_thumbnail($id)) {
+            lightandpulse_set_starter_image((int) $id, $post);
+        }
     }
     return $log;
+}
+
+/**
+ * Copy a featured image that ships with the theme into the Media Library
+ * (once; later runs reuse the same attachment) and set it on the post.
+ */
+function lightandpulse_set_starter_image(int $postId, array $post): bool
+{
+    if (empty($post['image'])) {
+        return false;
+    }
+    $file = LIGHTANDPULSE_DIR . '/' . $post['image'];
+    if (!is_readable($file)) {
+        return false;
+    }
+    $known = (array) get_option('lightandpulse_starter_media', []);
+    $attId = (int) ($known[$post['image']] ?? 0);
+    if (!$attId || get_post_type($attId) !== 'attachment') {
+        require_once ABSPATH . 'wp-admin/includes/file.php';
+        require_once ABSPATH . 'wp-admin/includes/media.php';
+        require_once ABSPATH . 'wp-admin/includes/image.php';
+        // media_handle_sideload moves the file, so give it a temporary copy.
+        $tmp = wp_tempnam(basename($file));
+        if (!$tmp || !copy($file, $tmp)) {
+            return false;
+        }
+        $attId = media_handle_sideload(['name' => basename($file), 'tmp_name' => $tmp], $postId, $post['title']);
+        if (is_wp_error($attId)) {
+            @unlink($tmp);
+            return false;
+        }
+        update_post_meta($attId, '_wp_attachment_image_alt', $post['image_alt'] ?? $post['title']);
+        $known[$post['image']] = $attId;
+        update_option('lightandpulse_starter_media', $known, false);
+    }
+    return (bool) set_post_thumbnail($postId, $attId);
 }
