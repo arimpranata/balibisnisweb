@@ -119,9 +119,6 @@ function lpdo_order_groups(): array
                 ['key' => 'orientation', 'label' => __('Orientasi', $t), 'type' => 'radio', 'width' => 'half', 'options' => ['portrait' => 'Portrait', 'landscape' => 'Landscape', 'square' => __('Persegi', $t)]],
                 ['key' => 'flyer_sides', 'label' => __('Sisi cetak', $t), 'type' => 'radio', 'width' => 'half', 'types' => ['flyer'], 'options' => ['one' => __('1 sisi', $t), 'two' => __('2 sisi (bolak-balik)', $t)]],
                 ['key' => 'flyer_fold', 'label' => __('Lipatan', $t), 'type' => 'radio', 'width' => 'half', 'types' => ['flyer'], 'options' => ['none' => __('Tanpa lipatan', $t), 'bi' => __('Lipat 2', $t), 'tri' => __('Lipat 3', $t)]],
-                ['key' => 'poster_finish', 'label' => __('Finishing cetak', $t), 'type' => 'select', 'width' => 'half', 'types' => ['poster'], 'options' => [
-                    'none' => __('Tanpa finishing', $t), 'glossy' => __('Glossy', $t), 'matte' => __('Doff / matte', $t), 'laminate' => __('Laminasi', $t), 'foamboard' => __('Ditempel foam board', $t),
-                ]],
                 ['key' => 'channels', 'label' => __('Dipakai di', $t), 'type' => 'checkboxes', 'options' => [
                     'print' => __('Cetak (di hotel/outlet)', $t), 'room' => __('Kamar tamu', $t), 'whatsapp' => 'WhatsApp', 'instagram' => 'Instagram', 'facebook' => 'Facebook', 'email' => 'Email', 'tv' => __('Layar TV', $t),
                 ]],

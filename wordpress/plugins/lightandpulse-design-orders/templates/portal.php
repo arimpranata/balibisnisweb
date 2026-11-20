@@ -272,6 +272,7 @@ $initials = strtoupper(mb_substr(preg_replace('/[^\p{L}\p{N} ]/u', '', $name), 0
   </div>
 </footer>
 <script src="<?php echo esc_url(LPDO_URL . 'assets/form.js?ver=' . LPDO_VERSION); ?>"></script>
+<script src="<?php echo esc_url(LPDO_URL . 'assets/preview.js?ver=' . LPDO_VERSION); ?>"></script>
 <script src="<?php echo esc_url(LPDO_URL . 'assets/portal.js?ver=' . LPDO_VERSION); ?>"></script>
 </body>
 </html>

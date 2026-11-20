@@ -3,7 +3,7 @@ Contributors: lightandpulse
 Requires at least: 6.2
 Tested up to: 6.8
 Requires PHP: 8.0
-Stable tag: 1.3.1
+Stable tag: 1.4.0
 License: GPLv2 or later
 
 Design order system for posters, menus, flyers, backdrops and business cards, with a branded portal page for every client, proof approval, and direct download links with QR codes.
@@ -25,6 +25,7 @@ Design order system for posters, menus, flyers, backdrops and business cards, wi
   * Room directory: format, pages, sections, facilities & opening hours table, phone extensions table, Wi-Fi, existing texts.
   * Shared where it fits: outlet/venue and outlet or partner logos, promo items table (category, name, description, price, promo price), validity and terms, headline/body/call to action, contact block (standard, custom or none) and QR target, reference images, assets, notes.
   * File fields take many files, picked in several goes or dragged in, with previews and a remove button; the deadline is set by the team in wp-admin.
+* Live preview: a rough mock-up of the chosen design type (poster, flyer, menu, banner, backdrop, business card, greeting card, TV slide, room directory) built from the client's brand colours, logo, contact block and what they type; a side column that follows the scroll on wide screens, a floating "Pratinjau" button on phones.
 * Follow-up fields appear only when relevant (e.g. custom size only when "Custom" is chosen).
 * Uploads: JPG, PNG, WebP, GIF, PDF, ZIP, TXT, CSV, DOC(X), XLS(X); size limit set in Settings.
 * Spam protection without a nonce, so it works on cached pages (honeypot, timing check, rate limit).
@@ -62,6 +63,11 @@ Design order system for posters, menus, flyers, backdrops and business cards, wi
 QR codes are generated on your server with QR Code Generator by Kazuhiko Arase (MIT licence), in vendor/qrcode-generator.
 
 == Changelog ==
+= 1.4.0 =
+* Live preview per design type beside the order form (and in the portal), following the scroll; a floating button opens it on phones.
+* Logos too close to the background colour get a contrasting chip in the preview.
+* Removed print finishing from posters.
+
 = 1.3.1 =
 * Removed target audience and design language fields.
 

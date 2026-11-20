@@ -23,6 +23,7 @@ add_shortcode('lightandpulse_design_order', function () {
 add_action('wp_enqueue_scripts', function () {
     wp_register_style('lpdo-form', LPDO_URL . 'assets/form.css', [], LPDO_VERSION);
     wp_register_script('lpdo-form', LPDO_URL . 'assets/form.js', [], LPDO_VERSION, ['in_footer' => true, 'strategy' => 'defer']);
+    wp_register_script('lpdo-preview', LPDO_URL . 'assets/preview.js', [], LPDO_VERSION, ['in_footer' => true, 'strategy' => 'defer']);
 });
 
 /** Icons for the design type cards (inline, no external requests). */
@@ -167,6 +168,7 @@ function lpdo_render_form(?WP_Post $client = null): string
     $t = 'lightandpulse-design-orders';
     wp_enqueue_style('lpdo-form');
     wp_enqueue_script('lpdo-form');
+    wp_enqueue_script('lpdo-preview');
 
     // Values from a failed submission (kept for 15 minutes) or from the client record.
     $old = [];
@@ -207,13 +209,22 @@ function lpdo_render_form(?WP_Post $client = null): string
     $values = array_merge($clientValues, $old);
     $agency = lpdo_setting('agency_name');
     $ts = (string) time();
+    // Brand data for the live preview (the public form reads its own inputs instead).
+    $brand = ['name' => $values['business_name'] ?? ''];
+    foreach (['color_primary', 'color_secondary', 'color_accent', 'contact_print', 'tagline'] as $k) {
+        $brand[$k] = (string) ($values[$k] ?? '');
+    }
+    $logoId = $client ? (int) get_post_thumbnail_id($client->ID) : 0;
+    $brand['logo'] = $logoId ? (string) wp_get_attachment_image_url($logoId, 'medium') : '';
+    $brand['logo_light'] = $logoId && lpdo_logo_is_light($logoId);
 
     ob_start();
     ?>
-    <div class="lpdo" id="lpdo-order-form">
+    <div class="lpdo lpdo--preview" id="lpdo-order-form">
       <?php if ($errors) : ?>
         <div class="lpdo-notice is-error" role="alert"><p><strong><?php esc_html_e('Ada yang perlu dilengkapi:', $t); ?></strong></p><ul><?php foreach ($errors as $e) : ?><li><?php echo esc_html($e); ?></li><?php endforeach; ?></ul></div>
       <?php endif; ?>
+      <div class="lpdo-shell">
       <form class="lpdo-form" method="post" enctype="multipart/form-data" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" data-max-mb="<?php echo (int) lpdo_setting('max_upload_mb'); ?>" data-max-files="<?php echo (int) lpdo_max_files(); ?>" data-max-post="<?php echo (int) wp_convert_hr_to_bytes((string) ini_get('post_max_size')); ?>">
         <input type="hidden" name="action" value="lpdo_submit">
         <input type="hidden" name="lpdo_ts" value="<?php echo esc_attr($ts); ?>">
@@ -287,6 +298,16 @@ function lpdo_render_form(?WP_Post $client = null): string
         </div>
         </div>
       </form>
+      <aside class="lpdo-preview" data-brand="<?php echo esc_attr(wp_json_encode($brand)); ?>" aria-label="<?php esc_attr_e('Pratinjau desain', $t); ?>">
+        <div class="lpdo-preview__inner">
+          <div class="lpdo-preview__head"><strong><?php esc_html_e('Pratinjau', $t); ?></strong><button type="button" class="lpdo-preview__close" data-preview-close aria-label="<?php esc_attr_e('Tutup pratinjau', $t); ?>"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+          <div class="lpdo-preview__stage" aria-live="off"></div>
+          <div class="lpdo-preview__chips"></div>
+          <p class="lpdo-preview__note"><?php esc_html_e('Gambaran kasar dari isian Anda, bukan desain final. Tim kami yang akan menata desain sebenarnya.', $t); ?></p>
+        </div>
+      </aside>
+      </div>
+      <button type="button" class="lpdo-preview-toggle" data-preview-open><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg> <?php esc_html_e('Pratinjau', $t); ?></button>
     </div>
     <?php
     return (string) ob_get_clean();

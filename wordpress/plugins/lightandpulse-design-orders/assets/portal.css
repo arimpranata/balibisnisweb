@@ -31,6 +31,8 @@ body.lpdo-portal { margin: 0; font: 16px/1.6 system-ui, -apple-system, "Segoe UI
 .lpdo-main { padding-top: 32px; padding-bottom: 64px; }
 .lpdo-layout { display: block; }
 .lpdo-main, .lpdo-brandbar .lpdo-wrap, .lpdo-footer .lpdo-wrap { max-width: 960px; }
+.lpdo-main:has(.lpdo-new[open]) { max-width: 1240px; }
+.lpdo-new .lpdo-preview__inner { background: #fff; border-color: #e4e4e7; }
 .lpdo-orders__head { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
 .lpdo-orders h1 { font-size: 1.6rem; line-height: 1.2; letter-spacing: -.02em; margin: 0; }
 .lpdo-stats { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 0; }
