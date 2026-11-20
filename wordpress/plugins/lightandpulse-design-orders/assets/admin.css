@@ -1,0 +1,27 @@
+.lpdo-files-box { margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px solid #f0f0f1; }
+.lpdo-files-box h4 { margin: 0 0 4px; }
+.lpdo-file-list { margin: 10px 0; display: grid; gap: 6px; }
+.lpdo-file-list li { display: flex; align-items: center; gap: 10px; margin: 0; padding: 6px; border: 1px solid #dcdcde; border-radius: 4px; background: #fff; }
+.lpdo-file-list img { width: 48px; height: 48px; object-fit: cover; }
+.lpdo-file-list span { flex: 1; word-break: break-all; }
+.lpdo-remove { color: #b32d2e; font-size: 18px; text-decoration: none; }
+.lpdo-links li { display: flex; gap: 10px; align-items: center; }
+.lpdo-links code { word-break: break-all; }
+.lpdo-admin-brief .form-table th { width: 220px; }
+.lpdo-admin-brief .lpdo-field > label, .lpdo-admin-brief .lpdo-field > legend { display: none; }
+.lpdo-admin-brief textarea, .lpdo-admin-brief input[type=text], .lpdo-admin-brief input[type=url], .lpdo-admin-brief select { width: 100%; max-width: 640px; }
+.lpdo-admin-brief .lpdo-options { display: flex; flex-wrap: wrap; gap: 4px 14px; }
+.lpdo-admin-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px 18px; }
+.lpdo-admin-grid .lpdo-field { display: flex; flex-direction: column; gap: 4px; }
+.lpdo-admin-grid .lpdo-field label { font-weight: 600; }
+.lpdo-admin-grid input[type=color] { width: 80px; height: 36px; }
+.lpdo-log { margin: 0; }
+.lpdo-log time { color: #646970; font-size: 12px; }
+.lpdo-who { display: inline-block; font-size: 11px; padding: 0 6px; border-radius: 3px; background: #f0f0f1; }
+.lpdo-pill { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 12px; background: #f0f0f1; }
+.lpdo-pill--new, .lpdo-pill--revision { background: #fcf0f1; color: #8a2424; font-weight: 600; }
+.lpdo-pill--proof { background: #fcf9e8; color: #7a5b00; }
+.lpdo-pill--approved { background: #e7f5ee; color: #1e6b3a; font-weight: 600; }
+.lpdo-pill--done { background: #e7f5ee; color: #1e6b3a; }
+.lpdo-late { color: #b32d2e; font-weight: 600; }
+.lpdo-swatch-mini { display: inline-block; width: 32px; height: 32px; border-radius: 4px; }

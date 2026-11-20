@@ -1,0 +1,124 @@
+/* Client portal. Colours come from the client's brand (set inline as --c-*); system fonts only. */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body.lpdo-portal { margin: 0; font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; color: #1c1c1e; background: color-mix(in srgb, var(--c-secondary) 55%, #ffffff); }
+.lpdo-portal img { max-width: 100%; height: auto; }
+.lpdo-portal a { color: inherit; }
+.lpdo-wrap { width: 100%; max-width: 1160px; margin: 0 auto; padding-left: max(18px, env(safe-area-inset-left, 0px)); padding-right: max(18px, env(safe-area-inset-right, 0px)); }
+.lpdo-muted { color: #6b6b70; font-size: .88rem; margin: 0; }
+
+/* Brand bar */
+.lpdo-brandbar { background: var(--c-primary); color: var(--c-on-primary); padding: 22px 0; padding-top: max(22px, env(safe-area-inset-top, 0px)); }
+.lpdo-brandbar__inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.lpdo-brand { display: flex; align-items: center; gap: 14px; min-width: 0; }
+.lpdo-brand__logo { width: 64px; height: 64px; object-fit: contain; background: #fff; border-radius: 12px; padding: 6px; }
+.lpdo-brand__initials { display: grid; place-items: center; width: 64px; height: 64px; border-radius: 12px; background: var(--c-accent); color: var(--c-on-accent); font-weight: 800; font-size: 1.4rem; }
+.lpdo-brand__name { margin: 0; font-size: 1.35rem; font-weight: 750; line-height: 1.2; }
+.lpdo-brand__tagline { margin: 2px 0 0; opacity: .8; font-size: .92rem; }
+
+/* Buttons */
+.lpdo-btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; padding: .55rem 1rem; border-radius: 8px; border: 1px solid transparent; font: inherit; font-size: .9rem; font-weight: 650; text-decoration: none; cursor: pointer; line-height: 1.2; }
+.lpdo-btn--primary { background: var(--c-primary); color: var(--c-on-primary); }
+.lpdo-btn--accent { background: var(--c-accent); color: var(--c-on-accent); }
+.lpdo-btn--ghost { background: #fff; color: #1c1c1e; border-color: #d4d4d8; }
+.lpdo-btn:hover { filter: brightness(.95); }
+.lpdo-btn:focus-visible, .lpdo-swatch:focus-visible { outline: 3px solid var(--c-accent); outline-offset: 2px; }
+
+/* Layout */
+.lpdo-main { padding-top: 28px; padding-bottom: 56px; }
+.lpdo-layout { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 24px; align-items: start; }
+.lpdo-orders > h1 { font-size: 1.5rem; margin: 0 0 14px; }
+.lpdo-portal .lpdo-notice { background: #ecfdf5; border-color: #a7f3d0; color: #064e3b; }
+.lpdo-portal .lpdo-notice.is-error { background: #fef2f2; border-color: #fecaca; color: #7f1d1d; }
+
+/* Order card */
+.lpdo-order { background: #fff; border: 1px solid #e4e4e7; border-radius: 14px; padding: 20px; margin-bottom: 18px; scroll-margin-top: 16px; }
+.lpdo-order:target { outline: 3px solid color-mix(in srgb, var(--c-accent) 55%, transparent); }
+.lpdo-order__head { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 14px; align-items: start; }
+.lpdo-order__icon { display: grid; place-items: center; width: 48px; height: 48px; border-radius: 12px; background: color-mix(in srgb, var(--c-primary) 10%, #fff); color: var(--c-primary); }
+.lpdo-order__title h2 { margin: 0; font-size: 1.15rem; line-height: 1.3; }
+.lpdo-order__meta { margin: 0; font-size: .8rem; color: #6b6b70; }
+.lpdo-status { white-space: nowrap; font-size: .76rem; font-weight: 700; padding: .3rem .6rem; border-radius: 999px; background: #f4f4f5; color: #3f3f46; }
+.lpdo-status--proof { background: #fef3c7; color: #92400e; }
+.lpdo-status--revision { background: #ffedd5; color: #9a3412; }
+.lpdo-status--approved, .lpdo-status--done { background: #dcfce7; color: #166534; }
+.lpdo-status--design, .lpdo-status--review { background: #e0f2fe; color: #075985; }
+
+.lpdo-progress { list-style: none; margin: 18px 0 0; padding: 0; display: grid; grid-template-columns: repeat(6, 1fr); gap: 4px; counter-reset: s; }
+.lpdo-progress li { position: relative; padding-top: 12px; font-size: .7rem; color: #a1a1aa; text-align: center; }
+.lpdo-progress li::before { content: ""; position: absolute; top: 0; left: 0; right: 0; height: 5px; border-radius: 3px; background: #e4e4e7; }
+.lpdo-progress li.is-done::before { background: var(--c-primary); }
+.lpdo-progress li.is-current::before { background: var(--c-accent); }
+.lpdo-progress li.is-done, .lpdo-progress li.is-current { color: #27272a; font-weight: 650; }
+
+.lpdo-block { margin-top: 20px; padding-top: 18px; border-top: 1px solid #f0f0f2; }
+.lpdo-block > h3 { font-size: 1rem; margin: 0 0 12px; }
+.lpdo-files { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.lpdo-file { display: grid; grid-template-columns: 72px minmax(0, 1fr) auto; gap: 14px; align-items: center; padding: 12px; border: 1px solid #ececef; border-radius: 12px; }
+.lpdo-file__thumb { width: 72px; height: 72px; border-radius: 8px; overflow: hidden; background: color-mix(in srgb, var(--c-primary) 8%, #fff); display: grid; place-items: center; font-weight: 800; font-size: .8rem; color: var(--c-primary); }
+.lpdo-file__thumb img { width: 100%; height: 100%; object-fit: cover; }
+.lpdo-file__name { margin: 0; font-weight: 650; word-break: break-all; font-size: .92rem; }
+.lpdo-file__actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.lpdo-file__qr .lpdo-qr, .lpdo-zip .lpdo-qr, .lpdo-share .lpdo-qr { display: block; border-radius: 6px; border: 1px solid #ececef; }
+.lpdo-zip { display: flex; gap: 14px; align-items: center; margin-top: 12px; padding: 12px; border-radius: 12px; background: color-mix(in srgb, var(--c-secondary) 40%, #fff); }
+.lpdo-zip p { margin: 0 0 6px; }
+
+.lpdo-proofs { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px; }
+.lpdo-proof { display: grid; place-items: center; min-height: 140px; border: 1px solid #ececef; border-radius: 10px; overflow: hidden; background: #fafafa; text-decoration: none; font-size: .85rem; }
+.lpdo-proof img { width: 100%; height: 100%; object-fit: cover; }
+.lpdo-decide { display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-start; margin-top: 14px; }
+.lpdo-decide form { margin: 0; }
+.lpdo-revise { flex: 1 1 280px; }
+.lpdo-revise summary { list-style: none; }
+.lpdo-revise summary::-webkit-details-marker { display: none; }
+.lpdo-revise[open] form { display: grid; gap: 8px; margin-top: 10px; }
+.lpdo-revise textarea, .lpdo-revise input[type=file] { width: 100%; font: inherit; padding: .6rem; border: 1px solid #d4d4d8; border-radius: 8px; }
+.lpdo-revise label { font-weight: 600; font-size: .88rem; }
+
+.lpdo-brief { margin-top: 18px; }
+.lpdo-brief > summary { cursor: pointer; font-weight: 650; font-size: .92rem; color: #52525b; }
+.lpdo-brief h4 { margin: 16px 0 6px; font-size: .9rem; }
+.lpdo-portal .lpdo-dl { margin-top: 4px; }
+
+/* Sidebar */
+.lpdo-side { display: grid; gap: 18px; position: sticky; top: 16px; }
+.lpdo-card { background: #fff; border: 1px solid #e4e4e7; border-radius: 14px; padding: 18px; }
+.lpdo-card h2 { font-size: 1rem; margin: 0 0 12px; }
+.lpdo-kit-logo { display: grid; place-items: center; padding: 14px; border-radius: 10px; background: #fafafa; margin-bottom: 12px; }
+.lpdo-kit-logo img { max-height: 90px; width: auto; }
+.lpdo-swatches { list-style: none; margin: 0 0 10px; padding: 0; display: grid; gap: 6px; }
+.lpdo-swatch { width: 100%; display: grid; grid-template-columns: 30px 1fr auto; gap: 10px; align-items: center; padding: 6px; border: 1px solid #ececef; border-radius: 8px; background: #fff; font: inherit; font-size: .88rem; cursor: pointer; text-align: left; }
+.lpdo-swatch__chip { width: 30px; height: 30px; border-radius: 6px; background: var(--sw); box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .08); }
+.lpdo-swatch code { font-size: .8rem; color: #52525b; }
+.lpdo-share { text-align: center; }
+.lpdo-share .lpdo-qr { margin: 0 auto 12px; }
+.lpdo-share__actions { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 10px; }
+
+/* New order form inside the portal */
+.lpdo-new { margin-top: 28px; background: #fff; border: 1px solid #e4e4e7; border-radius: 14px; padding: 18px 20px; scroll-margin-top: 16px; }
+.lpdo-new > summary { cursor: pointer; font-weight: 750; font-size: 1.05rem; color: var(--c-primary); }
+.lpdo-new[open] > summary { margin-bottom: 18px; }
+.lpdo-new .lpdo { --lpdo-accent: var(--c-accent); max-width: none; }
+.lpdo-new .lpdo-step-num, .lpdo-new .lpdo-button { background: var(--c-accent); color: var(--c-on-accent); }
+
+.lpdo-footer { padding: 24px 0 max(24px, env(safe-area-inset-bottom, 0px)); font-size: .82rem; color: #6b6b70; border-top: 1px solid #e4e4e7; background: #fff; }
+.lpdo-footer p { margin: 0; }
+.lpdo-copied { position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); background: #1c1c1e; color: #fff; padding: .5rem 1rem; border-radius: 8px; font-size: .88rem; z-index: 10; }
+
+@media (max-width: 900px) {
+  .lpdo-layout { grid-template-columns: 1fr; }
+  .lpdo-side { position: static; }
+}
+@media (max-width: 560px) {
+  .lpdo-order__head { grid-template-columns: auto minmax(0, 1fr); }
+  .lpdo-status { grid-column: 1 / -1; justify-self: start; }
+  .lpdo-file { grid-template-columns: 56px minmax(0, 1fr); }
+  .lpdo-file__thumb { width: 56px; height: 56px; }
+  .lpdo-file__qr { grid-column: 1 / -1; justify-self: start; }
+  .lpdo-progress li span { display: none; }
+  .lpdo-progress li.is-current span { display: inline; position: absolute; left: 0; white-space: nowrap; }
+}
+@media print {
+  .lpdo-brandbar, .lpdo-new, .lpdo-footer, .lpdo-btn, .lpdo-decide { display: none !important; }
+  body.lpdo-portal { background: #fff; }
+}
