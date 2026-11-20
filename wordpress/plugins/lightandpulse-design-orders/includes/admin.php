@@ -69,27 +69,27 @@ function lpdo_box_order_status(WP_Post $post): void
 function lpdo_box_order_files(WP_Post $post): void
 {
     $t = 'lightandpulse-design-orders';
-    $downloads = lpdo_meta_array($post->ID, '_lpdo_downloads');
-    foreach (['proofs' => [__('Proof / pratinjau', $t), __('Gambar atau PDF untuk diperiksa klien. Status otomatis menjadi “Menunggu persetujuan”.', $t)], 'finals' => [__('File final', $t), __('File yang bisa diunduh klien (link langsung + QR). Status otomatis menjadi “Selesai”.', $t)]] as $kind => [$title, $help]) :
+    $boxes = [
+        'proofs' => [__('Proof / pratinjau', $t), __('Link desain untuk diperiksa klien (Google Drive, Canva, Dropbox, WeTransfer…). Link baru mengubah status menjadi “Menunggu persetujuan”.', $t)],
+        'finals' => [__('File final', $t), __('Link file yang bisa diunduh klien; portal menampilkan tombol, Salin link dan QR. Link baru mengubah status menjadi “Selesai”.', $t)],
+    ];
+    foreach ($boxes as $kind => [$title, $help]) :
         $ids = lpdo_order_files($post->ID, $kind); ?>
-      <div class="lpdo-files-box" data-kind="<?php echo esc_attr($kind); ?>">
+      <div class="lpdo-files-box lpdo-admin-brief" data-kind="<?php echo esc_attr($kind); ?>">
         <h4><?php echo esc_html($title); ?></h4>
         <p class="description"><?php echo esc_html($help); ?></p>
-        <input type="hidden" name="lpdo_<?php echo esc_attr($kind); ?>" value="<?php echo esc_attr(implode(',', $ids)); ?>">
-        <ul class="lpdo-file-list">
-          <?php foreach ($ids as $id) : ?>
-            <li data-id="<?php echo (int) $id; ?>"><?php echo wp_get_attachment_image($id, [60, 60], true); ?><span><?php echo esc_html(basename((string) get_attached_file($id))); ?><?php if ($kind === 'finals') : ?><small> · <?php echo esc_html(sprintf(_n('%d unduhan', '%d unduhan', (int) ($downloads[$id] ?? 0), $t), (int) ($downloads[$id] ?? 0))); ?></small><?php endif; ?></span><button type="button" class="button-link lpdo-remove" aria-label="<?php esc_attr_e('Hapus dari order', $t); ?>">×</button></li>
-          <?php endforeach; ?>
-        </ul>
-        <button type="button" class="button lpdo-add-files"><?php esc_html_e('Tambah file', $t); ?></button>
+        <?php echo lpdo_render_field(lpdo_links_field($kind), lpdo_order_links($post->ID, $kind), 'lpdo_links'); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside. ?>
+        <?php if ($ids) : // files uploaded with an older version stay available until removed ?>
+          <p class="description"><?php esc_html_e('File lama (unggahan):', $t); ?></p>
+          <input type="hidden" name="lpdo_<?php echo esc_attr($kind); ?>" value="<?php echo esc_attr(implode(',', $ids)); ?>">
+          <ul class="lpdo-file-list">
+            <?php foreach ($ids as $id) : ?>
+              <li data-id="<?php echo (int) $id; ?>"><span><?php echo esc_html(basename((string) get_attached_file($id))); ?></span><button type="button" class="button-link lpdo-remove" aria-label="<?php esc_attr_e('Hapus dari order', $t); ?>">×</button></li>
+            <?php endforeach; ?>
+          </ul>
+        <?php endif; ?>
       </div>
     <?php endforeach;
-    if ($post->post_parent && lpdo_order_files($post->ID, 'finals')) : ?>
-      <p><b><?php esc_html_e('Link download untuk dibagikan:', $t); ?></b></p>
-      <ul class="lpdo-links"><?php foreach (lpdo_order_files($post->ID, 'finals') as $id) : $url = lpdo_portal_url($post->post_parent, 'file', (string) $id); ?>
-        <li><?php echo lpdo_qr_svg($url, 64); // phpcs:ignore WordPress.Security.EscapeOutput ?><code><?php echo esc_html($url); ?></code></li>
-      <?php endforeach; ?></ul>
-    <?php endif;
 }
 
 function lpdo_box_order_brief(WP_Post $post): void
@@ -171,15 +171,28 @@ add_action('save_post_lpdo_order', function (int $postId) {
     }
     update_post_meta($postId, '_lpdo_fields', $values);
 
-    // Files: new proofs move the order to "proof", new finals to "done".
+    // Links (and files from older versions): new proofs move the order to "proof", new finals to "done".
     $newStatus = sanitize_key(wp_unslash($_POST['lpdo_status'] ?? ''));
+    $linksIn = (array) wp_unslash($_POST['lpdo_links'] ?? []);
     foreach (['proofs' => 'proof', 'finals' => 'done'] as $kind => $autoStatus) {
-        $before = lpdo_order_files($postId, $kind);
-        $after = array_values(array_filter(array_map('intval', explode(',', (string) ($_POST['lpdo_' . $kind] ?? '')))));
-        $after = array_values(array_filter($after, fn($id) => get_post_type($id) === 'attachment'));
-        update_post_meta($postId, '_lpdo_' . $kind, $after);
-        if (array_diff($after, $before)) {
-            lpdo_log($postId, sprintf(__('%d file ditambahkan (%s).', 'lightandpulse-design-orders'), count(array_diff($after, $before)), $kind === 'finals' ? 'final' : 'proof'), wp_get_current_user()->display_name);
+        $before = array_column(lpdo_order_links($postId, $kind), 'url');
+        $links = [];
+        foreach (lpdo_sanitize_value(lpdo_links_field($kind), $linksIn[$kind] ?? []) as $row) {
+            $url = esc_url_raw(trim((string) $row['url']), ['http', 'https']);
+            if ($url !== '') {
+                $links[] = ['label' => $row['label'], 'url' => $url];
+            }
+        }
+        update_post_meta($postId, '_lpdo_' . $kind . '_links', $links);
+        $added = array_diff(array_column($links, 'url'), $before);
+
+        $oldIds = lpdo_order_files($postId, $kind);
+        if ($oldIds) {
+            $keep = array_values(array_intersect($oldIds, array_map('intval', explode(',', (string) ($_POST['lpdo_' . $kind] ?? '')))));
+            update_post_meta($postId, '_lpdo_' . $kind, $keep);
+        }
+        if ($added) {
+            lpdo_log($postId, sprintf(__('%d link ditambahkan (%s).', 'lightandpulse-design-orders'), count($added), $kind === 'finals' ? 'final' : 'proof'), wp_get_current_user()->display_name);
             if ($newStatus === lpdo_order_status($postId)) {
                 $newStatus = $autoStatus;
             }

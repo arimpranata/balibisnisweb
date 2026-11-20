@@ -150,6 +150,46 @@ function lpdo_order_files(int $orderId, string $kind): array
     return array_values(array_filter(array_map('intval', lpdo_meta_array($orderId, '_lpdo_' . $kind))));
 }
 
+/** Links the team shares: 'proofs' (designs to review) or 'finals' (files to download). Each: label, url. */
+function lpdo_order_links(int $orderId, string $kind): array
+{
+    $out = [];
+    foreach (lpdo_meta_array($orderId, '_lpdo_' . $kind . '_links') as $l) {
+        $url = is_array($l) ? esc_url_raw((string) ($l['url'] ?? ''), ['http', 'https']) : '';
+        if ($url !== '') {
+            $out[] = ['label' => sanitize_text_field((string) ($l['label'] ?? '')), 'url' => $url];
+        }
+    }
+    return $out;
+}
+
+/** Field definition for editing those links in wp-admin (a two-column table). */
+function lpdo_links_field(string $kind): array
+{
+    $t = 'lightandpulse-design-orders';
+    return ['key' => $kind, 'label' => $kind === 'finals' ? __('File final', $t) : __('Proof', $t), 'type' => 'repeater', 'rows' => 1,
+        'add_label' => __('Tambah link', $t), 'columns' => [
+            ['key' => 'label', 'label' => __('Nama (mis. Poster A4, PDF cetak)', $t), 'type' => 'text', 'size' => 2],
+            ['key' => 'url', 'label' => __('Link / URL (Google Drive, Canva, Dropbox…)', $t), 'type' => 'text', 'size' => 4, 'inputmode' => 'url', 'placeholder' => 'https://'],
+        ]];
+}
+
+/** Everything the client can open for an order: shared links plus files from older versions. */
+function lpdo_order_items(int $orderId, string $kind): array
+{
+    $clientId = (int) get_post_field('post_parent', $orderId);
+    $items = [];
+    foreach (lpdo_order_links($orderId, $kind) as $i => $l) {
+        $host = (string) wp_parse_url($l['url'], PHP_URL_HOST);
+        $items[] = ['label' => $l['label'] ?: preg_replace('/^www\./', '', $host), 'url' => $l['url'], 'host' => preg_replace('/^www\./', '', $host), 'qr' => 'link-' . $orderId . '-' . $kind . '-' . $i];
+    }
+    foreach (lpdo_order_files($orderId, $kind) as $attId) {
+        $url = lpdo_portal_url($clientId, 'file', (string) $attId);
+        $items[] = ['label' => basename((string) get_attached_file($attId)), 'url' => $kind === 'proofs' ? add_query_arg('view', 1, $url) : $url, 'host' => lpdo_file_size($attId), 'qr' => 'file-' . $attId];
+    }
+    return $items;
+}
+
 function lpdo_log(int $orderId, string $text, string $who = 'system'): void
 {
     $log = lpdo_meta_array($orderId, '_lpdo_log');

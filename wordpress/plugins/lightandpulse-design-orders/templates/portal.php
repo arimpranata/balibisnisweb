@@ -94,8 +94,9 @@ $initials = strtoupper(mb_substr(preg_replace('/[^\p{L}\p{N} ]/u', '', $name), 0
           $type = lpdo_order_type($oid);
           $status = lpdo_order_status($oid);
           $fields = lpdo_order_fields($oid);
-          $finals = lpdo_order_files($oid, 'finals');
-          $proofs = lpdo_order_files($oid, 'proofs');
+          $finals = lpdo_order_items($oid, 'finals');
+          $proofs = lpdo_order_items($oid, 'proofs');
+          $legacyFinals = lpdo_order_files($oid, 'finals');
           $deadline = (string) get_post_meta($oid, '_lpdo_deadline', true);
           $stepIndex = array_search($status === 'revision' ? 'proof' : $status, $steps, true);
           ?>
@@ -121,46 +122,39 @@ $initials = strtoupper(mb_substr(preg_replace('/[^\p{L}\p{N} ]/u', '', $name), 0
 
           <?php if ($finals) : ?>
             <div class="lpdo-block">
-              <h3><?php esc_html_e('File siap diunduh', $t); ?></h3>
-              <ul class="lpdo-files">
-                <?php foreach ($finals as $fid) :
-                    $dl = lpdo_portal_url($cid, 'file', (string) $fid);
-                    $mime = (string) get_post_mime_type($fid);
-                    ?>
-                  <li class="lpdo-file">
-                    <div class="lpdo-file__thumb"><?php echo str_starts_with($mime, 'image/') ? '<img src="' . esc_url(add_query_arg('view', 1, $dl)) . '" alt="" loading="lazy">' : '<span>' . esc_html(strtoupper(pathinfo((string) get_attached_file($fid), PATHINFO_EXTENSION))) . '</span>'; ?></div>
-                    <div class="lpdo-file__info">
-                      <p class="lpdo-file__name"><?php echo esc_html(basename((string) get_attached_file($fid))); ?></p>
-                      <p class="lpdo-muted"><?php echo esc_html(lpdo_file_size($fid)); ?></p>
-                      <div class="lpdo-file__actions">
-                        <a class="lpdo-btn lpdo-btn--primary" href="<?php echo esc_url($dl); ?>"><?php esc_html_e('Unduh', $t); ?></a>
-                        <button type="button" class="lpdo-btn lpdo-btn--ghost" data-copy="<?php echo esc_attr($dl); ?>"><?php esc_html_e('Salin link', $t); ?></button>
-                        <a class="lpdo-btn lpdo-btn--ghost" href="<?php echo esc_url(lpdo_portal_url($cid, 'qr', 'file-' . $fid)); ?>"><?php esc_html_e('Unduh QR', $t); ?></a>
-                      </div>
-                    </div>
-                    <div class="lpdo-file__qr" title="<?php esc_attr_e('Pindai untuk mengunduh file ini', $t); ?>"><?php echo lpdo_qr_svg($dl, 112, '#111111', '#ffffff', __('QR untuk mengunduh file ini', $t)); // phpcs:ignore WordPress.Security.EscapeOutput -- generated SVG. ?></div>
+              <div class="lpdo-block__head"><h3><?php esc_html_e('File siap diunduh', $t); ?></h3><div class="lpdo-view" role="group" aria-label="<?php esc_attr_e('Tampilan', $t); ?>"><button type="button" data-view="list" aria-label="<?php esc_attr_e('List', $t); ?>"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg></button><button type="button" data-view="grid" aria-label="<?php esc_attr_e('Grid', $t); ?>"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></button></div></div>
+              <ul class="lpdo-links lpdo-links--finals" data-views>
+                <?php foreach ($finals as $item) : ?>
+                  <li class="lpdo-link">
+                    <span class="lpdo-link__icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg></span>
+                    <span class="lpdo-link__text"><strong><?php echo esc_html($item['label']); ?></strong><small><?php echo esc_html($item['host']); ?></small></span>
+                    <span class="lpdo-link__actions">
+                      <a class="lpdo-btn lpdo-btn--primary" href="<?php echo esc_url($item['url']); ?>" target="_blank" rel="noopener noreferrer"><?php esc_html_e('Buka / unduh', $t); ?></a>
+                      <button type="button" class="lpdo-btn lpdo-btn--ghost" data-copy="<?php echo esc_attr($item['url']); ?>"><?php esc_html_e('Salin link', $t); ?></button>
+                      <a class="lpdo-btn lpdo-btn--ghost" href="<?php echo esc_url(lpdo_portal_url($cid, 'qr', $item['qr'])); ?>"><?php esc_html_e('Unduh QR', $t); ?></a>
+                    </span>
+                    <span class="lpdo-link__qr" title="<?php esc_attr_e('Pindai untuk membuka link ini', $t); ?>"><?php echo lpdo_qr_svg($item['url'], 84, '#111111', '#ffffff', __('QR link file', $t)); // phpcs:ignore WordPress.Security.EscapeOutput -- generated SVG. ?></span>
                   </li>
                 <?php endforeach; ?>
               </ul>
-              <?php if (count($finals) > 1 && class_exists('ZipArchive')) : $zip = lpdo_portal_url($cid, 'zip', (string) $oid); ?>
-                <div class="lpdo-zip">
-                  <?php echo lpdo_qr_svg($zip, 88, '#111111', '#ffffff', __('QR untuk mengunduh semua file', $t)); // phpcs:ignore WordPress.Security.EscapeOutput ?>
-                  <div><p><strong><?php esc_html_e('Semua file dalam satu ZIP', $t); ?></strong></p><a class="lpdo-btn lpdo-btn--primary" href="<?php echo esc_url($zip); ?>"><?php esc_html_e('Unduh semua (ZIP)', $t); ?></a></div>
-                </div>
+              <?php if (count($legacyFinals) > 1 && class_exists('ZipArchive')) : $zip = lpdo_portal_url($cid, 'zip', (string) $oid); ?>
+                <p class="lpdo-zip-line"><a class="lpdo-btn lpdo-btn--ghost" href="<?php echo esc_url($zip); ?>"><?php esc_html_e('Unduh semua file unggahan (ZIP)', $t); ?></a></p>
               <?php endif; ?>
             </div>
           <?php endif; ?>
 
           <?php if ($proofs && in_array($status, ['proof', 'revision'], true)) : ?>
             <div class="lpdo-block">
-              <h3><?php esc_html_e('Desain untuk Anda periksa', $t); ?></h3>
-              <div class="lpdo-proofs">
-                <?php foreach ($proofs as $pid) : $view = add_query_arg('view', 1, lpdo_portal_url($cid, 'file', (string) $pid)); ?>
-                  <a class="lpdo-proof" href="<?php echo esc_url($view); ?>" target="_blank" rel="noopener">
-                    <?php if (str_starts_with((string) get_post_mime_type($pid), 'image/')) : ?><img src="<?php echo esc_url($view); ?>" alt="<?php esc_attr_e('Pratinjau desain', $t); ?>" loading="lazy"><?php else : ?><span><?php echo esc_html(basename((string) get_attached_file($pid))); ?></span><?php endif; ?>
-                  </a>
+              <div class="lpdo-block__head"><h3><?php esc_html_e('Desain untuk Anda periksa', $t); ?></h3><div class="lpdo-view" role="group" aria-label="<?php esc_attr_e('Tampilan', $t); ?>"><button type="button" data-view="list" aria-label="<?php esc_attr_e('List', $t); ?>"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg></button><button type="button" data-view="grid" aria-label="<?php esc_attr_e('Grid', $t); ?>"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></button></div></div>
+              <ul class="lpdo-links lpdo-links--proofs" data-views>
+                <?php foreach ($proofs as $item) : ?>
+                  <li><a class="lpdo-link lpdo-link--btn" href="<?php echo esc_url($item['url']); ?>" target="_blank" rel="noopener noreferrer">
+                    <span class="lpdo-link__icon"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/></svg></span>
+                    <span class="lpdo-link__text"><strong><?php echo esc_html($item['label']); ?></strong><small><?php echo esc_html($item['host']); ?></small></span>
+                    <span class="lpdo-link__go" aria-hidden="true">→</span>
+                  </a></li>
                 <?php endforeach; ?>
-              </div>
+              </ul>
               <?php if ($status === 'proof') : ?>
                 <div class="lpdo-decide">
                   <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">

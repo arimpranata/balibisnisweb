@@ -3,7 +3,7 @@ Contributors: lightandpulse
 Requires at least: 6.2
 Tested up to: 6.8
 Requires PHP: 8.0
-Stable tag: 1.4.1
+Stable tag: 1.5.0
 License: GPLv2 or later
 
 Design order system for posters, menus, flyers, backdrops and business cards, with a branded portal page for every client, proof approval, and direct download links with QR codes.
@@ -33,13 +33,13 @@ Design order system for posters, menus, flyers, backdrops and business cards, wi
 = Client portal =
 * Every client gets a page `/client/{business}/{secret-key}/` with their logo and brand colours.
 * Order status with progress steps, the full brief, proofs to approve or send back with revision notes and attachments.
-* Final files with a direct download link, "copy link", and a QR code for each file (scan to download), plus a ZIP of all files with its own QR.
+* Proofs and final files are links the team shares (Google Drive, Canva, Dropbox, WeTransfer…), shown as buttons in a list or grid; each final file also gets "copy link" and a QR code (scan to open). Files uploaded with older versions keep working.
 * Floating buttons open side panels: Brand kit (logo on light and dark, colours with hex codes, font, standard contact block, and a form to update business & branding) and Link & QR for the portal itself.
 * Clients place new orders from their portal without re-entering business details, or press "Duplikat" on an earlier order to start from its brief and files.
 * Not indexed, not cached, no third-party fonts or scripts.
 
 = Admin (Design Orders menu) =
-* Orders: status, type, deadline, client, editable brief, proofs and final files from the Media Library (adding them moves the status to "Waiting for approval" / "Done"), WhatsApp button with the portal link, history log, download counts.
+* Orders: status, type, deadline, client, editable brief, proof and final file links (adding them moves the status to "Waiting for approval" / "Done"), WhatsApp button with the portal link, history log, download counts.
 * Clients: details, branding, logo (Featured image), portal link and QR, new secret link on demand.
 * Email notifications to the team and the client.
 * If the Lightandpulse theme's Leads CRM is active, every new client becomes a hot lead and each order is logged on it.
@@ -63,6 +63,11 @@ Design order system for posters, menus, flyers, backdrops and business cards, wi
 QR codes are generated on your server with QR Code Generator by Kazuhiko Arase (MIT licence), in vendor/qrcode-generator.
 
 == Changelog ==
+= 1.5.0 =
+* Proofs and final files are now links (label + URL) instead of Media Library uploads; non-http(s) links are refused.
+* Portal shows them as buttons without previews, in a list or grid view remembered per browser; final links keep copy link and QR (inline and PNG download).
+* Files uploaded with older versions stay available until removed.
+
 = 1.4.1 =
 * Events and promo items are optional, folded in closed accordions that open by themselves when they hold answers (e.g. a duplicated order).
 * Text on the design comes first, with a taller body text field.

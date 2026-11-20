@@ -117,7 +117,7 @@ function lpdo_send_zip(WP_Post $client, int $orderId): void
     exit;
 }
 
-/** QR targets: "page" (this portal), "file-{id}" (a direct download), "zip-{order}". */
+/** QR targets: "page" (this portal), "file-{id}" (a direct download), "link-{order}-{kind}-{n}" (a shared link), "zip-{order}". */
 function lpdo_qr_target_url(WP_Post $client, string $target): string
 {
     if ($target === 'page') {
@@ -125,6 +125,9 @@ function lpdo_qr_target_url(WP_Post $client, string $target): string
     }
     if (preg_match('/^file-(\d+)$/', $target, $m) && lpdo_file_order($client, (int) $m[1])) {
         return lpdo_portal_url($client->ID, 'file', $m[1]);
+    }
+    if (preg_match('/^link-(\d+)-(proofs|finals)-(\d+)$/', $target, $m) && (int) get_post_field('post_parent', (int) $m[1]) === $client->ID) {
+        return lpdo_order_links((int) $m[1], $m[2])[(int) $m[3]]['url'] ?? '';
     }
     if (preg_match('/^zip-(\d+)$/', $target, $m) && (int) get_post_field('post_parent', (int) $m[1]) === $client->ID) {
         return lpdo_portal_url($client->ID, 'zip', $m[1]);
