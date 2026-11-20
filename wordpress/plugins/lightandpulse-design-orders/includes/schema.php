@@ -103,9 +103,6 @@ function lpdo_order_groups(): array
                 ]],
                 ['key' => 'outlet', 'label' => __('Outlet / venue', $t), 'type' => 'text', 'width' => 'half', 'placeholder' => __('mis. Starfish Beach Lounge, Junglia Restaurant', $t), 'help' => __('Isi bila desain untuk restoran, bar atau spa tertentu.', $t)],
                 ['key' => 'outlet_logo', 'label' => __('Logo outlet / partner', $t), 'type' => 'file', 'multiple' => true, 'accept' => 'image/*,application/pdf', 'help' => __('Logo restoran/bar, sponsor atau brand partner (mis. Bintang, Coca-Cola).', $t)],
-                ['key' => 'audience', 'label' => __('Target audiens', $t), 'type' => 'text', 'width' => 'half', 'placeholder' => __('mis. tamu hotel, turis keluarga, warga lokal', $t)],
-                ['key' => 'languages', 'label' => __('Bahasa di desain', $t), 'type' => 'checkboxes', 'width' => 'half', 'options' => ['en' => 'English', 'id' => __('Indonesia', $t), 'other' => __('Lainnya', $t)]],
-                ['key' => 'languages_other', 'label' => __('Bahasa lain', $t), 'type' => 'text', 'width' => 'half', 'placeholder' => __('mis. 中文, Русский', $t)],
             ],
         ],
 

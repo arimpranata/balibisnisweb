@@ -3,7 +3,7 @@
   // Fields that only matter for certain answers: field key -> [controlling field, value].
   var RULES = {
     sizes_custom: ['sizes', 'custom'], menu_size_custom: ['menu_size', 'custom'], card_size_custom: ['card_size', 'custom'],
-    languages_other: ['languages', 'other'], menu_photo_files: ['menu_photos', 'own'],
+    menu_photo_files: ['menu_photos', 'own'],
     contact_text: ['contact_mode', 'custom'], qr_url: ['qr', 'custom'],
     backdrop_hashtag: ['backdrop_elements', 'hashtag'], backdrop_names: ['backdrop_elements', 'names'],
     backdrop_sponsors: ['backdrop_elements', 'sponsors']

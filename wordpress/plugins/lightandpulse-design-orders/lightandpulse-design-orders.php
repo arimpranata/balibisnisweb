@@ -3,7 +3,7 @@
  * Plugin Name:       Lightandpulse Design Orders
  * Plugin URI:        https://lightandpulse.com
  * Description:       Design order system for posters, menus, flyers, backdrops and business cards. Clients fill in a detailed brief, get their own branded portal page, approve proofs and download final files by direct link or QR code.
- * Version:           1.3.0
+ * Version:           1.3.1
  * Requires at least: 6.2
  * Requires PHP:      8.0
  * Author:            Lightandpulse
@@ -14,7 +14,7 @@
  */
 defined('ABSPATH') || exit;
 
-define('LPDO_VERSION', '1.3.0');
+define('LPDO_VERSION', '1.3.1');
 define('LPDO_FILE', __FILE__);
 define('LPDO_DIR', __DIR__);
 define('LPDO_URL', plugin_dir_url(__FILE__));
