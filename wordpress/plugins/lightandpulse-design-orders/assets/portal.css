@@ -11,6 +11,7 @@ body.lpdo-portal { margin: 0; font: 16px/1.6 system-ui, -apple-system, "Segoe UI
 .lpdo-brandbar { background: var(--c-primary); color: var(--c-on-primary); padding: 20px 0; padding-top: max(20px, env(safe-area-inset-top, 0px)); box-shadow: inset 0 -1px 0 rgba(0, 0, 0, .06); }
 .lpdo-brandbar__inner { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
 .lpdo-brand { display: flex; align-items: center; gap: 14px; min-width: 0; }
+.lpdo-brand__logo.is-light { background: rgba(0, 0, 0, .18); box-shadow: none; }
 .lpdo-brand__logo { width: 60px; height: 60px; object-fit: contain; background: #fff; border-radius: 14px; padding: 6px; box-shadow: 0 1px 2px rgba(0, 0, 0, .12); }
 .lpdo-brand__initials { display: grid; place-items: center; width: 64px; height: 64px; border-radius: 12px; background: var(--c-accent); color: var(--c-on-accent); font-weight: 800; font-size: 1.4rem; }
 .lpdo-brand__name { margin: 0; font-size: 1.3rem; font-weight: 750; line-height: 1.2; letter-spacing: -.01em; }
@@ -28,7 +29,8 @@ body.lpdo-portal { margin: 0; font: 16px/1.6 system-ui, -apple-system, "Segoe UI
 
 /* Layout */
 .lpdo-main { padding-top: 32px; padding-bottom: 64px; }
-.lpdo-layout { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 24px; align-items: start; }
+.lpdo-layout { display: block; }
+.lpdo-main, .lpdo-brandbar .lpdo-wrap, .lpdo-footer .lpdo-wrap { max-width: 960px; }
 .lpdo-orders__head { display: flex; align-items: flex-end; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
 .lpdo-orders h1 { font-size: 1.6rem; line-height: 1.2; letter-spacing: -.02em; margin: 0; }
 .lpdo-stats { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 0; }
@@ -95,8 +97,10 @@ body.lpdo-portal { margin: 0; font: 16px/1.6 system-ui, -apple-system, "Segoe UI
 .lpdo-side { display: grid; gap: 18px; position: sticky; top: 16px; }
 .lpdo-card { background: #fff; border: 1px solid #e4e4e7; border-radius: 16px; padding: 20px; box-shadow: 0 1px 2px rgba(16, 24, 40, .04); }
 .lpdo-card h2 { font-size: .78rem; text-transform: uppercase; letter-spacing: .08em; color: #71717a; margin: 0 0 14px; }
-.lpdo-kit-logo { display: grid; place-items: center; padding: 14px; border-radius: 10px; background: #fafafa; margin-bottom: 12px; }
-.lpdo-kit-logo img { max-height: 90px; width: auto; }
+.lpdo-kit-logos { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 14px; }
+.lpdo-kit-logo { display: grid; place-items: center; min-height: 110px; padding: 14px; border-radius: 12px; background: #f4f4f5; border: 1px solid #e4e4e7; }
+.lpdo-kit-logo.is-dark { background: var(--c-primary); border-color: transparent; }
+.lpdo-kit-logo img { max-height: 80px; width: auto; }
 .lpdo-swatches { list-style: none; margin: 0 0 10px; padding: 0; display: grid; gap: 6px; }
 .lpdo-swatch { width: 100%; display: grid; grid-template-columns: 30px 1fr auto; gap: 10px; align-items: center; padding: 6px; border: 1px solid #ececef; border-radius: 8px; background: #fff; font: inherit; font-size: .88rem; cursor: pointer; text-align: left; }
 .lpdo-swatch__chip { width: 30px; height: 30px; border-radius: 6px; background: var(--sw); box-shadow: inset 0 0 0 1px rgba(0, 0, 0, .08); }
@@ -132,7 +136,7 @@ body.lpdo-portal { margin: 0; font: 16px/1.6 system-ui, -apple-system, "Segoe UI
 }
 @media (max-width: 560px) {
   .lpdo-order__head { grid-template-columns: auto minmax(0, 1fr); }
-  .lpdo-status { grid-column: 1 / -1; justify-self: start; }
+  .lpdo-order__side { grid-column: 1 / -1; flex-direction: row; justify-content: space-between; align-items: center; }
   .lpdo-file { grid-template-columns: 56px minmax(0, 1fr); }
   .lpdo-file__thumb { width: 56px; height: 56px; }
   .lpdo-file__qr { grid-column: 1 / -1; justify-self: start; }
@@ -143,3 +147,40 @@ body.lpdo-portal { margin: 0; font: 16px/1.6 system-ui, -apple-system, "Segoe UI
   .lpdo-brandbar, .lpdo-new, .lpdo-footer, .lpdo-btn, .lpdo-decide { display: none !important; }
   body.lpdo-portal { background: #fff; }
 }
+
+/* Order card: duplicate */
+.lpdo-order__side { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+.lpdo-dup { display: inline-flex; align-items: center; gap: 5px; font-size: .78rem; font-weight: 650; color: #52525b !important; text-decoration: none; padding: .3rem .6rem; border: 1px solid #e4e4e7; border-radius: 8px; background: #fff; white-space: nowrap; }
+.lpdo-dup:hover { border-color: var(--c-primary); color: var(--c-primary) !important; }
+.lpdo-copy-note { display: flex; gap: 12px; align-items: flex-start; padding: 14px 16px; border-radius: 12px; background: color-mix(in srgb, var(--c-primary) 9%, #fff); border: 1px solid color-mix(in srgb, var(--c-primary) 30%, #fff); color: #27272a; }
+.lpdo-copy-note svg { flex: none; margin-top: 2px; color: var(--c-primary); }
+.lpdo-copy-note p { margin: 0; font-size: .9rem; }
+.lpdo-copy-note a { font-weight: 650; }
+
+/* Floating buttons and side panels */
+.lpdo-fab { position: fixed; right: max(18px, env(safe-area-inset-right, 0px)); bottom: max(18px, env(safe-area-inset-bottom, 0px)); z-index: 20; display: flex; flex-direction: column; gap: 10px; align-items: flex-end; }
+.lpdo-fab__btn { display: inline-flex; align-items: center; gap: 0; height: 52px; min-width: 52px; padding: 0 16px; border: 0; border-radius: 999px; background: #18181b; color: #fff; font: inherit; font-size: .88rem; font-weight: 650; cursor: pointer; box-shadow: 0 6px 20px rgba(0, 0, 0, .2); transition: transform .15s, background-color .15s; }
+.lpdo-fab__btn:first-child { background: var(--c-primary); color: var(--c-on-primary); }
+.lpdo-fab__btn span { max-width: 0; overflow: hidden; white-space: nowrap; transition: max-width .2s, margin .2s; }
+.lpdo-fab__btn:hover span, .lpdo-fab__btn:focus-visible span { max-width: 140px; margin-left: 8px; }
+.lpdo-fab__btn:hover { transform: translateY(-1px); }
+.lpdo-fab__btn:focus-visible { outline: 3px solid var(--c-accent); outline-offset: 2px; }
+.lpdo-drawer { position: fixed; inset: 0 0 0 auto; margin: 0; width: min(440px, 100vw); max-width: 100vw; height: 100%; max-height: none; padding: 0; border: 0; background: #fff; color: #18181b; box-shadow: -10px 0 40px rgba(0, 0, 0, .18); }
+.lpdo-drawer[open] { display: flex; flex-direction: column; animation: lpdo-in .22s ease-out; }
+.lpdo-drawer::backdrop { background: rgba(9, 9, 11, .45); }
+@keyframes lpdo-in { from { transform: translateX(24px); opacity: 0; } to { transform: none; opacity: 1; } }
+.lpdo-drawer__head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 18px 20px; border-bottom: 1px solid #f0f0f2; }
+.lpdo-drawer__head h2 { margin: 0; font-size: 1.05rem; }
+.lpdo-drawer__close { display: grid; place-items: center; width: 36px; height: 36px; border: 0; border-radius: 10px; background: #f4f4f5; color: inherit; cursor: pointer; }
+.lpdo-drawer__body { flex: 1; overflow-y: auto; padding: 20px; padding-bottom: max(20px, env(safe-area-inset-bottom, 0px)); }
+.lpdo-share .lpdo-drawer__body { text-align: center; }
+.lpdo-profile { margin-top: 20px; border-top: 1px solid #f0f0f2; padding-top: 16px; }
+.lpdo-profile > summary { cursor: pointer; font-weight: 650; color: var(--c-primary); }
+.lpdo-profile[open] > summary { margin-bottom: 14px; }
+.lpdo-profile .lpdo { --lpdo-accent: var(--c-primary); --lpdo-on-accent: var(--c-on-primary); max-width: none; }
+.lpdo-profile .lpdo-grid { grid-template-columns: 1fr 1fr; gap: 14px; }
+.lpdo-profile .lpdo-field, .lpdo-profile .lpdo-w-half { grid-column: span 2; }
+.lpdo-profile .lpdo-w-third { grid-column: span 1; }
+.lpdo-profile .lpdo-group { margin-top: 20px; }
+@media (prefers-reduced-motion: reduce) { .lpdo-drawer[open] { animation: none; } }
+@media print { .lpdo-fab, .lpdo-drawer { display: none !important; } }

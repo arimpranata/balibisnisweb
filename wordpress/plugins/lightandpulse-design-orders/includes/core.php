@@ -198,3 +198,45 @@ function lpdo_file_size(int $attId): string
     $file = get_attached_file($attId);
     return $file && is_readable($file) ? size_format(filesize($file), 1) : '';
 }
+
+/**
+ * Is the logo mostly light (e.g. a white logo)? Then it needs a dark
+ * background. Measured once from the visible pixels and cached.
+ */
+function lpdo_logo_is_light(int $attId): bool
+{
+    $cached = get_post_meta($attId, '_lpdo_logo_light', true);
+    if ($cached !== '') {
+        return $cached === '1';
+    }
+    $light = false;
+    $path = get_attached_file($attId);
+    $meta = wp_get_attachment_metadata($attId);
+    if (!empty($meta['sizes']['thumbnail']['file']) && $path) {
+        $path = dirname($path) . '/' . $meta['sizes']['thumbnail']['file'];
+    }
+    if ($path && is_readable($path) && function_exists('imagecreatefromstring') && str_starts_with((string) get_post_mime_type($attId), 'image/')) {
+        $im = @imagecreatefromstring((string) file_get_contents($path));
+        if ($im) {
+            $w = imagesx($im);
+            $h = imagesy($im);
+            $sum = 0;
+            $n = 0;
+            $step = max(1, (int) floor(min($w, $h) / 40));
+            for ($x = 0; $x < $w; $x += $step) {
+                for ($y = 0; $y < $h; $y += $step) {
+                    $c = imagecolorsforindex($im, imagecolorat($im, $x, $y));
+                    if ($c['alpha'] > 90) {
+                        continue; // transparent
+                    }
+                    $sum += 0.2126 * $c['red'] + 0.7152 * $c['green'] + 0.0722 * $c['blue'];
+                    $n++;
+                }
+            }
+            imagedestroy($im);
+            $light = $n > 0 && $sum / $n > 200;
+        }
+    }
+    update_post_meta($attId, '_lpdo_logo_light', $light ? '1' : '0');
+    return $light;
+}

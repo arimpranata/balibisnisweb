@@ -16,6 +16,7 @@ $accent = lpdo_hex(lpdo_client_meta($cid, 'color_accent'), '#ff6a3d');
 $logoId = (int) get_post_thumbnail_id($cid);
 $logoUrl = $logoId ? wp_get_attachment_image_url($logoId, 'medium') : '';
 $name = get_the_title($client);
+$logoLight = $logoId && lpdo_logo_is_light($logoId);
 $tagline = lpdo_client_meta($cid, 'tagline');
 $font = lpdo_client_meta($cid, 'brand_font');
 $agency = lpdo_setting('agency_name');
@@ -28,6 +29,8 @@ $notices = [
     'approved'     => __('Terima kasih, desain sudah disetujui. File final akan muncul di halaman ini.', $t),
     'revision'     => __('Permintaan revisi terkirim. Kami akan mengabari Anda saat versi baru siap.', $t),
     'note-missing' => __('Tuliskan catatan revisi sebelum mengirim.', $t),
+    'profile'      => __('Data bisnis & branding tersimpan.', $t),
+    'profile-error' => __('Data bisnis belum tersimpan: nama bisnis, nama kontak, WhatsApp dan email wajib diisi dengan benar.', $t),
 ];
 $portalUrl = lpdo_portal_url($cid);
 $counts = ['waiting' => 0, 'active' => 0, 'done' => 0];
@@ -52,7 +55,7 @@ $initials = strtoupper(mb_substr(preg_replace('/[^\p{L}\p{N} ]/u', '', $name), 0
 <header class="lpdo-brandbar">
   <div class="lpdo-wrap lpdo-brandbar__inner">
     <div class="lpdo-brand">
-      <?php if ($logoUrl) : ?><img class="lpdo-brand__logo" src="<?php echo esc_url($logoUrl); ?>" alt="<?php echo esc_attr($name); ?>"><?php else : ?><span class="lpdo-brand__initials" aria-hidden="true"><?php echo esc_html($initials); ?></span><?php endif; ?>
+      <?php if ($logoUrl) : ?><img class="lpdo-brand__logo<?php echo $logoLight ? ' is-light' : ''; ?>" src="<?php echo esc_url($logoUrl); ?>" alt="<?php echo esc_attr($name); ?>"><?php else : ?><span class="lpdo-brand__initials" aria-hidden="true"><?php echo esc_html($initials); ?></span><?php endif; ?>
       <div><p class="lpdo-brand__name"><?php echo esc_html($name); ?></p><?php if ($tagline) : ?><p class="lpdo-brand__tagline"><?php echo esc_html($tagline); ?></p><?php endif; ?></div>
     </div>
     <a class="lpdo-btn lpdo-btn--light" href="#new-order" data-open-new-order><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg> <?php esc_html_e('Order desain baru', $t); ?></a>
@@ -60,7 +63,7 @@ $initials = strtoupper(mb_substr(preg_replace('/[^\p{L}\p{N} ]/u', '', $name), 0
 </header>
 
 <main class="lpdo-wrap lpdo-main">
-  <?php if (isset($notices[$notice])) : ?><div class="lpdo-notice <?php echo $notice === 'note-missing' ? 'is-error' : ''; ?>" role="status"><p><?php echo esc_html($notices[$notice]); ?></p></div><?php endif; ?>
+  <?php if (isset($notices[$notice])) : ?><div class="lpdo-notice <?php echo in_array($notice, ['note-missing', 'profile-error'], true) ? 'is-error' : ''; ?>" role="status"><p><?php echo esc_html($notices[$notice]); ?></p></div><?php endif; ?>
 
   <div class="lpdo-layout">
     <section class="lpdo-orders" aria-labelledby="lpdo-orders-title">
@@ -81,7 +84,7 @@ $initials = strtoupper(mb_substr(preg_replace('/[^\p{L}\p{N} ]/u', '', $name), 0
         <div class="lpdo-empty">
           <span class="lpdo-empty__icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.5 5.5L20 9.3l-4 4 1 5.7-5-2.8-5 2.8 1-5.7-4-4 5.5-.8z"/></svg></span>
           <h2><?php esc_html_e('Belum ada order', $t); ?></h2>
-          <p><?php esc_html_e('Mulai order desain pertama Anda. Brand kit di samping sudah otomatis terisi di form.', $t); ?></p>
+          <p><?php esc_html_e('Mulai order desain pertama Anda. Data bisnis dan brand kit Anda sudah tersimpan, jadi tidak perlu diisi lagi.', $t); ?></p>
           <a class="lpdo-btn lpdo-btn--primary" href="#new-order" data-open-new-order><?php esc_html_e('Buat order pertama', $t); ?></a>
         </div>
       <?php endif; ?>
@@ -104,7 +107,10 @@ $initials = strtoupper(mb_substr(preg_replace('/[^\p{L}\p{N} ]/u', '', $name), 0
               <h2><?php echo esc_html($fields['title'] ?? get_the_title($order)); ?></h2>
               <?php if ($deadline) : ?><p class="lpdo-order__meta"><?php echo esc_html(sprintf(__('Deadline: %s', $t), date_i18n(get_option('date_format'), strtotime($deadline)))); ?></p><?php endif; ?>
             </div>
-            <span class="lpdo-status lpdo-status--<?php echo esc_attr($status); ?>"><?php echo esc_html($statuses[$status]); ?></span>
+            <div class="lpdo-order__side">
+              <span class="lpdo-status lpdo-status--<?php echo esc_attr($status); ?>"><?php echo esc_html($statuses[$status]); ?></span>
+              <a class="lpdo-dup" href="<?php echo esc_url(add_query_arg('lpdo_copy', $oid, $portalUrl) . '#new-order'); ?>" title="<?php esc_attr_e('Buat order baru dari brief ini', $t); ?>"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg> <?php esc_html_e('Duplikat', $t); ?></a>
+            </div>
           </header>
 
           <ol class="lpdo-progress" aria-label="<?php esc_attr_e('Tahap order', $t); ?>">
@@ -206,37 +212,55 @@ $initials = strtoupper(mb_substr(preg_replace('/[^\p{L}\p{N} ]/u', '', $name), 0
       <?php endforeach; ?>
     </section>
 
-    <aside class="lpdo-side">
-      <div class="lpdo-card">
-        <h2><?php esc_html_e('Brand kit', $t); ?></h2>
-        <?php if ($logoId) : ?><a class="lpdo-kit-logo" href="<?php echo esc_url(wp_get_attachment_url($logoId)); ?>" download><img src="<?php echo esc_url($logoUrl); ?>" alt="<?php echo esc_attr(sprintf(__('Logo %s', $t), $name)); ?>"></a><?php endif; ?>
-        <ul class="lpdo-swatches">
-          <?php foreach ([__('Utama', $t) => $primary, __('Kedua', $t) => $secondary, __('Aksen', $t) => $accent] as $label => $hex) : ?>
-            <li><button type="button" class="lpdo-swatch" data-copy="<?php echo esc_attr($hex); ?>" style="--sw:<?php echo esc_attr($hex); ?>"><span class="lpdo-swatch__chip"></span><span><?php echo esc_html($label); ?></span><code><?php echo esc_html($hex); ?></code></button></li>
-          <?php endforeach; ?>
-        </ul>
-        <?php if ($font) : ?><p class="lpdo-muted"><?php echo esc_html(sprintf(__('Font: %s', $t), $font)); ?></p><?php endif; ?>
-        <?php $contactPrint = lpdo_client_meta($cid, 'contact_print'); if ($contactPrint) : ?>
-          <p class="lpdo-kit-label"><?php esc_html_e('Kontak standar di desain', $t); ?></p>
-          <p class="lpdo-kit-contact"><?php echo nl2br(esc_html($contactPrint)); ?></p>
-        <?php endif; ?>
-      </div>
-      <div class="lpdo-card lpdo-share">
-        <h2><?php esc_html_e('Link halaman ini', $t); ?></h2>
-        <?php echo lpdo_qr_svg($portalUrl, 156, '#111111', '#ffffff', __('QR halaman klien', $t)); // phpcs:ignore WordPress.Security.EscapeOutput ?>
-        <div class="lpdo-share__actions">
-          <button type="button" class="lpdo-btn lpdo-btn--primary" data-copy="<?php echo esc_attr($portalUrl); ?>"><?php esc_html_e('Salin link', $t); ?></button>
-          <a class="lpdo-btn lpdo-btn--ghost" href="<?php echo esc_url(lpdo_portal_url($cid, 'qr', 'page')); ?>"><?php esc_html_e('Unduh QR', $t); ?></a>
-        </div>
-        <p class="lpdo-muted"><?php esc_html_e('Link ini rahasia: siapa pun yang memilikinya bisa melihat order dan file Anda. Bagikan hanya kepada tim Anda.', $t); ?></p>
-      </div>
-    </aside>
   </div>
 
   <details class="lpdo-new" id="new-order"<?php echo $orders ? '' : ' open'; ?>>
-    <summary><span class="lpdo-new__plus" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span><span><strong><?php esc_html_e('Order desain baru', $t); ?></strong><small><?php esc_html_e('Poster, menu, flyer, backdrop atau kartu nama', $t); ?></small></span></summary>
+    <summary><span class="lpdo-new__plus" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span><span><strong><?php esc_html_e('Order desain baru', $t); ?></strong><small><?php esc_html_e('Pilih jenis desain, isi brief, kirim. Data bisnis Anda sudah tersimpan.', $t); ?></small></span></summary>
     <?php echo lpdo_render_form($client); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside. ?>
   </details>
+
+  <div class="lpdo-fab" aria-label="<?php esc_attr_e('Alat', $t); ?>">
+    <button type="button" class="lpdo-fab__btn" data-dialog="lpdo-kit" aria-haspopup="dialog"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a9 9 0 1 0 0 18c1 0 1.6-.8 1.6-1.7 0-.5-.2-.9-.5-1.2-.3-.3-.5-.7-.5-1.2 0-.9.8-1.7 1.7-1.7H16a5 5 0 0 0 5-5c0-4-4-7.2-9-7.2z"/><circle cx="7.5" cy="11.5" r="1.2"/><circle cx="10.5" cy="7.5" r="1.2"/><circle cx="15.5" cy="8" r="1.2"/></svg><span><?php esc_html_e('Brand kit', $t); ?></span></button>
+    <button type="button" class="lpdo-fab__btn" data-dialog="lpdo-share" aria-haspopup="dialog"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3M21 14v0M14 21h3M20 17v4"/></svg><span><?php esc_html_e('Link & QR', $t); ?></span></button>
+  </div>
+
+  <dialog class="lpdo-drawer" id="lpdo-kit" aria-labelledby="lpdo-kit-title">
+    <div class="lpdo-drawer__head"><h2 id="lpdo-kit-title"><?php esc_html_e('Brand kit', $t); ?></h2><button type="button" class="lpdo-drawer__close" data-close aria-label="<?php esc_attr_e('Tutup', $t); ?>"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <div class="lpdo-drawer__body">
+      <?php if ($logoId) : ?>
+        <div class="lpdo-kit-logos">
+          <a class="lpdo-kit-logo" href="<?php echo esc_url(wp_get_attachment_url($logoId)); ?>" download title="<?php esc_attr_e('Unduh logo', $t); ?>"><img src="<?php echo esc_url($logoUrl); ?>" alt="<?php echo esc_attr(sprintf(__('Logo %s', $t), $name)); ?>"></a>
+          <a class="lpdo-kit-logo is-dark" href="<?php echo esc_url(wp_get_attachment_url($logoId)); ?>" download title="<?php esc_attr_e('Unduh logo', $t); ?>"><img src="<?php echo esc_url($logoUrl); ?>" alt=""></a>
+        </div>
+      <?php endif; ?>
+      <ul class="lpdo-swatches">
+        <?php foreach ([__('Utama', $t) => $primary, __('Kedua', $t) => $secondary, __('Aksen', $t) => $accent] as $label => $hex) : ?>
+          <li><button type="button" class="lpdo-swatch" data-copy="<?php echo esc_attr($hex); ?>" style="--sw:<?php echo esc_attr($hex); ?>"><span class="lpdo-swatch__chip"></span><span><?php echo esc_html($label); ?></span><code><?php echo esc_html($hex); ?></code></button></li>
+        <?php endforeach; ?>
+      </ul>
+      <?php if ($font) : ?><p class="lpdo-muted"><?php echo esc_html(sprintf(__('Font: %s', $t), $font)); ?></p><?php endif; ?>
+      <?php $contactPrint = lpdo_client_meta($cid, 'contact_print'); if ($contactPrint) : ?>
+        <p class="lpdo-kit-label"><?php esc_html_e('Kontak standar di desain', $t); ?></p>
+        <p class="lpdo-kit-contact"><?php echo nl2br(esc_html($contactPrint)); ?></p>
+      <?php endif; ?>
+      <details class="lpdo-profile"<?php echo $notice === 'profile-error' ? ' open' : ''; ?>>
+        <summary><?php esc_html_e('Ubah data bisnis & branding', $t); ?></summary>
+        <?php echo lpdo_render_profile_form($client); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside. ?>
+      </details>
+    </div>
+  </dialog>
+
+  <dialog class="lpdo-drawer lpdo-share" id="lpdo-share" aria-labelledby="lpdo-share-title">
+    <div class="lpdo-drawer__head"><h2 id="lpdo-share-title"><?php esc_html_e('Link halaman ini', $t); ?></h2><button type="button" class="lpdo-drawer__close" data-close aria-label="<?php esc_attr_e('Tutup', $t); ?>"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
+    <div class="lpdo-drawer__body">
+      <?php echo lpdo_qr_svg($portalUrl, 200, '#111111', '#ffffff', __('QR halaman klien', $t)); // phpcs:ignore WordPress.Security.EscapeOutput ?>
+      <div class="lpdo-share__actions">
+        <button type="button" class="lpdo-btn lpdo-btn--primary" data-copy="<?php echo esc_attr($portalUrl); ?>"><?php esc_html_e('Salin link', $t); ?></button>
+        <a class="lpdo-btn lpdo-btn--ghost" href="<?php echo esc_url(lpdo_portal_url($cid, 'qr', 'page')); ?>"><?php esc_html_e('Unduh QR', $t); ?></a>
+      </div>
+      <p class="lpdo-muted"><?php esc_html_e('Link ini rahasia: siapa pun yang memilikinya bisa melihat order dan file Anda. Bagikan hanya kepada tim Anda.', $t); ?></p>
+    </div>
+  </dialog>
 </main>
 
 <footer class="lpdo-footer">

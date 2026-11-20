@@ -86,7 +86,6 @@ function lpdo_client_fields(): array
 function lpdo_order_groups(): array
 {
     $t = 'lightandpulse-design-orders';
-    $printQty = fn(string $key, array $types = []) => ['key' => $key, 'label' => __('Jumlah cetak', $t), 'type' => 'number', 'width' => 'half', 'help' => __('Kosongkan bila hanya butuh file desain.', $t)] + ($types ? ['types' => $types] : []);
     $courses = [
         'starter' => __('Starter / appetizer', $t), 'soup' => __('Soup', $t), 'main' => __('Main course', $t), 'dessert' => __('Dessert', $t),
         'beverage' => __('Beverage', $t), 'other' => __('Lainnya', $t),
@@ -129,7 +128,6 @@ function lpdo_order_groups(): array
                 ['key' => 'channels', 'label' => __('Dipakai di', $t), 'type' => 'checkboxes', 'options' => [
                     'print' => __('Cetak (di hotel/outlet)', $t), 'room' => __('Kamar tamu', $t), 'whatsapp' => 'WhatsApp', 'instagram' => 'Instagram', 'facebook' => 'Facebook', 'email' => 'Email', 'tv' => __('Layar TV', $t),
                 ]],
-                $printQty('print_qty'),
             ],
         ],
         'event' => [
@@ -174,11 +172,6 @@ function lpdo_order_groups(): array
                 ]],
                 ['key' => 'menu_size_custom', 'label' => __('Ukuran lain', $t), 'type' => 'text', 'width' => 'half', 'placeholder' => __('lebar × tinggi', $t)],
                 ['key' => 'menu_pages', 'label' => __('Jumlah halaman', $t), 'type' => 'number', 'width' => 'half'],
-                ['key' => 'menu_material', 'label' => __('Material', $t), 'type' => 'select', 'width' => 'half', 'options' => [
-                    'paper' => __('Art paper', $t), 'laminate_matte' => __('Laminasi doff', $t), 'laminate_gloss' => __('Laminasi glossy', $t), 'pvc' => __('PVC / tahan air', $t),
-                    'acrylic' => __('Akrilik', $t), 'wood' => __('Kayu / engraving', $t), 'leather' => __('Cover kulit / hard cover', $t), 'digital' => __('Digital saja', $t),
-                ]],
-                $printQty('menu_qty'),
             ],
         ],
         'menu_items' => [
@@ -331,7 +324,6 @@ function lpdo_order_groups(): array
                 ['key' => 'greeting_message', 'label' => __('Isi pesan', $t), 'type' => 'textarea', 'placeholder' => __('mis. Dear Valued Guests, thank you for your trust and support throughout the year…', $t)],
                 ['key' => 'greeting_signoff', 'label' => __('Penutup & pengirim', $t), 'type' => 'text', 'width' => 'half', 'placeholder' => __('Warm regards, Hoshi Jungle Resort', $t)],
                 ['key' => 'greeting_signature', 'label' => __('Tanda tangan / nama manajemen', $t), 'type' => 'text', 'width' => 'half', 'placeholder' => __('mis. General Manager & team', $t)],
-                $printQty('greeting_qty'),
             ],
         ],
 
@@ -427,19 +419,8 @@ function lpdo_order_groups(): array
 
         // ---------------------------------------------------------- shared
         'style' => [
-            'title'  => __('Gaya, referensi & file', $t),
+            'title'  => __('Referensi & file', $t),
             'fields' => [
-                ['key' => 'style', 'label' => __('Gaya yang diinginkan', $t), 'type' => 'checkboxes', 'options' => [
-                    'elegant' => __('Elegan / mewah', $t), 'minimal' => __('Minimalis', $t), 'modern' => __('Modern', $t), 'tropical' => __('Tropis', $t),
-                    'balinese' => __('Tradisional Bali', $t), 'festive' => __('Festive / perayaan', $t), 'bold' => __('Bold & berwarna', $t), 'playful' => __('Ceria / playful', $t),
-                    'vintage' => __('Vintage / retro', $t), 'dark' => __('Gelap & dramatis', $t), 'corporate' => __('Korporat', $t),
-                ]],
-                ['key' => 'use_brand', 'label' => __('Warna & logo', $t), 'type' => 'radio', 'options' => [
-                    'brand' => __('Pakai warna dan logo brand', $t), 'outlet' => __('Pakai gaya outlet (lihat logo outlet)', $t), 'free' => __('Bebas, boleh palet baru', $t),
-                ]],
-                ['key' => 'previous', 'label' => __('Lanjutkan desain sebelumnya?', $t), 'type' => 'text', 'width' => 'half', 'placeholder' => __('mis. sama seperti flyer Juli, ganti isi saja', $t)],
-                ['key' => 'avoid', 'label' => __('Yang perlu dihindari', $t), 'type' => 'text', 'width' => 'half', 'placeholder' => __('mis. warna merah, font dekoratif', $t)],
-                ['key' => 'reference_links', 'label' => __('Link referensi', $t), 'type' => 'text', 'placeholder' => __('Canva, Instagram, Pinterest, website', $t)],
                 ['key' => 'reference_files', 'label' => __('Gambar referensi', $t), 'type' => 'file', 'multiple' => true, 'accept' => 'image/*,application/pdf', 'help' => __('Desain yang Anda suka, atau desain lama yang ingin diperbarui.', $t)],
                 ['key' => 'asset_files', 'label' => __('Foto & aset untuk dipakai', $t), 'type' => 'file', 'multiple' => true, 'accept' => 'image/*,application/pdf,.zip', 'help' => __('Foto makanan, minuman, kamar, venue, talent atau produk.', $t)],
                 ['key' => 'notes', 'label' => __('Catatan lain', $t), 'type' => 'textarea', 'placeholder' => __('Hal lain yang perlu kami ketahui', $t)],

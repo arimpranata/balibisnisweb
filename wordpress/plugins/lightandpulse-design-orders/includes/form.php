@@ -186,6 +186,24 @@ function lpdo_render_form(?WP_Post $client = null): string
             }
         }
     }
+    // "Duplikat": start from an earlier order of this client (files are reused unless replaced).
+    $copyFrom = 0;
+    if ($client && !empty($_GET['lpdo_copy'])) {
+        $src = (int) $_GET['lpdo_copy'];
+        if (get_post_type($src) === 'lpdo_order' && (int) get_post_field('post_parent', $src) === $client->ID) {
+            $copyFrom = $src;
+            if (!$old) {
+                $srcType = lpdo_order_type($src);
+                foreach (lpdo_fields_for_type($srcType) as $key => $f) {
+                    $v = lpdo_order_fields($src)[$key] ?? null;
+                    if ($v !== null && $f['type'] !== 'file') {
+                        $old[$key] = $v;
+                    }
+                }
+                $old['_type'] = $srcType;
+            }
+        }
+    }
     $values = array_merge($clientValues, $old);
     $agency = lpdo_setting('agency_name');
     $ts = (string) time();
@@ -201,23 +219,25 @@ function lpdo_render_form(?WP_Post $client = null): string
         <input type="hidden" name="lpdo_ts" value="<?php echo esc_attr($ts); ?>">
         <input type="hidden" name="lpdo_sig" value="<?php echo esc_attr(wp_hash('lpdo_form|' . $ts)); ?>">
         <input type="hidden" name="lpdo_back" value="<?php echo esc_url(remove_query_arg(['lpdo_form', 'lpdo'])); ?>">
+        <?php if ($copyFrom) : ?>
+          <input type="hidden" name="lpdo_copy_from" value="<?php echo (int) $copyFrom; ?>">
+          <div class="lpdo-copy-note"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg><p><?php echo esc_html(sprintf(__('Disalin dari %1$s "%2$s". Ubah yang perlu saja; file dari order itu ikut dipakai kecuali Anda unggah file baru di kolom yang sama.', $t), lpdo_order_ref($copyFrom), lpdo_order_fields($copyFrom)['title'] ?? get_the_title($copyFrom))); ?> <a href="<?php echo esc_url(remove_query_arg('lpdo_copy') . '#new-order'); ?>"><?php esc_html_e('Mulai dari kosong', $t); ?></a></p></div>
+        <?php endif; ?>
         <?php if ($client) : ?>
           <input type="hidden" name="lpdo_client_id" value="<?php echo (int) $client->ID; ?>">
           <input type="hidden" name="lpdo_client_key" value="<?php echo esc_attr(lpdo_client_key($client->ID)); ?>">
         <?php endif; ?>
         <label class="lpdo-hp" aria-hidden="true">Website URL<input type="text" name="lpdo_company_url" tabindex="-1" autocomplete="off"></label>
 
+        <?php $n = 0; if (!$client) : ?>
         <div class="lpdo-step">
-          <header class="lpdo-step__head"><span class="lpdo-step-num">1</span><div><h2><?php esc_html_e('Bisnis & branding', $t); ?></h2><p><?php esc_html_e('Dipakai untuk semua order dan halaman klien Anda.', $t); ?></p></div></header>
-          <?php if ($client) : ?>
-            <details class="lpdo-fold"><summary><?php printf(esc_html__('Memesan sebagai %s. Ubah data bisnis & branding', $t), '<strong>' . esc_html(get_the_title($client)) . '</strong>'); ?></summary>
-          <?php endif; ?>
+          <header class="lpdo-step__head"><span class="lpdo-step-num"><?php echo ++$n; ?></span><div><h2><?php esc_html_e('Bisnis & branding', $t); ?></h2><p><?php esc_html_e('Dipakai untuk semua order dan halaman klien Anda.', $t); ?></p></div></header>
           <?php foreach (lpdo_client_fields() as $gk => $g) { echo lpdo_render_group($g, $gk, $values, 'lpdo_client'); } // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside. ?>
-          <?php if ($client) : ?></details><?php endif; ?>
         </div>
+        <?php endif; ?>
 
         <div class="lpdo-step">
-          <header class="lpdo-step__head"><span class="lpdo-step-num">2</span><div><h2><?php esc_html_e('Jenis desain', $t); ?></h2><p><?php esc_html_e('Pilih satu. Pertanyaan berikutnya menyesuaikan jenis desain.', $t); ?></p></div></header>
+          <header class="lpdo-step__head"><span class="lpdo-step-num"><?php echo ++$n; ?></span><div><h2><?php esc_html_e('Jenis desain', $t); ?></h2><p><?php esc_html_e('Pilih satu. Pertanyaan berikutnya menyesuaikan jenis desain.', $t); ?></p></div></header>
           <fieldset class="lpdo-types">
             <legend class="screen-reader-text"><?php esc_html_e('Pilih jenis desain', $t); ?></legend>
             <?php foreach (lpdo_design_types() as $k => $type) : ?>
@@ -233,13 +253,13 @@ function lpdo_render_form(?WP_Post $client = null): string
         </div>
 
         <div class="lpdo-step lpdo-details">
-          <header class="lpdo-step__head"><span class="lpdo-step-num">3</span><div><h2><?php esc_html_e('Detail order', $t); ?></h2><p><?php esc_html_e('Semakin lengkap brief-nya, semakin cepat dan tepat hasilnya.', $t); ?></p></div></header>
+          <header class="lpdo-step__head"><span class="lpdo-step-num"><?php echo ++$n; ?></span><div><h2><?php esc_html_e('Detail order', $t); ?></h2><p><?php esc_html_e('Semakin lengkap brief-nya, semakin cepat dan tepat hasilnya.', $t); ?></p></div></header>
           <p class="lpdo-intro lpdo-pick-first"><?php esc_html_e('Pilih jenis desain di atas untuk melihat pertanyaan yang sesuai.', $t); ?></p>
           <?php foreach (lpdo_order_groups() as $gk => $g) { echo lpdo_render_group($g, $gk, $old); } // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside. ?>
         </div>
 
         <div class="lpdo-step lpdo-privacy">
-          <header class="lpdo-step__head"><span class="lpdo-step-num">4</span><div><h2><?php esc_html_e('Kirim order', $t); ?></h2><p><?php esc_html_e('Periksa kembali, lalu kirim. Status order bisa dipantau di halaman klien Anda.', $t); ?></p></div></header>
+          <header class="lpdo-step__head"><span class="lpdo-step-num"><?php echo ++$n; ?></span><div><h2><?php esc_html_e('Kirim order', $t); ?></h2><p><?php esc_html_e('Periksa kembali, lalu kirim. Status order bisa dipantau di halaman klien Anda.', $t); ?></p></div></header>
           <p><?php
             echo esc_html(sprintf(__('Data yang Anda isi (nama, kontak, data bisnis, logo dan file) diproses oleh %s untuk membuat dan mengirim desain pesanan Anda.', $t), $agency));
             if (lpdo_privacy_url()) {
@@ -270,6 +290,27 @@ function lpdo_render_form(?WP_Post $client = null): string
     </div>
     <?php
     return (string) ob_get_clean();
+}
+
+/** Business & branding form in the portal's Brand kit panel. */
+function lpdo_render_profile_form(WP_Post $client): string
+{
+    $t = 'lightandpulse-design-orders';
+    $values = [];
+    foreach (lpdo_client_fields() as $g) {
+        foreach ($g['fields'] as $f) {
+            $values[$f['key']] = $f['type'] === 'file' ? [] : lpdo_client_meta($client->ID, $f['key']);
+        }
+    }
+    $html = '<div class="lpdo"><form class="lpdo-form lpdo-profile-form" method="post" enctype="multipart/form-data" action="' . esc_url(admin_url('admin-post.php')) . '" data-max-mb="' . (int) lpdo_setting('max_upload_mb') . '" data-max-files="' . (int) lpdo_max_files() . '">';
+    $html .= '<input type="hidden" name="action" value="lpdo_portal"><input type="hidden" name="lpdo_decision" value="profile">';
+    $html .= '<input type="hidden" name="lpdo_client_key" value="' . esc_attr(lpdo_client_key($client->ID)) . '">';
+    foreach (lpdo_client_fields() as $gk => $g) {
+        $html .= lpdo_render_group($g, $gk, $values, 'lpdo_client');
+    }
+    $html .= '<div class="lpdo-submit"><button type="submit" class="lpdo-button">' . esc_html__('Simpan', $t) . '</button><p class="lpdo-submit-error" role="alert" hidden></p>';
+    $html .= '<p class="lpdo-help">' . esc_html__('Logo baru menggantikan logo lama. Data ini dipakai untuk order berikutnya.', $t) . '</p></div>';
+    return $html . '</form></div>';
 }
 
 /** The 7 elements of UU PDP Pasal 21 (1), plus recipients and contact. */
@@ -342,8 +383,9 @@ function lpdo_handle_submit(): void
         $type = '';
     }
 
-    // Client fields.
-    $clientIn = (array) wp_unslash($_POST['lpdo_client'] ?? []);
+    // Client fields. Orders from the portal use the stored client data.
+    $useStored = $client && !isset($_POST['lpdo_client']);
+    $clientIn = $useStored ? [] : (array) wp_unslash($_POST['lpdo_client'] ?? []);
     $clientIn = is_array($clientIn) ? $clientIn : [];
     $clientVals = [];
     foreach (lpdo_client_fields() as $g) {
@@ -351,13 +393,13 @@ function lpdo_handle_submit(): void
             if ($f['type'] === 'file') {
                 continue;
             }
-            $clientVals[$f['key']] = lpdo_sanitize_value($f, $clientIn[$f['key']] ?? '');
-            if (!empty($f['required']) && $clientVals[$f['key']] === '') {
+            $clientVals[$f['key']] = $useStored ? lpdo_client_meta($client->ID, $f['key']) : lpdo_sanitize_value($f, $clientIn[$f['key']] ?? '');
+            if (!$useStored && !empty($f['required']) && $clientVals[$f['key']] === '') {
                 $errors[] = sprintf(__('%s wajib diisi.', $t), $f['label']);
             }
         }
     }
-    if ($clientVals['email'] !== '' && !is_email($clientVals['email'])) {
+    if (!$useStored && $clientVals['email'] !== '' && !is_email($clientVals['email'])) {
         $errors[] = __('Alamat email tidak valid.', $t);
     }
 
@@ -392,10 +434,18 @@ function lpdo_handle_submit(): void
     } else {
         $clientId = $client->ID;
     }
-    foreach ($clientVals as $k => $v) {
-        update_post_meta($clientId, '_lpdo_' . $k, $v);
+    if (!$useStored) {
+        foreach ($clientVals as $k => $v) {
+            update_post_meta($clientId, '_lpdo_' . $k, $v);
+        }
     }
     update_post_meta($clientId, '_lpdo_last_activity', time());
+
+    // Duplicated from an earlier order of the same client?
+    $copyFrom = (int) ($_POST['lpdo_copy_from'] ?? 0);
+    if ($copyFrom && (get_post_type($copyFrom) !== 'lpdo_order' || (int) get_post_field('post_parent', $copyFrom) !== $clientId)) {
+        $copyFrom = 0;
+    }
 
     // Save the order.
     $types = lpdo_design_types();
@@ -418,6 +468,9 @@ function lpdo_handle_submit(): void
     foreach (lpdo_fields_for_type($type) as $key => $f) {
         if ($f['type'] === 'file') {
             $ids = lpdo_handle_uploads($key, $orderId, $uploadErrors);
+            if (!$ids && $copyFrom) {
+                $ids = array_values(array_filter(array_map('intval', (array) (lpdo_order_fields($copyFrom)[$key] ?? [])), fn($id) => get_post_type($id) === 'attachment'));
+            }
             if ($ids) {
                 $orderVals[$key] = $ids;
             }
@@ -437,7 +490,7 @@ function lpdo_handle_submit(): void
     if (!empty($_POST['pdp_consent_marketing'])) {
         update_post_meta($clientId, '_lpdo_marketing_consent', current_time('mysql'));
     }
-    lpdo_log($orderId, __('Order dikirim oleh klien.', $t), 'client');
+    lpdo_log($orderId, $copyFrom ? sprintf(__('Order dikirim oleh klien (duplikat dari %s).', $t), lpdo_order_ref($copyFrom)) : __('Order dikirim oleh klien.', $t), 'client');
     if ($uploadErrors) {
         lpdo_log($orderId, implode(' ', $uploadErrors), 'system');
     }

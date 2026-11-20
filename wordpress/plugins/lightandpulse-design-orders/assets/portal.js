@@ -19,12 +19,26 @@
         window.prompt('Salin:', value);
       }
     }
+    var opener = e.target.closest('[data-dialog]');
+    if (opener) {
+      var dlg = document.getElementById(opener.getAttribute('data-dialog'));
+      if (dlg && dlg.showModal) { dlg.showModal(); }
+    }
+    if (e.target.closest('[data-close]')) {
+      var open = e.target.closest('dialog');
+      if (open) { open.close(); }
+    }
+    if (e.target.matches('dialog.lpdo-drawer')) { e.target.close(); } // click on the backdrop
     if (e.target.closest('[data-open-new-order]')) {
       var d = document.getElementById('new-order');
       if (d) { d.open = true; }
     }
   });
-  if (location.hash === '#new-order' || location.search.indexOf('lpdo_form=') > -1) {
+  if (/[?&]lpdo=profile-error/.test(location.search)) {
+    var kit = document.getElementById('lpdo-kit');
+    if (kit && kit.showModal) { kit.showModal(); }
+  }
+  if (location.hash === '#new-order' || location.search.indexOf('lpdo_form=') > -1 || location.search.indexOf('lpdo_copy=') > -1) {
     var d = document.getElementById('new-order');
     if (d) { d.open = true; d.scrollIntoView(); }
   }

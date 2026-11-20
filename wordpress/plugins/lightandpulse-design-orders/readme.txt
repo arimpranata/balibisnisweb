@@ -3,7 +3,7 @@ Contributors: lightandpulse
 Requires at least: 6.2
 Tested up to: 6.8
 Requires PHP: 8.0
-Stable tag: 1.2.0
+Stable tag: 1.3.0
 License: GPLv2 or later
 
 Design order system for posters, menus, flyers, backdrops and business cards, with a branded portal page for every client, proof approval, and direct download links with QR codes.
@@ -23,7 +23,7 @@ Design order system for posters, menus, flyers, backdrops and business cards, wi
   * Greeting card: occasion (Christmas, New Year, Nyepi, Galungan, Eid, Chinese New Year, 17 August…), formats (printed card, Instagram, WhatsApp, e-card), greeting, message, sign-off and signature.
   * TV & social media: formats (TV landscape/portrait, Instagram post/story, Facebook, web banner, email header, WhatsApp), screen, still or animated, slides table (title, text, price, seconds).
   * Room directory: format, pages, sections, facilities & opening hours table, phone extensions table, Wi-Fi, existing texts.
-  * Shared where it fits: outlet/venue and outlet or partner logos, promo items table (category, name, description, price, promo price), validity and terms, headline/body/call to action, contact block (standard, custom or none) and QR target, style, brand or outlet look, "continue a previous design", references, assets, notes.
+  * Shared where it fits: outlet/venue and outlet or partner logos, promo items table (category, name, description, price, promo price), validity and terms, headline/body/call to action, contact block (standard, custom or none) and QR target, reference images, assets, notes.
   * File fields take many files, picked in several goes or dragged in, with previews and a remove button; the deadline is set by the team in wp-admin.
 * Follow-up fields appear only when relevant (e.g. custom size only when "Custom" is chosen).
 * Uploads: JPG, PNG, WebP, GIF, PDF, ZIP, TXT, CSV, DOC(X), XLS(X); size limit set in Settings.
@@ -33,8 +33,8 @@ Design order system for posters, menus, flyers, backdrops and business cards, wi
 * Every client gets a page `/client/{business}/{secret-key}/` with their logo and brand colours.
 * Order status with progress steps, the full brief, proofs to approve or send back with revision notes and attachments.
 * Final files with a direct download link, "copy link", and a QR code for each file (scan to download), plus a ZIP of all files with its own QR.
-* Brand kit (logo, colours with hex codes, font) and a QR code for the portal itself.
-* Clients can place new orders from their portal with their details pre-filled.
+* Floating buttons open side panels: Brand kit (logo on light and dark, colours with hex codes, font, standard contact block, and a form to update business & branding) and Link & QR for the portal itself.
+* Clients place new orders from their portal without re-entering business details, or press "Duplikat" on an earlier order to start from its brief and files.
 * Not indexed, not cached, no third-party fonts or scripts.
 
 = Admin (Design Orders menu) =
@@ -62,6 +62,12 @@ Design order system for posters, menus, flyers, backdrops and business cards, wi
 QR codes are generated on your server with QR Code Generator by Kazuhiko Arase (MIT licence), in vendor/qrcode-generator.
 
 == Changelog ==
+= 1.3.0 =
+* Portal: Brand kit (with business & branding editing) and Link & QR move into floating buttons that open side panels; orders from the portal no longer repeat step 1.
+* "Duplikat" on every order starts a new order from that brief, reusing its files unless new ones are uploaded.
+* Removed style, colour/logo choice, previous design, things to avoid, reference links, print quantities and menu material from the form.
+* Light (e.g. white) logos get a dark background automatically.
+
 = 1.2.0 =
 * New design types: Banner & signage, Greeting card, TV & social media, Room directory.
 * Posters and flyers: several sizes per order, events table, inclusions, event set menu, price basis.

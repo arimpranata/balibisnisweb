@@ -152,6 +152,9 @@ function lpdo_handle_portal_action(): void
 {
     $t = 'lightandpulse-design-orders';
     $client = lpdo_client_by_key(sanitize_text_field(wp_unslash($_POST['lpdo_client_key'] ?? '')));
+    if ($client && sanitize_key(wp_unslash($_POST['lpdo_decision'] ?? '')) === 'profile') {
+        lpdo_save_profile($client);
+    }
     $orderId = (int) ($_POST['lpdo_order'] ?? 0);
     if (!$client || (int) get_post_field('post_parent', $orderId) !== $client->ID || get_post_type($orderId) !== 'lpdo_order') {
         wp_die(esc_html__('Link halaman klien tidak valid.', $t), 403);
@@ -182,6 +185,43 @@ function lpdo_handle_portal_action(): void
         do_action('lpdo_client_feedback', $orderId, $result);
     }
     wp_safe_redirect(add_query_arg('lpdo', $result ?: 'nothing', lpdo_portal_url($client->ID)) . '#order-' . $orderId);
+    exit;
+}
+
+/** Client edits business & branding from the portal's Brand kit panel. */
+function lpdo_save_profile(WP_Post $client): void
+{
+    $in = (array) wp_unslash($_POST['lpdo_client'] ?? []);
+    $vals = [];
+    $ok = true;
+    foreach (lpdo_client_fields() as $g) {
+        foreach ($g['fields'] as $f) {
+            if ($f['type'] === 'file') {
+                continue;
+            }
+            $vals[$f['key']] = lpdo_sanitize_value($f, $in[$f['key']] ?? '');
+            if (!empty($f['required']) && $vals[$f['key']] === '') {
+                $ok = false;
+            }
+        }
+    }
+    if (!$ok || !is_email($vals['email'])) {
+        wp_safe_redirect(add_query_arg('lpdo', 'profile-error', lpdo_portal_url($client->ID)));
+        exit;
+    }
+    foreach ($vals as $k => $v) {
+        update_post_meta($client->ID, '_lpdo_' . $k, $v);
+    }
+    $errors = [];
+    $logo = lpdo_handle_uploads('logo', $client->ID, $errors);
+    if ($logo) {
+        set_post_thumbnail($client->ID, $logo[0]);
+    }
+    if ($vals['business_name'] !== get_the_title($client)) {
+        wp_update_post(['ID' => $client->ID, 'post_title' => $vals['business_name']]);
+    }
+    update_post_meta($client->ID, '_lpdo_last_activity', time());
+    wp_safe_redirect(add_query_arg('lpdo', 'profile', lpdo_portal_url($client->ID)));
     exit;
 }
 
