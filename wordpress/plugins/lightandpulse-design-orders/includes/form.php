@@ -62,7 +62,7 @@ function lpdo_render_field(array $f, $value = null, string $prefix = 'lpdo'): st
 
     switch ($f['type']) {
         case 'textarea':
-            $control = '<textarea id="' . esc_attr($id) . '" name="' . esc_attr($name) . '" rows="4"' . $ph . $reqAttr . $describedby . '>' . esc_textarea((string) $value) . '</textarea>';
+            $control = '<textarea id="' . esc_attr($id) . '" name="' . esc_attr($name) . '" rows="' . (int) ($f['rows'] ?? 4) . '"' . $ph . $reqAttr . $describedby . '>' . esc_textarea((string) $value) . '</textarea>';
             break;
         case 'select':
             $control = '<select id="' . esc_attr($id) . '" name="' . esc_attr($name) . '"' . $reqAttr . $describedby . '><option value="">' . esc_html__('Pilih…', $t) . '</option>';
@@ -151,15 +151,23 @@ function lpdo_render_repeater(array $f, $value, string $prefix, string $id, stri
 function lpdo_render_group(array $group, string $groupKey, array $values, string $prefix = 'lpdo'): string
 {
     $types = !empty($group['types']) ? ' data-types="' . esc_attr(implode(' ', $group['types'])) . '"' : '';
-    $html = '<section class="lpdo-group" data-group="' . esc_attr($groupKey) . '"' . $types . '><h3>' . esc_html($group['title']) . '</h3>';
-    if (!empty($group['intro'])) {
-        $html .= '<p class="lpdo-intro">' . esc_html($group['intro']) . '</p>';
-    }
-    $html .= '<div class="lpdo-grid">';
+    $fields = '<div class="lpdo-grid">';
+    $filled = false;
     foreach ($group['fields'] as $f) {
-        $html .= lpdo_render_field($f, $values[$f['key']] ?? null, $prefix);
+        $v = $values[$f['key']] ?? null;
+        $filled = $filled || ($v !== null && $v !== '' && $v !== []);
+        $fields .= lpdo_render_field($f, $v, $prefix);
     }
-    return $html . '</div></section>';
+    $fields .= '</div>';
+    $intro = !empty($group['intro']) ? '<p class="lpdo-intro">' . esc_html($group['intro']) . '</p>' : '';
+
+    // Optional groups fold away; they open by themselves when they already hold answers.
+    if (!empty($group['optional'])) {
+        return '<details class="lpdo-group lpdo-group--optional" data-group="' . esc_attr($groupKey) . '"' . $types . ($filled ? ' open' : '') . '>'
+            . '<summary><span class="lpdo-acc__title">' . esc_html($group['title']) . '</span><svg class="lpdo-acc__chev" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg></summary>'
+            . '<div class="lpdo-acc__body">' . $intro . $fields . '</div></details>';
+    }
+    return '<section class="lpdo-group" data-group="' . esc_attr($groupKey) . '"' . $types . '><h3>' . esc_html($group['title']) . '</h3>' . $intro . $fields . '</section>';
 }
 
 /** The order form. With $client (portal), business details are pre-filled and folded away. */

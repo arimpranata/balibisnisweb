@@ -3,7 +3,7 @@ Contributors: lightandpulse
 Requires at least: 6.2
 Tested up to: 6.8
 Requires PHP: 8.0
-Stable tag: 1.4.0
+Stable tag: 1.4.1
 License: GPLv2 or later
 
 Design order system for posters, menus, flyers, backdrops and business cards, with a branded portal page for every client, proof approval, and direct download links with QR codes.
@@ -63,6 +63,10 @@ Design order system for posters, menus, flyers, backdrops and business cards, wi
 QR codes are generated on your server with QR Code Generator by Kazuhiko Arase (MIT licence), in vendor/qrcode-generator.
 
 == Changelog ==
+= 1.4.1 =
+* Events and promo items are optional, folded in closed accordions that open by themselves when they hold answers (e.g. a duplicated order).
+* Text on the design comes first, with a taller body text field.
+
 = 1.4.0 =
 * Live preview per design type beside the order form (and in the portal), following the scroll; a floating button opens it on phones.
 * Logos too close to the background colour get a contrasting chip in the preview.

@@ -124,31 +124,6 @@ function lpdo_order_groups(): array
                 ]],
             ],
         ],
-        'event' => [
-            'title' => __('Acara', $t), 'types' => ['poster', 'flyer'],
-            'intro' => __('Isi bila desain untuk acara. Satu desain bisa memuat beberapa acara (mis. Festive Season).', $t),
-            'fields' => [
-                ['key' => 'events', 'label' => __('Daftar acara', $t), 'type' => 'repeater', 'rows' => 1, 'add_label' => __('Tambah acara', $t), 'columns' => [
-                    ['key' => 'name', 'label' => __('Nama acara', $t), 'type' => 'text', 'size' => 3, 'required' => true, 'placeholder' => __('mis. Christmas Eve Dinner', $t)],
-                    ['key' => 'date', 'label' => __('Tanggal', $t), 'type' => 'text', 'size' => 2, 'placeholder' => __('24 Des 2026', $t)],
-                    ['key' => 'time', 'label' => __('Jam', $t), 'type' => 'text', 'size' => 2, 'placeholder' => '19.00 – 21.30'],
-                    ['key' => 'venue', 'label' => __('Tempat', $t), 'type' => 'text', 'size' => 2, 'placeholder' => __('mis. Wantilan', $t)],
-                    ['key' => 'price', 'label' => __('Harga', $t), 'type' => 'text', 'size' => 2, 'placeholder' => '400.000++/pax'],
-                    ['key' => 'desc', 'label' => __('Deskripsi singkat', $t), 'type' => 'text', 'size' => 4, 'placeholder' => __('mis. live acoustic, Balinese dance', $t)],
-                ]],
-                ['key' => 'inclusions', 'label' => __('Termasuk (inclusions)', $t), 'type' => 'textarea', 'placeholder' => __("Satu per baris, mis.\nSet menu Christmas Eve\nBalinese dance performance\nDoor prize: voucher spa", $t)],
-                ['key' => 'set_menu', 'label' => __('Set menu acara (opsional)', $t), 'type' => 'repeater', 'rows' => 1, 'add_label' => __('Tambah hidangan', $t), 'columns' => [
-                    ['key' => 'course', 'label' => __('Course', $t), 'type' => 'select', 'size' => 2, 'options' => $courses],
-                    ['key' => 'name', 'label' => __('Nama hidangan', $t), 'type' => 'text', 'size' => 3, 'required' => true, 'placeholder' => __('mis. Junglia Crispy Duck', $t)],
-                    ['key' => 'desc', 'label' => __('Deskripsi', $t), 'type' => 'text', 'size' => 5, 'placeholder' => __('bahan dan cara penyajian', $t)],
-                ]],
-                ['key' => 'price_basis', 'label' => __('Keterangan harga', $t), 'type' => 'select', 'width' => 'half', 'options' => [
-                    'plus' => __('++ (belum termasuk pajak & service)', $t), 'net' => __('Net (sudah termasuk)', $t), 'free' => __('Gratis / free entry', $t),
-                ]],
-                ['key' => 'kids_policy', 'label' => __('Ketentuan anak / grup', $t), 'type' => 'text', 'width' => 'half', 'placeholder' => __('mis. anak di bawah 7 tahun setengah harga', $t)],
-            ],
-        ],
-
         // ---------------------------------------------------------- menu
         'menu' => [
             'title' => __('Jenis & format menu', $t), 'types' => ['menu'],
@@ -368,9 +343,45 @@ function lpdo_order_groups(): array
             ],
         ],
 
+        // ---------------------------------------------------------- shared text
+        'content' => [
+            'title'  => __('Teks di desain', $t), 'types' => ['poster', 'flyer', 'banner', 'digital'],
+            'intro'  => __('Tulis persis seperti yang ingin dicetak. Kami akan merapikan tata letaknya.', $t),
+            'fields' => [
+                ['key' => 'headline', 'label' => __('Judul utama (headline)', $t), 'type' => 'text', 'width' => 'half', 'placeholder' => __('mis. Festive Season', $t)],
+                ['key' => 'subheadline', 'label' => __('Sub-judul', $t), 'type' => 'text', 'width' => 'half'],
+                ['key' => 'body_text', 'label' => __('Teks isi', $t), 'type' => 'textarea', 'rows' => 9, 'placeholder' => __('Semua teks yang ingin tampil: deskripsi acara atau promo, detail paket, jam, syarat, dll.', $t)],
+                ['key' => 'cta', 'label' => __('Ajakan (call to action)', $t), 'type' => 'text', 'width' => 'half', 'placeholder' => __('mis. Reserve your table now', $t)],
+            ],
+        ],
+        'event' => [
+            'title' => __('Acara (opsional)', $t), 'types' => ['poster', 'flyer'], 'optional' => true,
+            'intro' => __('Isi bila desain untuk acara. Satu desain bisa memuat beberapa acara (mis. Festive Season).', $t),
+            'fields' => [
+                ['key' => 'events', 'label' => __('Daftar acara', $t), 'type' => 'repeater', 'rows' => 1, 'add_label' => __('Tambah acara', $t), 'columns' => [
+                    ['key' => 'name', 'label' => __('Nama acara', $t), 'type' => 'text', 'size' => 3, 'required' => true, 'placeholder' => __('mis. Christmas Eve Dinner', $t)],
+                    ['key' => 'date', 'label' => __('Tanggal', $t), 'type' => 'text', 'size' => 2, 'placeholder' => __('24 Des 2026', $t)],
+                    ['key' => 'time', 'label' => __('Jam', $t), 'type' => 'text', 'size' => 2, 'placeholder' => '19.00 – 21.30'],
+                    ['key' => 'venue', 'label' => __('Tempat', $t), 'type' => 'text', 'size' => 2, 'placeholder' => __('mis. Wantilan', $t)],
+                    ['key' => 'price', 'label' => __('Harga', $t), 'type' => 'text', 'size' => 2, 'placeholder' => '400.000++/pax'],
+                    ['key' => 'desc', 'label' => __('Deskripsi singkat', $t), 'type' => 'text', 'size' => 4, 'placeholder' => __('mis. live acoustic, Balinese dance', $t)],
+                ]],
+                ['key' => 'inclusions', 'label' => __('Termasuk (inclusions)', $t), 'type' => 'textarea', 'placeholder' => __("Satu per baris, mis.\nSet menu Christmas Eve\nBalinese dance performance\nDoor prize: voucher spa", $t)],
+                ['key' => 'set_menu', 'label' => __('Set menu acara (opsional)', $t), 'type' => 'repeater', 'rows' => 1, 'add_label' => __('Tambah hidangan', $t), 'columns' => [
+                    ['key' => 'course', 'label' => __('Course', $t), 'type' => 'select', 'size' => 2, 'options' => $courses],
+                    ['key' => 'name', 'label' => __('Nama hidangan', $t), 'type' => 'text', 'size' => 3, 'required' => true, 'placeholder' => __('mis. Junglia Crispy Duck', $t)],
+                    ['key' => 'desc', 'label' => __('Deskripsi', $t), 'type' => 'text', 'size' => 5, 'placeholder' => __('bahan dan cara penyajian', $t)],
+                ]],
+                ['key' => 'price_basis', 'label' => __('Keterangan harga', $t), 'type' => 'select', 'width' => 'half', 'options' => [
+                    'plus' => __('++ (belum termasuk pajak & service)', $t), 'net' => __('Net (sudah termasuk)', $t), 'free' => __('Gratis / free entry', $t),
+                ]],
+                ['key' => 'kids_policy', 'label' => __('Ketentuan anak / grup', $t), 'type' => 'text', 'width' => 'half', 'placeholder' => __('mis. anak di bawah 7 tahun setengah harga', $t)],
+            ],
+        ],
+
         // ---------------------------------------------------------- items with prices (promos, banners, screens)
         'items' => [
-            'title' => __('Promo & item yang ditampilkan', $t), 'types' => ['poster', 'flyer', 'banner', 'digital'],
+            'title' => __('Promo & item yang ditampilkan (opsional)', $t), 'types' => ['poster', 'flyer', 'banner', 'digital'], 'optional' => true,
             'fields' => [
                 ['key' => 'promo_title', 'label' => __('Promo utama', $t), 'type' => 'text', 'placeholder' => __('mis. Buy 2 get 1 free for beverages', $t)],
                 ['key' => 'items', 'label' => __('Item / aktivitas', $t), 'type' => 'repeater', 'rows' => 2, 'add_label' => __('Tambah item', $t), 'columns' => [
@@ -385,17 +396,6 @@ function lpdo_order_groups(): array
             ],
         ],
 
-        // ---------------------------------------------------------- shared text
-        'content' => [
-            'title'  => __('Teks di desain', $t), 'types' => ['poster', 'flyer', 'banner', 'digital'],
-            'intro'  => __('Tulis persis seperti yang ingin dicetak. Kami akan merapikan tata letaknya.', $t),
-            'fields' => [
-                ['key' => 'headline', 'label' => __('Judul utama (headline)', $t), 'type' => 'text', 'width' => 'half', 'placeholder' => __('mis. Festive Season', $t)],
-                ['key' => 'subheadline', 'label' => __('Sub-judul', $t), 'type' => 'text', 'width' => 'half'],
-                ['key' => 'body_text', 'label' => __('Teks isi', $t), 'type' => 'textarea'],
-                ['key' => 'cta', 'label' => __('Ajakan (call to action)', $t), 'type' => 'text', 'width' => 'half', 'placeholder' => __('mis. Reserve your table now', $t)],
-            ],
-        ],
         'contact' => [
             'title'  => __('Kontak & QR di desain', $t), 'types' => ['poster', 'flyer', 'menu', 'banner', 'digital', 'greeting', 'backdrop'],
             'fields' => [
