@@ -3,7 +3,7 @@ Contributors: lightandpulse
 Requires at least: 6.2
 Tested up to: 6.8
 Requires PHP: 8.0
-Stable tag: 1.0.0
+Stable tag: 1.1.0
 License: GPLv2 or later
 
 Design order system for posters, menus, flyers, backdrops and business cards, with a branded portal page for every client, proof approval, and direct download links with QR codes.
@@ -20,7 +20,9 @@ Design order system for posters, menus, flyers, backdrops and business cards, wi
   * Flyer: size (A5, A4, DL, 1/3 A4, square, story, custom), sides, folds, channels, offer, validity, terms, quantity.
   * Backdrop: width × height in metres, indoor/outdoor, material, event, date, venue, elements (sponsor logos, photo booth, step-and-repeat, names, hashtag, QR), sponsor logo uploads, scope (design / print / install).
   * Business card: one person per line (name | title | phone | email), size, sides, orientation, paper, finishing, back side, QR (website, WhatsApp, vCard), boxes per person.
-  * For every type: purpose, audience, languages, headline, subheadline, body, call to action, contact details to print, style, use of brand colours, things to avoid, reference links and images, photos and assets, output files, number of concepts, printing, deadline, priority, budget, notes.
+  * Row-by-row tables per type: menu items (category, name, ingredients, price, label), people on business cards, event line-up for posters, products with normal and promo prices for flyers, sponsors for backdrops.
+  * For every type: purpose, audience, languages, style, use of brand colours, things to avoid, reference links, notes; posters and flyers also get headline, body text, call to action and contact details.
+  * File fields take many files, picked in several goes or dragged in, with previews and a remove button; the deadline is set by the team in wp-admin.
 * Follow-up fields appear only when relevant (e.g. custom size only when "Custom" is chosen).
 * Uploads: JPG, PNG, WebP, GIF, PDF, ZIP, TXT, CSV, DOC(X), XLS(X); size limit set in Settings.
 * Spam protection without a nonce, so it works on cached pages (honeypot, timing check, rate limit).
@@ -58,5 +60,11 @@ Design order system for posters, menus, flyers, backdrops and business cards, wi
 QR codes are generated on your server with QR Code Generator by Kazuhiko Arase (MIT licence), in vendor/qrcode-generator.
 
 == Changelog ==
+= 1.1.0 =
+* Per-type tables (menu items, people, line-up, products, sponsors) instead of free text.
+* Multi-file drop zones that keep adding files, with previews and limits checked before sending.
+* Removed the files/schedule/budget section from the form; the deadline stays in wp-admin.
+* Cleaner form and portal design; the portal background no longer takes the client's second colour.
+
 = 1.0.0 =
 * First release.

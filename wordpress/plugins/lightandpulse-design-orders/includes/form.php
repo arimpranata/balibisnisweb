@@ -76,20 +76,70 @@ function lpdo_render_field(array $f, $value = null, string $prefix = 'lpdo'): st
             return $out . '</div>' . $help . '</fieldset>';
         case 'file':
             $multiple = !empty($f['multiple']);
-            $control = '<input type="file" id="' . esc_attr($id) . '" name="lpdo_files[' . esc_attr($key) . ']' . ($multiple ? '[]' : '') . '"' . ($multiple ? ' multiple' : '') . (!empty($f['accept']) ? ' accept="' . esc_attr($f['accept']) . '"' : '') . $describedby . '>';
+            $control = '<div class="lpdo-drop" data-drop>'
+                . '<div class="lpdo-drop__zone"><input type="file" class="lpdo-drop__input" id="' . esc_attr($id) . '" name="lpdo_files[' . esc_attr($key) . ']' . ($multiple ? '[]' : '') . '"' . ($multiple ? ' multiple' : '') . (!empty($f['accept']) ? ' accept="' . esc_attr($f['accept']) . '"' : '') . $describedby . '>'
+                . '<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 16V4M7 9l5-5 5 5"/><path d="M4 16v3a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-3"/></svg>'
+                . '<span class="lpdo-drop__text"><span class="lpdo-drop__btn">' . esc_html__('Pilih file', $t) . '</span> ' . esc_html($multiple ? __('atau seret ke sini. Bisa lebih dari satu.', $t) : __('atau seret ke sini.', $t)) . '</span></div>'
+                . '<ul class="lpdo-drop__list" aria-live="polite"></ul></div>';
             if (is_array($value) && $value) {
                 $control .= '<small class="lpdo-help">' . esc_html(sprintf(_n('%d file sudah tersimpan.', '%d file sudah tersimpan.', count($value), $t), count($value))) . '</small>';
             }
             break;
+        case 'repeater':
+            return lpdo_render_repeater($f, $value, $prefix, $id, $label, $help);
         default:
             $types = ['email' => 'email', 'tel' => 'tel', 'url' => 'url', 'number' => 'number', 'date' => 'date', 'color' => 'color'];
             $type = $types[$f['type']] ?? 'text';
-            $extra = $type === 'number' ? ' min="0"' . (!empty($f['step']) ? ' step="' . esc_attr($f['step']) . '"' : '') : '';
+            $extra = !empty($f['inputmode']) ? ' inputmode="' . esc_attr($f['inputmode']) . '"' : '';
+            $extra .= $type === 'number' ? ' min="0"' . (!empty($f['step']) ? ' step="' . esc_attr($f['step']) . '"' : '') : '';
             $extra .= $type === 'date' ? ' min="' . esc_attr(wp_date('Y-m-d')) . '"' : '';
             $auto = ['contact_name' => 'name', 'email' => 'email', 'whatsapp' => 'tel', 'business_name' => 'organization', 'website' => 'url'][$key] ?? '';
             $control = '<input type="' . $type . '" id="' . esc_attr($id) . '" name="' . esc_attr($name) . '" value="' . esc_attr(is_array($value) ? '' : (string) $value) . '"' . $ph . $extra . $reqAttr . $describedby . ($auto ? ' autocomplete="' . $auto . '"' : '') . '>';
     }
     return '<div class="lpdo-field ' . esc_attr($width) . ' lpdo-type-' . esc_attr($f['type']) . '"><label for="' . esc_attr($id) . '">' . $label . '</label>' . $control . $help . '</div>';
+}
+
+/** A table the client fills row by row (menu items, people on business cards…). */
+function lpdo_render_repeater(array $f, $value, string $prefix, string $id, string $label, string $help): string
+{
+    $t = 'lightandpulse-design-orders';
+    $rows = is_array($value) ? array_values(array_filter($value, 'is_array')) : [];
+    $count = max(count($rows), (int) ($f['rows'] ?? 1), 1);
+    $tracks = implode(' ', array_map(fn($c) => 'minmax(0,' . (int) ($c['size'] ?? 2) . 'fr)', $f['columns']));
+    $row = function ($i, array $data) use ($f, $prefix, $t) {
+        $html = '<li class="lpdo-rep__row">';
+        foreach ($f['columns'] as $c => $col) {
+            $name = $prefix . '[' . $f['key'] . '][' . $i . '][' . $col['key'] . ']';
+            $v = (string) ($data[$col['key']] ?? '');
+            $req = !empty($col['required']) && !empty($f['required']) && $i === 0 ? ' required data-required="1"' : '';
+            $ph = !empty($col['placeholder']) && $i === 0 ? ' placeholder="' . esc_attr($col['placeholder']) . '"' : '';
+            $html .= '<label class="lpdo-rep__cell"><span class="lpdo-rep__label">' . esc_html($col['label']) . (!empty($col['required']) ? ' <span class="lpdo-req" aria-hidden="true">*</span>' : '') . '</span>';
+            if ($col['type'] === 'select') {
+                $html .= '<select name="' . esc_attr($name) . '"' . $req . '><option value="">—</option>';
+                foreach ($col['options'] as $k => $o) {
+                    $html .= '<option value="' . esc_attr($k) . '"' . selected($v, (string) $k, false) . '>' . esc_html($o) . '</option>';
+                }
+                $html .= '</select>';
+            } else {
+                $html .= '<input type="' . ($col['type'] === 'number' ? 'number' : 'text') . '" name="' . esc_attr($name) . '" value="' . esc_attr($v) . '"' . $ph . (!empty($col['inputmode']) ? ' inputmode="' . esc_attr($col['inputmode']) . '"' : '') . $req . '>';
+            }
+            $html .= '</label>';
+        }
+        return $html . '<button type="button" class="lpdo-rep__remove" data-rep-remove aria-label="' . esc_attr__('Hapus baris', $t) . '" title="' . esc_attr__('Hapus baris', $t) . '"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></li>';
+    };
+    $html = '<div class="lpdo-field lpdo-w-full lpdo-type-repeater" role="group" aria-labelledby="' . esc_attr($id) . '-label"><span class="lpdo-label" id="' . esc_attr($id) . '-label">' . $label . '</span>';
+    $html .= '<div class="lpdo-rep" id="' . esc_attr($id) . '" data-rep data-next="' . $count . '" style="--rep-cols:' . esc_attr($tracks) . '">';
+    $html .= '<div class="lpdo-rep__head" aria-hidden="true">';
+    foreach ($f['columns'] as $col) {
+        $html .= '<span>' . esc_html($col['label']) . (!empty($col['required']) ? ' <span class="lpdo-req">*</span>' : '') . '</span>';
+    }
+    $html .= '<span></span></div><ol class="lpdo-rep__rows">';
+    for ($i = 0; $i < $count; $i++) {
+        $html .= $row($i, $rows[$i] ?? []);
+    }
+    $html .= '</ol><template>' . $row('__i__', []) . '</template>';
+    $html .= '<button type="button" class="lpdo-rep__add" data-rep-add><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg> ' . esc_html($f['add_label'] ?? __('Tambah baris', $t)) . '</button>';
+    return $html . '</div>' . $help . '</div>';
 }
 
 function lpdo_render_group(array $group, string $groupKey, array $values, string $prefix = 'lpdo'): string
@@ -141,7 +191,7 @@ function lpdo_render_form(?WP_Post $client = null): string
       <?php if ($errors) : ?>
         <div class="lpdo-notice is-error" role="alert"><p><strong><?php esc_html_e('Ada yang perlu dilengkapi:', $t); ?></strong></p><ul><?php foreach ($errors as $e) : ?><li><?php echo esc_html($e); ?></li><?php endforeach; ?></ul></div>
       <?php endif; ?>
-      <form class="lpdo-form" method="post" enctype="multipart/form-data" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" data-max-mb="<?php echo (int) lpdo_setting('max_upload_mb'); ?>">
+      <form class="lpdo-form" method="post" enctype="multipart/form-data" action="<?php echo esc_url(admin_url('admin-post.php')); ?>" data-max-mb="<?php echo (int) lpdo_setting('max_upload_mb'); ?>" data-max-files="<?php echo (int) lpdo_max_files(); ?>" data-max-post="<?php echo (int) wp_convert_hr_to_bytes((string) ini_get('post_max_size')); ?>">
         <input type="hidden" name="action" value="lpdo_submit">
         <input type="hidden" name="lpdo_ts" value="<?php echo esc_attr($ts); ?>">
         <input type="hidden" name="lpdo_sig" value="<?php echo esc_attr(wp_hash('lpdo_form|' . $ts)); ?>">
@@ -153,7 +203,7 @@ function lpdo_render_form(?WP_Post $client = null): string
         <label class="lpdo-hp" aria-hidden="true">Website URL<input type="text" name="lpdo_company_url" tabindex="-1" autocomplete="off"></label>
 
         <div class="lpdo-step">
-          <h2><span class="lpdo-step-num">1</span> <?php esc_html_e('Bisnis & branding', $t); ?></h2>
+          <header class="lpdo-step__head"><span class="lpdo-step-num">1</span><div><h2><?php esc_html_e('Bisnis & branding', $t); ?></h2><p><?php esc_html_e('Dipakai untuk semua order dan halaman klien Anda.', $t); ?></p></div></header>
           <?php if ($client) : ?>
             <details class="lpdo-fold"><summary><?php printf(esc_html__('Memesan sebagai %s. Ubah data bisnis & branding', $t), '<strong>' . esc_html(get_the_title($client)) . '</strong>'); ?></summary>
           <?php endif; ?>
@@ -162,7 +212,7 @@ function lpdo_render_form(?WP_Post $client = null): string
         </div>
 
         <div class="lpdo-step">
-          <h2><span class="lpdo-step-num">2</span> <?php esc_html_e('Jenis desain', $t); ?></h2>
+          <header class="lpdo-step__head"><span class="lpdo-step-num">2</span><div><h2><?php esc_html_e('Jenis desain', $t); ?></h2><p><?php esc_html_e('Pilih satu. Pertanyaan berikutnya menyesuaikan jenis desain.', $t); ?></p></div></header>
           <fieldset class="lpdo-types">
             <legend class="screen-reader-text"><?php esc_html_e('Pilih jenis desain', $t); ?></legend>
             <?php foreach (lpdo_design_types() as $k => $type) : ?>
@@ -171,18 +221,20 @@ function lpdo_render_form(?WP_Post $client = null): string
                 <span class="lpdo-type-icon"><?php echo lpdo_type_icon($k); // phpcs:ignore WordPress.Security.EscapeOutput -- static SVG. ?></span>
                 <span class="lpdo-type-name"><?php echo esc_html($type['label']); ?></span>
                 <span class="lpdo-type-desc"><?php echo esc_html($type['desc']); ?></span>
+                <span class="lpdo-type-check" aria-hidden="true"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span>
               </label>
             <?php endforeach; ?>
           </fieldset>
         </div>
 
         <div class="lpdo-step lpdo-details">
-          <h2><span class="lpdo-step-num">3</span> <?php esc_html_e('Detail order', $t); ?></h2>
+          <header class="lpdo-step__head"><span class="lpdo-step-num">3</span><div><h2><?php esc_html_e('Detail order', $t); ?></h2><p><?php esc_html_e('Semakin lengkap brief-nya, semakin cepat dan tepat hasilnya.', $t); ?></p></div></header>
           <p class="lpdo-intro lpdo-pick-first"><?php esc_html_e('Pilih jenis desain di atas untuk melihat pertanyaan yang sesuai.', $t); ?></p>
           <?php foreach (lpdo_order_groups() as $gk => $g) { echo lpdo_render_group($g, $gk, $old); } // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside. ?>
         </div>
 
         <div class="lpdo-step lpdo-privacy">
+          <header class="lpdo-step__head"><span class="lpdo-step-num">4</span><div><h2><?php esc_html_e('Kirim order', $t); ?></h2><p><?php esc_html_e('Periksa kembali, lalu kirim. Status order bisa dipantau di halaman klien Anda.', $t); ?></p></div></header>
           <p><?php
             echo esc_html(sprintf(__('Data yang Anda isi (nama, kontak, data bisnis, logo dan file) diproses oleh %s untuk membuat dan mengirim desain pesanan Anda.', $t), $agency));
             if (lpdo_privacy_url()) {
@@ -203,11 +255,11 @@ function lpdo_render_form(?WP_Post $client = null): string
           </label>
           <input type="hidden" name="pdp_context" value="design_order">
           <input type="hidden" name="pdp_notice_version" value="<?php echo esc_attr(LPDO_NOTICE_VERSION); ?>">
-        </div>
-
         <div class="lpdo-submit">
-          <button type="submit" class="lpdo-button"><?php esc_html_e('Kirim order', $t); ?></button>
+          <button type="submit" class="lpdo-button"><?php esc_html_e('Kirim order', $t); ?> <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button>
+          <p class="lpdo-submit-error" role="alert" hidden></p>
           <p class="lpdo-help"><?php echo esc_html(sprintf(__('Dengan menekan Kirim order, Anda meminta %s memproses data di atas untuk pesanan ini.', $t), $agency)); ?></p>
+        </div>
         </div>
       </form>
     </div>
@@ -315,6 +367,7 @@ function lpdo_handle_submit(): void
         if (!empty($f['required']) && ($orderVals[$key] === '' || $orderVals[$key] === [])) {
             $errors[] = sprintf(__('%s wajib diisi.', $t), $f['label']);
         }
+        $errors = array_merge($errors, lpdo_validate_value($f, $orderVals[$key]));
     }
     if ($type === 'business_card' && empty($_POST['pdp_consent_third_party'])) {
         $errors[] = __('Centang pernyataan bahwa orang yang datanya dicantumkan di kartu nama sudah setuju.', $t);
@@ -350,7 +403,6 @@ function lpdo_handle_submit(): void
     }
     update_post_meta($orderId, '_lpdo_type', $type);
     update_post_meta($orderId, '_lpdo_status', 'new');
-    update_post_meta($orderId, '_lpdo_deadline', $orderVals['deadline'] ?? '');
 
     // Uploads: the logo goes to the client, everything else to the order.
     $uploadErrors = [];
@@ -409,7 +461,7 @@ function lpdo_handle_uploads(string $key, int $parentId, array &$errors): array
     $max = max(1, (int) lpdo_setting('max_upload_mb')) * MB_IN_BYTES;
     $ids = [];
     foreach ($names as $i => $name) {
-        if ($name === '' || count($ids) >= 10) {
+        if ($name === '' || count($ids) >= 20) {
             continue;
         }
         $file = [
@@ -438,6 +490,13 @@ function lpdo_handle_uploads(string $key, int $parentId, array &$errors): array
         }
     }
     return $ids;
+}
+
+/** Files one submission can carry: PHP's max_file_uploads (often 20), capped at 40. */
+function lpdo_max_files(): int
+{
+    $n = (int) ini_get('max_file_uploads');
+    return $n > 0 ? min($n, 40) : 20;
 }
 
 /** Add the client to Lightandpulse Leads (theme CRM) when it is active. */

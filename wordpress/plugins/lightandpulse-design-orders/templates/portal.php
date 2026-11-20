@@ -30,6 +30,11 @@ $notices = [
     'note-missing' => __('Tuliskan catatan revisi sebelum mengirim.', $t),
 ];
 $portalUrl = lpdo_portal_url($cid);
+$counts = ['waiting' => 0, 'active' => 0, 'done' => 0];
+foreach ($orders as $o) {
+    $st = lpdo_order_status($o->ID);
+    $counts[$st === 'proof' ? 'waiting' : ($st === 'done' ? 'done' : 'active')]++;
+}
 $initials = strtoupper(mb_substr(preg_replace('/[^\p{L}\p{N} ]/u', '', $name), 0, 2));
 ?><!doctype html>
 <html <?php language_attributes(); ?>>
@@ -50,7 +55,7 @@ $initials = strtoupper(mb_substr(preg_replace('/[^\p{L}\p{N} ]/u', '', $name), 0
       <?php if ($logoUrl) : ?><img class="lpdo-brand__logo" src="<?php echo esc_url($logoUrl); ?>" alt="<?php echo esc_attr($name); ?>"><?php else : ?><span class="lpdo-brand__initials" aria-hidden="true"><?php echo esc_html($initials); ?></span><?php endif; ?>
       <div><p class="lpdo-brand__name"><?php echo esc_html($name); ?></p><?php if ($tagline) : ?><p class="lpdo-brand__tagline"><?php echo esc_html($tagline); ?></p><?php endif; ?></div>
     </div>
-    <a class="lpdo-btn lpdo-btn--accent" href="#new-order" data-open-new-order><?php esc_html_e('+ Order desain baru', $t); ?></a>
+    <a class="lpdo-btn lpdo-btn--light" href="#new-order" data-open-new-order><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg> <?php esc_html_e('Order desain baru', $t); ?></a>
   </div>
 </header>
 
@@ -59,8 +64,27 @@ $initials = strtoupper(mb_substr(preg_replace('/[^\p{L}\p{N} ]/u', '', $name), 0
 
   <div class="lpdo-layout">
     <section class="lpdo-orders" aria-labelledby="lpdo-orders-title">
-      <h1 id="lpdo-orders-title"><?php esc_html_e('Order desain', $t); ?></h1>
-      <?php if (!$orders) : ?><p class="lpdo-muted"><?php esc_html_e('Belum ada order.', $t); ?></p><?php endif; ?>
+      <div class="lpdo-orders__head">
+        <div>
+          <h1 id="lpdo-orders-title"><?php esc_html_e('Order desain', $t); ?></h1>
+          <?php if ($orders) : ?>
+            <p class="lpdo-stats">
+              <span><?php echo esc_html(sprintf(_n('%d order', '%d order', count($orders), $t), count($orders))); ?></span>
+              <?php if ($counts['waiting']) : ?><span class="is-warn"><?php echo esc_html(sprintf(__('%d menunggu persetujuan Anda', $t), $counts['waiting'])); ?></span><?php endif; ?>
+              <?php if ($counts['active']) : ?><span><?php echo esc_html(sprintf(__('%d sedang dikerjakan', $t), $counts['active'])); ?></span><?php endif; ?>
+              <?php if ($counts['done']) : ?><span class="is-ok"><?php echo esc_html(sprintf(__('%d selesai', $t), $counts['done'])); ?></span><?php endif; ?>
+            </p>
+          <?php endif; ?>
+        </div>
+      </div>
+      <?php if (!$orders) : ?>
+        <div class="lpdo-empty">
+          <span class="lpdo-empty__icon" aria-hidden="true"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l2.5 5.5L20 9.3l-4 4 1 5.7-5-2.8-5 2.8 1-5.7-4-4 5.5-.8z"/></svg></span>
+          <h2><?php esc_html_e('Belum ada order', $t); ?></h2>
+          <p><?php esc_html_e('Mulai order desain pertama Anda. Brand kit di samping sudah otomatis terisi di form.', $t); ?></p>
+          <a class="lpdo-btn lpdo-btn--primary" href="#new-order" data-open-new-order><?php esc_html_e('Buat order pertama', $t); ?></a>
+        </div>
+      <?php endif; ?>
 
       <?php foreach ($orders as $order) :
           $oid = $order->ID;
@@ -136,7 +160,7 @@ $initials = strtoupper(mb_substr(preg_replace('/[^\p{L}\p{N} ]/u', '', $name), 0
                   <form method="post" action="<?php echo esc_url(admin_url('admin-post.php')); ?>">
                     <input type="hidden" name="action" value="lpdo_portal"><input type="hidden" name="lpdo_client_key" value="<?php echo esc_attr(lpdo_client_key($cid)); ?>">
                     <input type="hidden" name="lpdo_order" value="<?php echo (int) $oid; ?>"><input type="hidden" name="lpdo_decision" value="approve">
-                    <button class="lpdo-btn lpdo-btn--accent"><?php esc_html_e('Setujui desain', $t); ?></button>
+                    <button class="lpdo-btn lpdo-btn--primary"><?php esc_html_e('Setujui desain', $t); ?></button>
                   </form>
                   <details class="lpdo-revise">
                     <summary class="lpdo-btn lpdo-btn--ghost"><?php esc_html_e('Minta revisi', $t); ?></summary>
@@ -162,6 +186,10 @@ $initials = strtoupper(mb_substr(preg_replace('/[^\p{L}\p{N} ]/u', '', $name), 0
                 $rows = '';
                 foreach ($group['fields'] as $f) {
                     $v = $fields[$f['key']] ?? '';
+                    if ($f['type'] === 'repeater') {
+                        if ($v) { $rows .= '<dt class="lpdo-dl__wide">' . esc_html($f['label']) . '</dt><dd class="lpdo-dl__wide">' . lpdo_repeater_table($f, $v) . '</dd>'; }
+                        continue;
+                    }
                     if ($f['type'] === 'file') {
                         $v = $v ? sprintf(_n('%d file', '%d file', count((array) $v), $t), count((array) $v)) : '';
                     } else {
@@ -200,8 +228,8 @@ $initials = strtoupper(mb_substr(preg_replace('/[^\p{L}\p{N} ]/u', '', $name), 0
     </aside>
   </div>
 
-  <details class="lpdo-new" id="new-order">
-    <summary><?php esc_html_e('+ Order desain baru', $t); ?></summary>
+  <details class="lpdo-new" id="new-order"<?php echo $orders ? '' : ' open'; ?>>
+    <summary><span class="lpdo-new__plus" aria-hidden="true"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg></span><span><strong><?php esc_html_e('Order desain baru', $t); ?></strong><small><?php esc_html_e('Poster, menu, flyer, backdrop atau kartu nama', $t); ?></small></span></summary>
     <?php echo lpdo_render_form($client); // phpcs:ignore WordPress.Security.EscapeOutput -- escaped inside. ?>
   </details>
 </main>

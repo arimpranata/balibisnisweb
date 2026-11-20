@@ -27,6 +27,7 @@ add_action('admin_enqueue_scripts', function () {
     wp_enqueue_media();
     wp_enqueue_style('lpdo-admin', LPDO_URL . 'assets/admin.css', [], LPDO_VERSION);
     wp_enqueue_script('lpdo-admin', LPDO_URL . 'assets/admin.js', ['jquery'], LPDO_VERSION, true);
+    wp_enqueue_script('lpdo-form', LPDO_URL . 'assets/form.js', [], LPDO_VERSION, true); // table rows in the brief
 });
 
 // ---------------------------------------------------------------------------
@@ -106,7 +107,8 @@ function lpdo_box_order_brief(WP_Post $post): void
             $v = $values[$f['key']] ?? '';
             echo '<tr><th scope="row">' . esc_html($f['label']) . '</th><td>';
             if ($f['type'] === 'file') {
-                foreach ((array) $v as $att) {
+                $v = array_filter(array_map('intval', (array) $v));
+                foreach ($v as $att) {
                     echo '<a href="' . esc_url(wp_get_attachment_url((int) $att)) . '" target="_blank" rel="noopener">' . wp_get_attachment_image((int) $att, [80, 80], true) . '</a> ';
                 }
                 echo $v ? '' : '—';
