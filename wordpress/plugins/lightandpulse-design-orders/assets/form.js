@@ -2,12 +2,11 @@
   'use strict';
   // Fields that only matter for certain answers: field key -> [controlling field, value].
   var RULES = {
-    poster_size_custom: ['poster_size', 'custom'], menu_size_custom: ['menu_size', 'custom'],
-    flyer_size_custom: ['flyer_size', 'custom'], card_size_custom: ['card_size', 'custom'],
-    languages_other: ['languages', 'other'], poster_qr_url: ['poster_qr', 'yes'],
-    menu_photo_files: ['menu_photos', 'own'],
+    sizes_custom: ['sizes', 'custom'], menu_size_custom: ['menu_size', 'custom'], card_size_custom: ['card_size', 'custom'],
+    languages_other: ['languages', 'other'], menu_photo_files: ['menu_photos', 'own'],
+    contact_text: ['contact_mode', 'custom'], qr_url: ['qr', 'custom'],
     backdrop_hashtag: ['backdrop_elements', 'hashtag'], backdrop_names: ['backdrop_elements', 'names'],
-    backdrop_sponsors: ['backdrop_elements', 'sponsors'], backdrop_sponsor_logos: ['backdrop_elements', 'sponsors']
+    backdrop_sponsors: ['backdrop_elements', 'sponsors']
   };
 
   function sizeLabel(b) {

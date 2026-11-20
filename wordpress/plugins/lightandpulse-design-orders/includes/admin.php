@@ -104,6 +104,9 @@ function lpdo_box_order_brief(WP_Post $post): void
         }
         echo '<h4>' . esc_html($g['title']) . '</h4><table class="form-table" role="presentation"><tbody>';
         foreach ($g['fields'] as $f) {
+            if (!lpdo_field_applies($f, $type)) {
+                continue;
+            }
             $v = $values[$f['key']] ?? '';
             echo '<tr><th scope="row">' . esc_html($f['label']) . '</th><td>';
             if ($f['type'] === 'file') {

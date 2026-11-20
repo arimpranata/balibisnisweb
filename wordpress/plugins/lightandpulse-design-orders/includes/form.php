@@ -34,6 +34,10 @@ function lpdo_type_icon(string $type): string
         'flyer'         => '<path d="M6 3h9l3 3v15H6z"/><path d="M15 3v3h3M9 11h6M9 15h6"/>',
         'backdrop'      => '<rect x="2" y="4" width="20" height="12" rx="1"/><path d="M7 20h10M12 16v4"/>',
         'business_card' => '<rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="8" cy="12" r="2"/><path d="M13 10h5M13 14h4"/>',
+        'banner'        => '<path d="M7 3h10v14H7z"/><path d="M12 17v4M8 21h8M10 7h4M10 10h4"/>',
+        'greeting'      => '<path d="M3 8l9-5 9 5v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M3 8l9 6 9-6"/>',
+        'digital'       => '<rect x="2" y="4" width="14" height="10" rx="1"/><rect x="17" y="8" width="5" height="10" rx="1"/><path d="M6 18h6"/>',
+        'directory'     => '<path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h11M9 8h6"/>',
     ];
     return '<svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' . ($paths[$type] ?? '') . '</svg>';
 }
@@ -53,6 +57,7 @@ function lpdo_render_field(array $f, $value = null, string $prefix = 'lpdo'): st
     $describedby = !empty($f['help']) ? ' aria-describedby="' . esc_attr($id) . '-help"' : '';
     $ph = !empty($f['placeholder']) ? ' placeholder="' . esc_attr($f['placeholder']) . '"' : '';
     $width = 'lpdo-w-' . ($f['width'] ?? 'full');
+    $typesAttr = !empty($f['types']) ? ' data-types="' . esc_attr(implode(' ', $f['types'])) . '"' : '';
 
     switch ($f['type']) {
         case 'textarea':
@@ -68,7 +73,7 @@ function lpdo_render_field(array $f, $value = null, string $prefix = 'lpdo'): st
         case 'radio':
         case 'checkboxes':
             $multi = $f['type'] === 'checkboxes';
-            $out = '<fieldset class="lpdo-field lpdo-choice ' . esc_attr($width) . '"' . $describedby . '><legend>' . $label . '</legend><div class="lpdo-options">';
+            $out = '<fieldset class="lpdo-field lpdo-choice ' . esc_attr($width) . '"' . $typesAttr . $describedby . '><legend>' . $label . '</legend><div class="lpdo-options">';
             foreach ($f['options'] as $k => $o) {
                 $checked = $multi ? in_array((string) $k, array_map('strval', (array) $value), true) : (string) $value === (string) $k;
                 $out .= '<label class="lpdo-option"><input type="' . ($multi ? 'checkbox' : 'radio') . '" name="' . esc_attr($name . ($multi ? '[]' : '')) . '" value="' . esc_attr($k) . '"' . checked($checked, true, false) . ($req && !$multi ? ' required data-required="1"' : '') . '> <span>' . esc_html($o) . '</span></label>';
@@ -96,7 +101,7 @@ function lpdo_render_field(array $f, $value = null, string $prefix = 'lpdo'): st
             $auto = ['contact_name' => 'name', 'email' => 'email', 'whatsapp' => 'tel', 'business_name' => 'organization', 'website' => 'url'][$key] ?? '';
             $control = '<input type="' . $type . '" id="' . esc_attr($id) . '" name="' . esc_attr($name) . '" value="' . esc_attr(is_array($value) ? '' : (string) $value) . '"' . $ph . $extra . $reqAttr . $describedby . ($auto ? ' autocomplete="' . $auto . '"' : '') . '>';
     }
-    return '<div class="lpdo-field ' . esc_attr($width) . ' lpdo-type-' . esc_attr($f['type']) . '"><label for="' . esc_attr($id) . '">' . $label . '</label>' . $control . $help . '</div>';
+    return '<div class="lpdo-field ' . esc_attr($width) . ' lpdo-type-' . esc_attr($f['type']) . '"' . $typesAttr . '><label for="' . esc_attr($id) . '">' . $label . '</label>' . $control . $help . '</div>';
 }
 
 /** A table the client fills row by row (menu items, people on business cards…). */
@@ -127,7 +132,7 @@ function lpdo_render_repeater(array $f, $value, string $prefix, string $id, stri
         }
         return $html . '<button type="button" class="lpdo-rep__remove" data-rep-remove aria-label="' . esc_attr__('Hapus baris', $t) . '" title="' . esc_attr__('Hapus baris', $t) . '"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button></li>';
     };
-    $html = '<div class="lpdo-field lpdo-w-full lpdo-type-repeater" role="group" aria-labelledby="' . esc_attr($id) . '-label"><span class="lpdo-label" id="' . esc_attr($id) . '-label">' . $label . '</span>';
+    $html = '<div class="lpdo-field lpdo-w-full lpdo-type-repeater"' . (!empty($f['types']) ? ' data-types="' . esc_attr(implode(' ', $f['types'])) . '"' : '') . ' role="group" aria-labelledby="' . esc_attr($id) . '-label"><span class="lpdo-label" id="' . esc_attr($id) . '-label">' . $label . '</span>';
     $html .= '<div class="lpdo-rep" id="' . esc_attr($id) . '" data-rep data-next="' . $count . '" style="--rep-cols:' . esc_attr($tracks) . '">';
     $html .= '<div class="lpdo-rep__head" aria-hidden="true">';
     foreach ($f['columns'] as $col) {
@@ -278,7 +283,7 @@ function lpdo_privacy_details(): string
         __('Pengendali data', $t) => $agency . ($email ? ' · ' . $email : ''),
         __('Dasar pemrosesan', $t) => esc_html__('Pelaksanaan perjanjian atas pesanan desain Anda (UU 27/2022 Pasal 20 ayat 2 huruf b). Info promo hanya dengan persetujuan terpisah (huruf a).', $t),
         __('Tujuan', $t) => esc_html__('Memproses pesanan, menghubungi Anda lewat WhatsApp/email, menampilkan halaman klien dan file desain, serta administrasi tagihan.', $t),
-        __('Jenis data', $t) => esc_html__('Nama bisnis, nama kontak, nomor WhatsApp, email, Instagram/website, alamat (opsional), logo, file referensi dan foto. Untuk kartu nama: nama, jabatan, telepon dan email orang yang dicantumkan.', $t),
+        __('Jenis data', $t) => esc_html__('Nama bisnis, nama kontak, nomor WhatsApp, telepon kantor, email, Instagram/website, kontak yang dicetak di desain, alamat (opsional), logo, file referensi dan foto. Untuk kartu nama: nama, jabatan, telepon dan email orang yang dicantumkan.', $t),
         __('Penerima', $t) => esc_html(sprintf(__('Tim %s, penyedia hosting website ini, dan percetakan (hanya file desain, bila cetak diurus kami).', $t), lpdo_setting('agency_name'))),
         __('Jangka waktu & retensi', $t) => $months > 0
             ? esc_html(sprintf(__('Disimpan selama hubungan kerja, lalu dihapus atau dianonimkan %d bulan setelah aktivitas terakhir.', $t), $months))

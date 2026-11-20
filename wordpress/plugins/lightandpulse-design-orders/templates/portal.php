@@ -185,6 +185,7 @@ $initials = strtoupper(mb_substr(preg_replace('/[^\p{L}\p{N} ]/u', '', $name), 0
                 if (!empty($group['types']) && !in_array($type, $group['types'], true)) { continue; }
                 $rows = '';
                 foreach ($group['fields'] as $f) {
+                    if (!lpdo_field_applies($f, $type)) { continue; }
                     $v = $fields[$f['key']] ?? '';
                     if ($f['type'] === 'repeater') {
                         if ($v) { $rows .= '<dt class="lpdo-dl__wide">' . esc_html($f['label']) . '</dt><dd class="lpdo-dl__wide">' . lpdo_repeater_table($f, $v) . '</dd>'; }
@@ -215,6 +216,10 @@ $initials = strtoupper(mb_substr(preg_replace('/[^\p{L}\p{N} ]/u', '', $name), 0
           <?php endforeach; ?>
         </ul>
         <?php if ($font) : ?><p class="lpdo-muted"><?php echo esc_html(sprintf(__('Font: %s', $t), $font)); ?></p><?php endif; ?>
+        <?php $contactPrint = lpdo_client_meta($cid, 'contact_print'); if ($contactPrint) : ?>
+          <p class="lpdo-kit-label"><?php esc_html_e('Kontak standar di desain', $t); ?></p>
+          <p class="lpdo-kit-contact"><?php echo nl2br(esc_html($contactPrint)); ?></p>
+        <?php endif; ?>
       </div>
       <div class="lpdo-card lpdo-share">
         <h2><?php esc_html_e('Link halaman ini', $t); ?></h2>

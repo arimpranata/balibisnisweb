@@ -3,7 +3,7 @@ Contributors: lightandpulse
 Requires at least: 6.2
 Tested up to: 6.8
 Requires PHP: 8.0
-Stable tag: 1.1.0
+Stable tag: 1.2.0
 License: GPLv2 or later
 
 Design order system for posters, menus, flyers, backdrops and business cards, with a branded portal page for every client, proof approval, and direct download links with QR codes.
@@ -12,16 +12,18 @@ Design order system for posters, menus, flyers, backdrops and business cards, wi
 
 = Order form =
 * Shortcode `[lightandpulse_design_order]`. A page "Order Desain" with the form is created on activation.
-* Step 1, business & branding: business name, contact, WhatsApp, email, Instagram, website, optional address, logo, three brand colours, brand font, tagline, brand notes.
-* Step 2, design type: Poster, Menu, Flyer, Backdrop or Business card.
+* Step 1, business & branding: business name, contact, WhatsApp, office phone, email, Instagram, website, optional address, logo, three brand colours, brand font, tagline, the standard contact block printed on designs, brand notes.
+* Step 2, design type (shaped by real hotel and restaurant work): Poster, Flyer, Menu, Banner & signage, Backdrop, Business card, Greeting card, TV & social media, Room directory.
 * Step 3, details for that type, for example:
-  * Poster: size (A4–A0, 50×70, Instagram, custom), orientation, event date/time/place, QR code and its link, finishing, quantity.
-  * Menu: format (single, bi-fold, tri-fold, booklet, board, table tent, digital/QR), size, pages, categories, item list or file upload, currency, tax/service note, dietary icons, food photos, material, quantity.
-  * Flyer: size (A5, A4, DL, 1/3 A4, square, story, custom), sides, folds, channels, offer, validity, terms, quantity.
-  * Backdrop: width × height in metres, indoor/outdoor, material, event, date, venue, elements (sponsor logos, photo booth, step-and-repeat, names, hashtag, QR), sponsor logo uploads, scope (design / print / install).
-  * Business card: one person per line (name | title | phone | email), size, sides, orientation, paper, finishing, back side, QR (website, WhatsApp, vCard), boxes per person.
-  * Row-by-row tables per type: menu items (category, name, ingredients, price, label), people on business cards, event line-up for posters, products with normal and promo prices for flyers, sponsors for backdrops.
-  * For every type: purpose, audience, languages, style, use of brand colours, things to avoid, reference links, notes; posters and flyers also get headline, body text, call to action and contact details.
+  * Poster & flyer: several sizes at once (A5–A2, DL, standing frame 67×92, Instagram, TV, custom), orientation, sides/folds (flyer), finishing (poster), where it is used, quantity; events table (name, date, time, venue, price, description), inclusions, event set menu (course, dish, description), price basis (++ / net / free), kids or group terms.
+  * Menu: kind (food, beverage, wine & spirits, set, happy hour, kids, in-room dining, spa), format, size (A4, A5, 18×29.7, 16×30, 15×30, DL, custom), pages, material; items table (category, name, ingredients, price, second price e.g. bottle, label); currency, price style (thousands or full), tax note and percentage, photos.
+  * Banner & signage: table of pieces (X-banner, roll-up, standing frame, banner, trolley/booth or door sticker, signage; placement, width, height, quantity), material, indoor/outdoor, scope.
+  * Backdrop: size in metres, material, scope, event, venue, date, main text, elements, names, hashtag, sponsors table.
+  * Business card: people table (name, title, phone, email), shared info, size, sides, orientation, paper, finishing, QR, boxes.
+  * Greeting card: occasion (Christmas, New Year, Nyepi, Galungan, Eid, Chinese New Year, 17 August…), formats (printed card, Instagram, WhatsApp, e-card), greeting, message, sign-off and signature.
+  * TV & social media: formats (TV landscape/portrait, Instagram post/story, Facebook, web banner, email header, WhatsApp), screen, still or animated, slides table (title, text, price, seconds).
+  * Room directory: format, pages, sections, facilities & opening hours table, phone extensions table, Wi-Fi, existing texts.
+  * Shared where it fits: outlet/venue and outlet or partner logos, promo items table (category, name, description, price, promo price), validity and terms, headline/body/call to action, contact block (standard, custom or none) and QR target, style, brand or outlet look, "continue a previous design", references, assets, notes.
   * File fields take many files, picked in several goes or dragged in, with previews and a remove button; the deadline is set by the team in wp-admin.
 * Follow-up fields appear only when relevant (e.g. custom size only when "Custom" is chosen).
 * Uploads: JPG, PNG, WebP, GIF, PDF, ZIP, TXT, CSV, DOC(X), XLS(X); size limit set in Settings.
@@ -60,6 +62,12 @@ Design order system for posters, menus, flyers, backdrops and business cards, wi
 QR codes are generated on your server with QR Code Generator by Kazuhiko Arase (MIT licence), in vendor/qrcode-generator.
 
 == Changelog ==
+= 1.2.0 =
+* New design types: Banner & signage, Greeting card, TV & social media, Room directory.
+* Posters and flyers: several sizes per order, events table, inclusions, event set menu, price basis.
+* Menus: menu kind, hotel menu sizes, second price column, tax percentage.
+* Shared: outlet/venue and partner logos, promo items table, standard contact block from branding, QR target.
+
 = 1.1.0 =
 * Per-type tables (menu items, people, line-up, products, sponsors) instead of free text.
 * Multi-file drop zones that keep adding files, with previews and limits checked before sending.
